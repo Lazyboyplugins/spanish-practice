@@ -160,7 +160,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 .bline .tile{background:var(--accent-soft);border-color:var(--accent)}
 .pic{display:flex;flex-direction:column;align-items:center;gap:4px}
 .pic svg{width:min(340px,86vw);height:auto;overflow:visible}
-.pic svg.clock{width:min(190px,56vw)}
+.pic svg.clock{width:min(190px,56vw)}.pic svg.bodyfig{width:min(230px,60vw)}.shirt{fill:#7fb2e5;stroke:#2c5a8a;stroke-width:2}.shirt2{fill:#a9cdf0;stroke:#2c5a8a;stroke-width:2}.shorts{fill:#5b6b7f;stroke:#333;stroke-width:2}.navel{fill:#7a4b2e}.smile{fill:none;stroke:#7a4b2e;stroke-width:2.5;stroke-linecap:round}.subchips{margin:6px 0 10px}
 .digital{font-family:var(--display);font-size:22px;color:var(--muted)}
 .skin{fill:#f3c6a0;stroke:#7a4b2e;stroke-width:2}.skin2{fill:#e7b189;stroke:#7a4b2e;stroke-width:2}.hair{fill:#4a2f1d}
 .brow{fill:none;stroke:#3b2516;stroke-width:5;stroke-linecap:round}.eyew{fill:#fff;stroke:#7a4b2e;stroke-width:2}.pupil{fill:#2a1a10}
@@ -1010,7 +1010,7 @@ const XT_SE = {
   "se-origin": "ser for where you're from", "se-identity": "ser for who or what someone is", "se-trait": "ser for what someone or something is like",
   "se-time": "ser for time and days", "se-location": "estar for where something is", "se-feeling": "estar for feelings and how things are now",
   "se-person": "ser / estar forms (soy, estoy…)" };
-const XT_NOUNS = { "vocab-face": "Face words", "vocab-people": "People words", "vocab-animals": "Animal words", "vocab-kitchen": "Kitchen words",
+const XT_NOUNS = { "vocab-face": "Face words", "vocab-body": "Body parts", "vocab-people": "People words", "vocab-animals": "Animal words", "vocab-kitchen": "Kitchen words",
   "vocab-bedroom": "Bedroom words", "vocab-things": "Everyday things", "vocab-gender": "el or la (word gender)" };
 const XT_WORDS = {
   "days": "Days of the week", "months": "Months of the year",
@@ -1269,10 +1269,35 @@ const PEOPLE = [["el hombre", "man", "👨"], ["la mujer", "woman", "👩"], ["e
   ["el papá", "dad", "👨"], ["la mamá", "mom", "👩"], ["el hermano", "brother", ""], ["la hermana", "sister", ""], ["el abuelo", "grandfather", "👴"], ["la abuela", "grandmother", "👵"],
   ["el hijo", "son", ""], ["la hija", "daughter", ""], ["el tío", "uncle", ""], ["la tía", "aunt", ""], ["el primo", "cousin (male)", ""], ["la prima", "cousin (female)", ""],
   ["el amigo", "friend (male)", ""], ["la amiga", "friend (female)", ""], ["el profesor", "teacher (male)", "🧑‍🏫"], ["la doctora", "doctor (female)", "🩺"], ["el vecino", "neighbor (male)", "🏠"]];
-const ANIMALS = [["el perro", "dog", "🐕"], ["el gato", "cat", "🐈"], ["el pájaro", "bird", "🐦"], ["el pez", "fish", "🐟"], ["el caballo", "horse", "🐴"], ["la vaca", "cow", "🐄"],
-  ["el cerdo", "pig", "🐖"], ["la gallina", "hen", "🐔"], ["el ratón", "mouse", "🐭"], ["el conejo", "rabbit", "🐰"], ["la oveja", "sheep", "🐑"], ["el pato", "duck", "🦆"],
-  ["la tortuga", "turtle", "🐢"], ["el león", "lion", "🦁"], ["el oso", "bear", "🐻"], ["el mono", "monkey", "🐒"], ["la serpiente", "snake", "🐍"], ["la mariposa", "butterfly", "🦋"],
-  ["el elefante", "elephant", "🐘"], ["la araña", "spider", "🕷️"]];
+const AN_GEN = [["el perro", "dog", "🐕"], ["el gato", "cat", "🐈"], ["el pájaro", "bird", "🐦"], ["el pez", "fish", "🐟"], ["el caballo", "horse", "🐴"], ["la vaca", "cow", "🐄"],
+  ["el cerdo", "pig", "🐖"], ["el ratón", "mouse", "🐭"], ["el conejo", "rabbit", "🐰"], ["el oso", "bear", "🐻"], ["el león", "lion", "🦁"], ["el mono", "monkey", "🐒"],
+  ["la serpiente", "snake", "🐍"], ["la mariposa", "butterfly", "🦋"], ["el pato", "duck", "🦆"], ["la tortuga", "turtle", "🐢"]];
+const AN_PETS = [["el perro", "dog", "🐕"], ["el gato", "cat", "🐈"], ["el cachorro", "puppy", "🐶"], ["el gatito", "kitten", "🐱"], ["el conejo", "rabbit", "🐰"], ["el hámster", "hamster", "🐹"],
+  ["el pez", "fish", "🐟"], ["la tortuga", "turtle", "🐢"], ["el loro", "parrot", "🦜"], ["el ratón", "mouse", "🐭"]];
+const AN_FARM = [["la vaca", "cow", "🐄"], ["el toro", "bull", "🐂"], ["el cerdo", "pig", "🐖"], ["la gallina", "hen", "🐔"], ["el gallo", "rooster", "🐓"], ["el pollito", "chick", "🐤"],
+  ["el caballo", "horse", "🐴"], ["el burro", "donkey", "🫏"], ["la oveja", "sheep", "🐑"], ["la cabra", "goat", "🐐"], ["el pato", "duck", "🦆"], ["el pavo", "turkey", "🦃"]];
+const AN_WILD = [["el león", "lion", "🦁"], ["el tigre", "tiger", "🐅"], ["el oso", "bear", "🐻"], ["el mono", "monkey", "🐒"], ["el elefante", "elephant", "🐘"], ["la jirafa", "giraffe", "🦒"],
+  ["la cebra", "zebra", "🦓"], ["el lobo", "wolf", "🐺"], ["el zorro", "fox", "🦊"], ["el cocodrilo", "crocodile", "🐊"], ["el camello", "camel", "🐫"], ["la serpiente", "snake", "🐍"],
+  ["el hipopótamo", "hippo", "🦛"], ["el rinoceronte", "rhino", "🦏"], ["el canguro", "kangaroo", "🦘"], ["el gorila", "gorilla", "🦍"], ["la ardilla", "squirrel", "🐿️"], ["el venado", "deer", "🦌"]];
+const AN_BIRDS = [["el pájaro", "bird", "🐦"], ["el búho", "owl", "🦉"], ["el loro", "parrot", "🦜"], ["el pingüino", "penguin", "🐧"], ["la paloma", "pigeon / dove", "🕊️"], ["el flamenco", "flamingo", "🦩"],
+  ["el pavo real", "peacock", "🦚"], ["el colibrí", "hummingbird", ""], ["el cisne", "swan", "🦢"], ["el cuervo", "crow", ""], ["la gallina", "hen", "🐔"], ["el pato", "duck", "🦆"]];
+const AN_SEA = [["el pez", "fish", "🐟"], ["el delfín", "dolphin", "🐬"], ["la ballena", "whale", "🐋"], ["el tiburón", "shark", "🦈"], ["el pulpo", "octopus", "🐙"], ["el cangrejo", "crab", "🦀"],
+  ["la estrella de mar", "starfish", "⭐"], ["la medusa", "jellyfish", "🪼"], ["la foca", "seal", "🦭"], ["el caballito de mar", "seahorse", ""], ["el camarón", "shrimp", "🦐"], ["la tortuga", "turtle", "🐢"]];
+const AN_BUGS = [["la abeja", "bee", "🐝"], ["la hormiga", "ant", "🐜"], ["la mosca", "fly", "🪰"], ["la araña", "spider", "🕷️"], ["la mariposa", "butterfly", "🦋"], ["el caracol", "snail", "🐌"],
+  ["el mosquito", "mosquito", "🦟"], ["el grillo", "cricket", "🦗"], ["el escarabajo", "beetle", "🪲"], ["la cucaracha", "cockroach", "🪳"], ["el gusano", "worm", "🪱"], ["la mariquita", "ladybug", "🐞"], ["la libélula", "dragonfly", ""]];
+const dedupe = (...ls) => { const seen = new Set(), out = []; for (const l of ls) for (const w of l) if (!seen.has(w[0])) { seen.add(w[0]); out.push(w); } return out; };
+const ANIMALS = dedupe(AN_GEN, AN_PETS, AN_FARM, AN_WILD, AN_BIRDS, AN_SEA, AN_BUGS);
+const BODY_MAIN = [["la cabeza", "head", "🙂", "head"], ["el cuello", "neck", "", "neck"], ["el hombro", "shoulder", "", "shoulder"], ["el brazo", "arm", "💪", "arm"], ["la mano", "hand", "✋", "hand"],
+  ["el pecho", "chest", "", "chest"], ["el estómago", "stomach", "", "stomach"], ["la pierna", "leg", "🦵", "leg"], ["la rodilla", "knee", "", "knee"], ["el pie", "foot", "🦶", "foot"], ["la espalda", "back", "", ""]];
+const BODY_ARM = [["el hombro", "shoulder", ""], ["el brazo", "arm", "💪"], ["el codo", "elbow", ""], ["la muñeca", "wrist", ""], ["la mano", "hand", "✋"], ["la palma", "palm", "🤚"],
+  ["el dedo", "finger", "☝️"], ["el pulgar", "thumb", "👍"], ["la uña", "nail", "💅"], ["el puño", "fist", "✊"]];
+const BODY_LEG = [["la cadera", "hip", ""], ["el muslo", "thigh", ""], ["la pierna", "leg", "🦵"], ["la rodilla", "knee", ""], ["la pantorrilla", "calf", ""], ["el tobillo", "ankle", ""],
+  ["el pie", "foot", "🦶"], ["el talón", "heel", ""], ["los dedos del pie", "toes", ""], ["la planta del pie", "sole of the foot", ""]];
+const BODY_TORSO = [["el cuello", "neck", ""], ["el hombro", "shoulder", ""], ["el pecho", "chest", ""], ["el estómago", "stomach", ""], ["la barriga", "belly", ""], ["el ombligo", "belly button", ""],
+  ["la espalda", "back", ""], ["la cintura", "waist", ""], ["la cadera", "hip", ""]];
+const BODY_IN = [["el corazón", "heart", "❤️"], ["el cerebro", "brain", "🧠"], ["los pulmones", "lungs", "🫁"], ["los huesos", "bones", "🦴"], ["la piel", "skin", ""], ["la sangre", "blood", "🩸"],
+  ["los músculos", "muscles", "💪"], ["los dientes", "teeth", "🦷"], ["la lengua", "tongue", "👅"]];
+const BODY = dedupe(BODY_MAIN, BODY_ARM, BODY_LEG, BODY_TORSO, BODY_IN);
 const BEDROOM = [["la cama", "bed", "🛏️"], ["la almohada", "pillow", ""], ["la cobija", "blanket", ""], ["la sábana", "sheet", ""], ["el clóset", "closet", ""], ["la lámpara", "lamp", "💡"],
   ["la mesita de noche", "nightstand", ""], ["el espejo", "mirror", "🪞"], ["la ventana", "window", "🪟"], ["la puerta", "door", "🚪"], ["la cortina", "curtain", ""],
   ["el despertador", "alarm clock", "⏰"], ["la alfombra", "rug", ""], ["el cajón", "drawer", ""], ["la ropa", "clothes", "👕"], ["la silla", "chair", "🪑"]];
@@ -1280,13 +1305,42 @@ const THINGS2 = [["el celular", "cell phone", "📱"], ["las llaves", "keys", "�
   ["el bolígrafo", "pen", "🖊️"], ["el lápiz", "pencil", "✏️"], ["la computadora", "computer", "💻"], ["el reloj", "watch / clock", "⌚"], ["los lentes", "glasses", "👓"],
   ["el paraguas", "umbrella", "☂️"], ["la bolsa", "bag", "👜"], ["la botella", "bottle", ""], ["el cuaderno", "notebook", "📓"], ["las tijeras", "scissors", "✂️"],
   ["el carro", "car", "🚗"], ["la bicicleta", "bicycle", "🚲"], ["el dinero", "money", "💵"], ["la televisión", "TV", "📺"]];
-const NOUNSETS = { face: FACE, people: PEOPLE, animals: ANIMALS, kitchen: KITCHEN, bedroom: BEDROOM, things: THINGS2 };
+const NOUNSETS = { face: FACE, body: BODY, people: PEOPLE, animals: ANIMALS, kitchen: KITCHEN, bedroom: BEDROOM, things: THINGS2 };
 const DAYS = [["lunes", "Monday"], ["martes", "Tuesday"], ["miércoles", "Wednesday"], ["jueves", "Thursday"], ["viernes", "Friday"], ["sábado", "Saturday"], ["domingo", "Sunday"]];
 const MONTHS = [["enero", "January"], ["febrero", "February"], ["marzo", "March"], ["abril", "April"], ["mayo", "May"], ["junio", "June"], ["julio", "July"], ["agosto", "August"],
   ["septiembre", "September"], ["octubre", "October"], ["noviembre", "November"], ["diciembre", "December"]];
 const HOURS = ["", "una", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce"];
-const WORDSET_NAME = { face: "the face", people: "people", animals: "animals", kitchen: "kitchen", bedroom: "bedroom", things: "everyday things", days: "days of the week", months: "months", time: "telling the time" };
-const NOUN_TABS = [["face", "The face"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["mix", "Mix"]];
+const WORDSET_NAME = { face: "the face", body: "the body", people: "people", animals: "animals", kitchen: "kitchen", bedroom: "bedroom", things: "everyday things", days: "days of the week", months: "months", time: "telling the time" };
+const NSUB = {
+  body: [["general", "Main parts"], ["head", "Head & face"], ["arm", "Arm & hand"], ["leg", "Leg & foot"], ["torso", "Chest & back"], ["inside", "Inside the body"], ["all", "Everything"]],
+  animals: [["general", "Main animals"], ["pets", "Pets"], ["farm", "Farm"], ["wild", "Wild"], ["birds", "Birds"], ["sea", "Sea"], ["bugs", "Bugs"], ["all", "All animals"]] };
+const NSUBLIST = {
+  body: { general: BODY_MAIN, head: FACE.map(f => [f[0], f[1], ""]), arm: BODY_ARM, leg: BODY_LEG, torso: BODY_TORSO, inside: BODY_IN, all: BODY },
+  animals: { general: AN_GEN, pets: AN_PETS, farm: AN_FARM, wild: AN_WILD, birds: AN_BIRDS, sea: AN_SEA, bugs: AN_BUGS, all: ANIMALS } };
+const subOf = set => { const k = ((state.settings.nsub || {})[set]) || "general"; return NSUBLIST[set] && NSUBLIST[set][k] ? k : "general"; };
+const nounList = set => NSUBLIST[set] ? NSUBLIST[set][subOf(set)] : NOUNSETS[set];
+const AREA_SUB = { head: "head", neck: "torso", shoulder: "arm", arm: "arm", hand: "arm", chest: "torso", stomach: "torso", leg: "leg", knee: "leg", foot: "leg" };
+function bodySVG(hl, onPick) {
+  const d = el("div", { class: "pic" });
+  d.innerHTML = `<svg viewBox="0 0 200 330" class="bodyfig" role="img" aria-label="Cartoon body">
+<g data-p="leg"><rect x="72" y="192" width="25" height="112" rx="12" class="skin"/><rect x="103" y="192" width="25" height="112" rx="12" class="skin"/></g>
+<g data-p="foot"><ellipse cx="78" cy="309" rx="20" ry="10" class="skin2"/><ellipse cx="122" cy="309" rx="20" ry="10" class="skin2"/></g>
+<g data-p="knee"><circle cx="84.5" cy="250" r="11" class="skin2"/><circle cx="115.5" cy="250" r="11" class="skin2"/></g>
+<g><rect x="68" y="176" width="64" height="30" rx="10" class="shorts"/></g>
+<g data-p="arm"><rect x="36" y="98" width="22" height="96" rx="11" class="skin"/><rect x="142" y="98" width="22" height="96" rx="11" class="skin"/></g>
+<g data-p="hand"><circle cx="47" cy="204" r="14" class="skin2"/><circle cx="153" cy="204" r="14" class="skin2"/></g>
+<g data-p="stomach"><rect x="66" y="134" width="68" height="46" rx="12" class="shirt2"/><circle cx="100" cy="160" r="2.5" class="navel"/></g>
+<g data-p="chest"><rect x="60" y="88" width="80" height="50" rx="16" class="shirt"/></g>
+<g data-p="shoulder"><circle cx="58" cy="98" r="13" class="shirt"/><circle cx="142" cy="98" r="13" class="shirt"/></g>
+<g data-p="neck"><rect x="89" y="70" width="22" height="22" rx="6" class="skin2"/></g>
+<g data-p="head"><circle cx="100" cy="42" r="32" class="skin"/><path d="M68 40 Q66 8 100 8 Q134 8 132 40 Q124 22 100 24 Q76 22 68 40Z" class="hair"/><circle cx="89" cy="44" r="3.5" class="pupil"/><circle cx="111" cy="44" r="3.5" class="pupil"/><path d="M89 56 Q100 64 111 56" class="smile"/></g>
+</svg>`;
+  const svg = d.firstElementChild;
+  if (hl) { const g = svg.querySelector(`[data-p="${hl}"]`); if (g) { g.classList.add("hl"); svg.append(g); } }
+  if (onPick) svg.querySelectorAll("[data-p]").forEach(g => { g.classList.add("pickable"); g.addEventListener("click", e => { e.stopPropagation(); onPick(g.dataset.p, svg); }); });
+  return d;
+}
+const NOUN_TABS = [["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["mix", "Mix"]];
 const TIME_TABS = [["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["mix", "Mix"]];
 
 function faceSVG(hl, onPick) {
@@ -1312,24 +1366,26 @@ function faceSVG(hl, onPick) {
   if (onPick) svg.querySelectorAll("[data-p]").forEach(g => { g.classList.add("pickable"); g.addEventListener("click", e => { e.stopPropagation(); onPick(g.dataset.p, svg); }); });
   return d;
 }
-function clockSVG(h, m) {
+function clockSVG(h, m, noDig) {
   const r = Math.PI / 180, a = (h % 12 + m / 60) * 30 * r, b = m * 6 * r;
   const nums = HOURS.slice(1).map((_, k) => { const t = (k + 1) * 30 * r; return `<text x="${(100 + 72 * Math.sin(t)).toFixed(1)}" y="${(106 - 72 * Math.cos(t)).toFixed(1)}" text-anchor="middle" class="cnum">${k + 1}</text>`; }).join("");
   const d = el("div", { class: "pic" });
   d.innerHTML = `<svg viewBox="0 0 200 200" class="clock" role="img" aria-label="Clock showing ${h}:${String(m).padStart(2, "0")}"><circle cx="100" cy="100" r="92" class="cface"/>${nums}
 <line x1="100" y1="100" x2="${(100 + 45 * Math.sin(a)).toFixed(1)}" y2="${(100 - 45 * Math.cos(a)).toFixed(1)}" class="hh"/>
 <line x1="100" y1="100" x2="${(100 + 70 * Math.sin(b)).toFixed(1)}" y2="${(100 - 70 * Math.cos(b)).toFixed(1)}" class="mh"/><circle cx="100" cy="100" r="5" class="cdot"/></svg>
-<div class="digital">${h}:${String(m).padStart(2, "0")}</div>`;
+${noDig ? "" : `<div class="digital">${h}:${String(m).padStart(2, "0")}</div>`}`;
   return d;
 }
-const MIN_Y = { 0: "en punto", 5: "y cinco", 10: "y diez", 15: "y cuarto", 20: "y veinte", 30: "y media" }, MIN_M = { 40: "menos veinte", 45: "menos cuarto", 50: "menos diez", 55: "menos cinco" };
+const MIN_Y = { 0: "en punto", 5: "y cinco", 10: "y diez", 15: "y cuarto", 20: "y veinte", 25: "y veinticinco", 30: "y media" }, MIN_M = { 35: "menos veinticinco", 40: "menos veinte", 45: "menos cuarto", 50: "menos diez", 55: "menos cinco" };
+const NUMW = { 5: "cinco", 10: "diez", 15: "quince", 20: "veinte", 25: "veinticinco", 30: "treinta", 35: "treinta y cinco", 40: "cuarenta", 45: "cuarenta y cinco", 50: "cincuenta", 55: "cincuenta y cinco" };
 const hLead = (hh, swap) => (hh === 1) !== !!swap ? (hh === 1 ? "Es la una" : `Es las ${HOURS[hh]}`) : (hh === 1 ? "Son la una" : `Son las ${HOURS[hh]}`);
 const nextH = h => h % 12 + 1, prevH = h => h === 1 ? 12 : h - 1, dig = (h, m) => `${h}:${String(m).padStart(2, "0")}`;
 function timeText(h, m, swap) { return m > 30 ? `${hLead(nextH(h), swap)} ${MIN_M[m]}.` : `${hLead(h, swap)} ${MIN_Y[m]}.`; }
 const TIME_RULE = "Es la una for one o'clock, Son las… for every other hour. y cuarto = quarter past, y media = half past, menos cuarto = quarter to (count back from the next hour).";
 function makeTime(focus) {
   const h = 1 + Math.floor(Math.random() * 12);
-  let m = pick([0, 0, 15, 15, 30, 30, 45, 45, 10, 20, 50]);
+  const lv = levelOf("time");
+  let m = pick([[0, 0, 30, 30, 15, 45], [0, 0, 15, 15, 30, 30, 45, 45, 10, 20, 50], [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]][lv]);
   if (focus === "time-menos") m = pick([45, 50, 40]); else if (focus === "time-quarter") m = pick([15, 30, 45]);
   const hs = m > 30 ? nextH(h) : h, correct = timeText(h, m);
   const it = { kind: "tap", type: "choice", topic: "time", stat: "telling the time", focus: focus || null, tested: ["time-hour", "time-es-son"], full: correct, mq: dig(h, m), explain: TIME_RULE };
@@ -1337,7 +1393,7 @@ function makeTime(focus) {
   const esMsg = "Use Es la una only for one o'clock (it's just one hour). Every other hour uses Son las…: son las dos, son las tres.";
   const menosMsg = `With menos you count back from the next hour. At ${dig(h, m)} the next hour is ${HOURS[nextH(h)]}, so: ${correct}`;
   const qMsg = "y cuarto = quarter past (:15), y media = half past (:30), menos cuarto = quarter to (:45).";
-  if (Math.random() < 0.65) {
+  if (lv === 2 ? Math.random() < 0.85 : Math.random() < 0.65) {
     const c = [];
     if (m > 30) c.push({ text: `${hLead(h)} ${MIN_M[m]}.`, tag: "time-menos", msg: menosMsg });
     c.push({ text: timeText(h, m, true), tag: "time-es-son", msg: esMsg });
@@ -1346,8 +1402,16 @@ function makeTime(focus) {
     if (m === 45) c.push({ text: timeText(h, 15), tag: "time-quarter", msg: qMsg });
     c.push({ text: timeText(nextH(h), m), tag: "time-hour", msg: `Look at the short hand for the hour. It's ${dig(h, m)}: ${correct}` });
     c.push({ text: timeText(prevH(h), m), tag: "time-hour", msg: `Look at the short hand for the hour. It's ${dig(h, m)}: ${correct}` });
-    it.lead = "¿Qué hora es?"; it.en = "What time is it?"; it.es = ""; it.pic = () => clockSVG(h, m);
+    it.lead = "¿Qué hora es?"; it.en = "What time is it?"; it.es = ""; it.pic = () => clockSVG(h, m, lv > 0);
     it.options = tapOpts(correct, c, focus);
+    if (lv === 2 && (state.settings.fmt || "mix") !== "tap" && Math.random() < 0.6) {
+      const alts = [];
+      if (m === 0) alts.push(`${hLead(h)}.`);
+      if (m) alts.push(`${hLead(h)} y ${NUMW[m]}.`);
+      const ax = alts.filter(x => norm(x) !== norm(correct)); alts.length = 0; alts.push(...ax);
+      Object.assign(it, { type: "typed", typeMode: "line", answer: correct, alts, wrongs: c, lead: "Read the clock", en: "¿Qué hora es? Type the time in Spanish." });
+      it.explain = TIME_RULE + (alts.length ? ` You can also say: ${alts.join(" or ")}` : "");
+    }
   } else {
     const c = [];
     if (m > 30) c.push({ text: dig(nextH(h), m), tag: "time-menos", msg: menosMsg });
@@ -1363,22 +1427,24 @@ function makeTime(focus) {
 }
 const GENDER_WHY = { el: "masculine, one", la: "feminine, one", los: "masculine, more than one", las: "feminine, more than one" };
 function makeVocab(set, focus) {
-  const list = NOUNSETS[set], tag = "vocab-" + set;
-  const w = pickFresh(list, "voc" + set), others = shuffle(list.filter(x => x !== w)).slice(0, 3);
+  const list = nounList(set), tag = "vocab-" + set;
+  const w = pickFresh(list, "voc" + set + subOf(set)), others = shuffle(list.filter(x => x !== w && x[1] !== w[1])).slice(0, 3);
+  const isBodyPic = set === "body" && w[3];
   const it = { kind: "tap", type: "choice", topic: "nouns", stat: WORDSET_NAME[set], focus: focus || null, tested: [tag], full: w[0], mq: w[1], explain: `${w[0]} = ${w[1]}` };
   const emoji = set !== "face" && w[2] ? w[2] + " " : "";
-  let kind = set === "face" ? pick(["pic", "pic", "tap", "tap", "gender", "en2es", "es2en"]) : pick(["en2es", "en2es", "es2en", "gender"]);
+  let kind = set === "face" || isBodyPic ? pick(["pic", "pic", "tap", "tap", "gender", "en2es", "es2en"]) : pick(["en2es", "en2es", "es2en", "gender"]);
   if (focus === "vocab-gender") kind = "gender";
   if (kind === "gender") {
     const noun = w[0].replace(/^(el|la|los|las) /, ""), art = w[0].split(" ")[0];
     it.lead = "el, la, los or las?"; it.es = "___ " + noun; it.en = w[1]; it.noGloss = true; it.tested = ["vocab-gender"];
     it.options = ["el", "la", "los", "las"].map(a => a === art ? { text: a, correct: true } : { text: a, tag: "vocab-gender", msg: `It's ${w[0]} (${GENDER_WHY[art]}). Learn each word together with its el or la.` });
-    if (set === "face") it.pic = () => faceSVG(w[2]);
+    if (set === "face") it.pic = () => faceSVG(w[2]); else if (isBodyPic) it.pic = () => bodySVG(w[3]);
   } else if (kind === "pic") {
-    it.lead = "What is the highlighted part?"; it.es = ""; it.en = ""; it.pic = () => faceSVG(w[2]);
-    it.options = tapOpts(w[0], others.map(o => ({ text: o[0], tag, msg: `${cap(o[0])} means ${o[1]}. The highlighted part is ${w[0]} (${w[1]}).` })), focus);
+    const po = isBodyPic ? shuffle(list.filter(x => x !== w && x[3])).slice(0, 3) : others;
+    it.lead = "What is the highlighted part?"; it.es = ""; it.en = ""; it.pic = () => isBodyPic ? bodySVG(w[3]) : faceSVG(w[2]);
+    it.options = tapOpts(w[0], po.map(o => ({ text: o[0], tag, msg: `${cap(o[0])} means ${o[1]}. The highlighted part is ${w[0]} (${w[1]}).` })), focus);
   } else if (kind === "tap") {
-    it.type = "pictap"; it.lead = "Tap it on the face"; it.es = w[0]; it.en = ""; it.noGloss = true; it.target = w[2];
+    it.type = "pictap"; it.lead = isBodyPic ? "Tap it on the body" : "Tap it on the face"; it.es = w[0]; it.en = ""; it.noGloss = true; it.target = isBodyPic ? w[3] : w[2]; it.picKind = isBodyPic ? "body" : "face";
   } else if (kind === "es2en") {
     it.lead = "What does this mean?"; it.es = w[0]; it.en = ""; it.noGloss = true;
     it.options = tapOpts(w[1], others.map(o => ({ text: o[1], tag, msg: `"${o[1]}" is ${o[0]}. ${cap(w[0])} means ${w[1]}.` })), focus);
@@ -1458,7 +1524,7 @@ function renderTap(box, it) {
   if (it.type === "pictap") {
     box.append(el("div", { class: "es" }, it.es, speakBtns(it.es)));
     const svg = box.querySelector(".pic svg") || null;
-    const p = faceSVG(null, key => answerPic(key)); box.append(p);
+    const p = (it.picKind === "body" ? bodySVG : faceSVG)(null, key => answerPic(key)); box.append(p);
     return;
   }
   if (it.es) {
@@ -1472,8 +1538,9 @@ function answerPic(key) {
   const it = cur, ok = key === it.target || (it.target === "mouth" && (key === "lips" || key === "teeth")), svg = $("#quiz .pic svg");
   const g = svg.querySelector(`[data-p="${it.target}"]`); g.classList.add("hl-ok"); svg.append(g);
   if (!ok) { const b = svg.querySelector(`[data-p="${key}"]`); b.classList.add("hl-bad"); }
-  const tw = FACE.find(f => f[2] === it.target), cw = FACE.find(f => f[2] === key);
-  const errs = ok ? [] : [{ tag: "vocab-face", msg: `You tapped ${cw[0]} (${cw[1]}). ${cap(tw[0])} means ${tw[1]}, shown in green.` }];
+  const isB = it.picKind === "body", PL = isB ? BODY_MAIN : FACE, ki = isB ? 3 : 2;
+  const tw = PL.find(f => f[ki] === it.target), cw = PL.find(f => f[ki] === key);
+  const errs = ok ? [] : [{ tag: isB ? "vocab-body" : "vocab-face", msg: `You tapped ${cw[0]} (${cw[1]}). ${cap(tw[0])} means ${tw[1]}, shown in green.` }];
   record(it, ok, errs, cw[0], it.full); showFeedback(ok, errs, [], it.full, it);
 }
 
@@ -1528,8 +1595,10 @@ function renderNounsPanel() {
   } else if (sel === "mix") {
     box.append(el("h2", {}, "All the nouns, mixed"), el("p", {}, "Face, people, animals, kitchen, bedroom and everyday things."));
   } else {
-    const title = { people: "La gente (people)", animals: "Los animales (animals)", kitchen: "La cocina (the kitchen)", bedroom: "El dormitorio (the bedroom)", things: "Cosas de todos los días (everyday things)" }[sel];
-    const cards = NOUNSETS[sel].map(w => {
+    const title = { body: "El cuerpo (the body)", people: "La gente (people)", animals: "Los animales (animals)", kitchen: "La cocina (the kitchen)", bedroom: "El dormitorio (the bedroom)", things: "Cosas de todos los días (everyday things)" }[sel];
+    const list = nounList(sel), sub = NSUB[sel] ? subOf(sel) : null;
+    const setSub = k => { (state.settings.nsub || (state.settings.nsub = {}))[sel] = k; scheduleSave(); renderNounsPanel(); if (topic === "nouns") { source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } };
+    const cards = list.map(w => {
       const art = w[0].split(" ")[0], m = art === "el" || art === "los";
       const c = el("button", { class: "ncard", type: "button" }, w[2] ? el("span", { class: "em" }, w[2]) : null, el("span", { class: "enw" }, w[1]));
       c.addEventListener("click", () => {
@@ -1540,7 +1609,20 @@ function renderNounsPanel() {
       });
       return c;
     });
-    box.append(el("h2", {}, title), el("p", {}, "Tap a card to see and hear the Spanish word. Blue = el/los (masculine), orange = la/las (feminine). Can you guess it before you tap?"),
+    box.append(el("h2", {}, title));
+    if (sub) {
+      box.append(el("p", {}, "Start with the main words, then pick a group to get more specific. The quiz below uses the group you pick."),
+        el("div", { class: "wchips subchips" }, NSUB[sel].map(([k, n]) => el("button", { class: "chip", type: "button", "aria-pressed": String(sub === k), onclick: () => setSub(k) }, n))));
+    }
+    if (sel === "body" && sub === "general") {
+      const label = el("div", { class: "es", style: "font-size:22px;min-height:1.4em;text-align:center" }, "Tap a part of the body");
+      const more = el("div", { class: "actions", style: "justify-content:center" });
+      const show = (key, svg) => { svg.querySelectorAll(".hl").forEach(g => g.classList.remove("hl")); const g = svg.querySelector(`[data-p="${key}"]`); g.classList.add("hl"); const w = BODY_MAIN.find(f => f[3] === key); label.textContent = `${w[0]} · ${w[1]}`; say(w[0]);
+        const sk = AREA_SUB[key]; more.replaceChildren(el("button", { class: "btn ghost", onclick: () => setSub(sk) }, `More words: ${NSUB.body.find(x => x[0] === sk)[1]} →`)); };
+      box.append(bodySVG(null, show), label, more);
+    }
+    if (sel === "body" && sub === "head") box.append(el("p", {}, "Want the picture? The face tab has a face you can tap."));
+    box.append(el("p", {}, "Tap a card to see and hear the Spanish word. Blue = el/los (masculine), orange = la/las (feminine). Can you guess it before you tap?"),
       el("div", { class: "cards" }, cards),
       el("div", { class: "actions" }, el("button", { class: "link", onclick: () => renderNounsPanel() }, "Hide them all again")));
   }
@@ -1562,7 +1644,7 @@ function renderTimePanel() {
 }
 function applyXSettings() {
   document.querySelectorAll("#qwmodes button").forEach(b => b.setAttribute("aria-pressed", b.dataset.q === (state.settings.qw || "mix")));
-  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderFmtSegs(); renderQBPanel();
+  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
 }
 
 /* ---------- gustar: build the question from tiles (worksheet style) ---------- */
@@ -1696,7 +1778,7 @@ Object.assign(GLOSS, { "nosotras": "we (all women)", "ellas": "they (all women)"
   "papas": "potatoes", "fritas": "fried", "conciertos": "concerts", "flores": "flowers", "aguacates": "avocados", "ver": "to watch", "cantar": "to sing", "jugar": "to play", "escuchar": "to listen to",
   "trabajar": "to work", "aprender": "to learn", "dormir": "to sleep", "siesta": "nap", "quién": "who", "familia": "family", "tus": "your",
 });
-for (const [es, en] of [...FACE, ...KITCHEN, ...PEOPLE, ...ANIMALS, ...BEDROOM, ...THINGS2]) GLOSS[es.split(" ").slice(1).join(" ")] = GLOSS[es.split(" ").slice(1).join(" ")] || en;
+for (const [es, en] of [...FACE, ...BODY, ...KITCHEN, ...PEOPLE, ...ANIMALS, ...BEDROOM, ...THINGS2]) GLOSS[es.split(" ").slice(1).join(" ")] = GLOSS[es.split(" ").slice(1).join(" ")] || en;
 for (const [es, en] of [...DAYS, ...MONTHS]) GLOSS[es] = en;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
@@ -1704,8 +1786,27 @@ SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`
 /* ----- formats for the new topics: tap / type / build ----- */
 const FMT_NAMES = [["mix", "Mix"], ["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 const NO_LOWER = new Set([...NAMES.map(n => n.toLowerCase()), "lima", "bogotá"]);
-const LEVEL_NAME = ["⭐ Level 1 · tap answers", "⭐⭐ Level 2 · more typing", "⭐⭐⭐ Level 3 · type and build"];
-function levelOf(t) { const k = state.skill && state.skill[t]; if (!k || k.n < 8) return 0; return k.v >= 0.85 ? 2 : k.v >= 0.65 ? 1 : 0; }
+const LEVEL_NAME = ["⭐ Easy", "⭐⭐ Medium", "⭐⭐⭐ Hard"];
+const DIFF_NAMES = [["auto", "Auto (grows with you)"], ["0", "Easy"], ["1", "Medium"], ["2", "Hard"]];
+const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"]];
+const DIFF_HELP = { time: "Hard: no digital time, any 5 minutes, and you type the time yourself." };
+function diffOf(t) { const d = (state.settings.diff || {})[t]; return d == null ? "auto" : d; }
+function renderDiffSegs() {
+  for (const [pid, t] of DIFF_PANELS) {
+    const panel = document.getElementById(pid); if (!panel) continue;
+    let seg = panel.querySelector(".diffseg");
+    if (!seg) {
+      seg = el("div", { class: "seg diffseg" });
+      const row = el("div", { class: "row" }, el("span", { class: "lbl" }, "Difficulty"), seg);
+      const anchor = panel.querySelector(".fmtseg") ? panel.querySelector(".fmtseg").parentNode : panel.querySelector("#levels") ? panel.querySelector("#levels").parentNode : null;
+      anchor ? anchor.after(row) : panel.prepend(row);
+    }
+    const cur = diffOf(t);
+    seg.replaceChildren(...DIFF_NAMES.map(([k, n]) => el("button", { "aria-pressed": String(cur === k), title: k === "auto" ? "Starts easy and gets harder as you get more right" : DIFF_HELP[t] || "",
+      onclick: () => { (state.settings.diff || (state.settings.diff = {}))[t] = k; scheduleSave(); renderDiffSegs(); source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } }, n)));
+  }
+}
+function levelOf(t) { const d = diffOf(t); if (d !== "auto") return +d; const k = state.skill && state.skill[t]; if (!k || k.n < 8) return 0; return k.v >= 0.85 ? 2 : k.v >= 0.65 ? 1 : 0; }
 function applyFormat(it, fmts) {
   if (!it || it.kind !== "tap" || it.type !== "choice" || !it.options) return it;
   const f = state.settings.fmt || "mix", lv = levelOf(it.topic), W = [[7, 2, 1], [4, 3, 3], [2, 4, 4]][lv];
@@ -1732,7 +1833,7 @@ function applyFormat(it, fmts) {
   return it;
 }
 function renderTyped(box, it) {
-  box.append(el("p", { class: "en" }, el("b", {}, it.typeMode === "blank" ? "Type the missing part" : "Type it in Spanish"), it.en ? " · " + it.en : ""));
+  box.append(el("p", { class: "en" }, el("b", {}, it.typeMode === "blank" ? "Type the missing part" : it.lead === "Read the clock" ? it.lead : "Type it in Spanish"), it.en ? " · " + it.en : ""));
   if (it.pic) box.append(it.pic());
   let input;
   if (it.typeMode === "blank") {
@@ -1740,7 +1841,7 @@ function renderTyped(box, it) {
     input = el("input", { class: "blank", id: "answer", type: "text", autocomplete: "off", autocapitalize: "off", spellcheck: "false", "aria-label": "Your answer", size: Math.max(6, it.answer.length + 2) });
     box.append(el("div", { class: "es" }, words(before), input, words(after), speakBtns(() => answered ? it.full : before + " … " + after)));
   } else {
-    box.append(el("div", { class: "es" }, it.es));
+    if (it.es) box.append(el("div", { class: "es" }, it.es));
     input = el("input", { class: "long", id: "answer", type: "text", autocomplete: "off", autocapitalize: "sentences", spellcheck: "false", "aria-label": "Your Spanish", placeholder: "Escribe en español…" });
     box.append(input);
   }
@@ -1750,12 +1851,12 @@ function submitTyped(raw) {
   const it = cur;
   if (answered || !lowerKeep(raw)) return;
   answered = true; lockInputs();
-  const exact = lowerKeep(raw) === lowerKeep(it.answer), loose = norm(raw) === norm(it.answer);
+  const exact = [it.answer, ...(it.alts || [])].some(a => lowerKeep(raw) === lowerKeep(a)), loose = [it.answer, ...(it.alts || [])].some(a => norm(raw) === norm(a));
   let errs = [], notes = [];
   if (loose && !exact) notes.push({ tag: "accent", msg: `Watch the accents: ${it.answer}` });
   if (!loose) {
     const w = it.wrongs.find(o => norm(o.text) === norm(raw));
-    errs = [w ? { tag: w.tag, msg: w.msg } : { tag: it.tested[0], msg: `The answer is ${it.answer}. ${it.explain || ""}` }];
+    errs = [w ? { tag: w.tag, msg: w.msg } : { tag: it.tested[0], msg: `The answer is ${it.answer.replace(/\.$/, "")}.` }];
   }
   record(it, loose, errs, raw, it.full); showFeedback(loose, errs, notes, it.full, it);
 }
@@ -1766,7 +1867,7 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["gustar", "gustar"], ["qw", "Question words"], ["verbs", "Verbs"], ["se", "ser vs estar"], ["face", "The face"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
+const QB_TOPICS = [["gustar", "gustar"], ["qw", "Question words"], ["verbs", "Verbs"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
@@ -1899,7 +2000,7 @@ function insert(c) {
 }
 function scoreLine() {
   const lt = topic === "mixq" ? null : levelOf(topic === "gustar" ? "gustar" : topic);
-  if (source.kind === "built") return el("span", { class: "score" }, (lt != null && (topic !== "gustar" || state.settings.level === "starter") ? LEVEL_NAME[lt] + " · " : "") + `Question ${Math.min(round.n + 1, ROUND)} of ${ROUND}` + (round.n ? ` · ${round.right} right` : ""));
+  if (source.kind === "built") return el("span", { class: "score" }, (lt != null && (topic !== "gustar" || state.settings.level === "starter") ? LEVEL_NAME[lt] + (diffOf(topic) === "auto" ? " (auto)" : "") + " · " : "") + `Question ${Math.min(round.n + 1, ROUND)} of ${ROUND}` + (round.n ? ` · ${round.right} right` : ""));
   return el("span", { class: "score" }, session.total ? `This session ${session.right}/${session.total}` + (session.streak > 1 ? ` · streak ${session.streak}` : "") : "");
 }
 function renderQuiz() {
