@@ -199,17 +199,17 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
   <header class="top">
     <div class="brand">
       <h1>Repaso <span class="me">de</span> español</h1>
-      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs, ser vs estar, gustar, nouns or the time.</p>
+      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns or the time.</p>
     </div>
     <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span></div>
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-mixq" aria-selected="false">⭐ Build a quiz</button>
+    <button class="tab" role="tab" id="tab-mixq" aria-selected="true">⭐ Build a quiz</button>
     <button class="tab" role="tab" id="tab-qw" aria-selected="false">Question words</button>
     <button class="tab" role="tab" id="tab-verbs" aria-selected="false">Verbs</button>
     <button class="tab" role="tab" id="tab-se" aria-selected="false">ser vs estar</button>
-    <button class="tab" role="tab" id="tab-built" aria-selected="true">gustar</button>
+    <button class="tab" role="tab" id="tab-built" aria-selected="false" hidden>gustar</button>
     <button class="tab" role="tab" id="tab-nouns" aria-selected="false">Nouns</button>
     <button class="tab" role="tab" id="tab-time" aria-selected="false">Time</button>
     <button class="tab" role="tab" id="tab-custom" aria-selected="false">Make your own</button>
@@ -618,7 +618,7 @@ function makeStarter(force = {}) {
   freshNames();
   const th = pickFresh(S_THINGS, "sthing"), v = th.num === "p" ? "gustan" : "gusta", w = th.num === "p" ? "gusta" : "gustan";
   const focus = force.focus;
-  if (state.settings.gq === "build" || (focus !== "answer-switch" && Math.random() < [0.12, 0.3, 0.45][levelOf("gustar")])) return makeBuild(focus);
+  if (focus !== "answer-switch" && Math.random() < [0.12, 0.3, 0.45][levelOf(topic === "verbs" ? "verbs" : "gustar")]) return makeBuild(focus);
   let kind = pick(["fill", "fill", "fillq", "answer", "answer", "ask"]);
   if (focus === "answer-switch") kind = "answer";
   if (focus === "agreement" || focus === "le-les") kind = pick(["fill", "fillq"]);
@@ -719,7 +719,8 @@ function makeItem(force = {}) {
   return it;
 }
 function pickFocus() {
-  const keys = topic === "gustar" ? BUILT_TAGS : topic === "mixq" ? [...BUILT_TAGS, ...Object.keys(XTOPIC)] : Object.keys(XTOPIC).filter(k => XTOPIC[k] === topic);
+  let keys = topic === "gustar" ? BUILT_TAGS : topic === "mixq" ? [...BUILT_TAGS, ...Object.keys(XTOPIC)] : Object.keys(XTOPIC).filter(k => XTOPIC[k] === topic);
+  if (topic === "verbs" && (!verbSel().length || verbSel().includes("gustar"))) keys = [...keys, ...BUILT_TAGS.filter(k => !XTOPIC[k])];
   const c = Object.entries(state.stats).filter(([k, s]) => keys.includes(k) && s.ema > 0.15);
   if (!c.length) return null;
   let r = Math.random() * c.reduce((a, [, s]) => a + s.ema, 0);
@@ -1187,9 +1188,13 @@ function vPerson(onlyI) {
 const OTHER_P = { 0: [2, 1], 1: [2, 0], 2: [4, 0], 3: [4, 0], 4: [2, 3] };
 const vChunk = (V, j) => (V.refl ? RP[j] + " " : "") + V.f[j];
 const vTable = (inf, V) => `${inf}${V.ch ? " (" + V.ch + ")" : ""}: yo ${vChunk(V, 0)}, tú ${vChunk(V, 1)}, él/ella/usted ${vChunk(V, 2)}, nosotros ${vChunk(V, 3)}, ellos/ustedes ${vChunk(V, 4)}.`;
+const VERB_ALL = [...Object.keys(V2 || {}), "gustar"];
 function makeVerb(focus) {
-  const sel = verbSel();
-  let names = sel.length ? sel : Object.keys(V2);
+  const sel = verbSel(), gFocus = !!(focus && BUILT_TAGS.includes(focus) && !XTOPIC[focus]);
+  const first = gFocus ? "gustar" : pick(sel.length ? sel : [...VERB_ALL, "gustar"]);
+  if (first === "gustar") { const it = makeStarter({ focus: gFocus ? focus : null }); it.stat = "gustar"; it.topic = "verbs"; return it; }
+  let names = (sel.length ? sel : Object.keys(V2)).filter(x => V2[x]);
+  if (!names.length) names = Object.keys(V2);
   if (names.length > 1 && focus) { const f = names.filter(v => (/^stem/.test(focus) && V2[v].ch) || (/^refl/.test(focus) && V2[v].refl)); if (f.length) names = f; }
   const inf = pick(names), V = V2[inf];
   let P = vPerson();
@@ -1553,13 +1558,13 @@ function answerPic(key) {
 /* ----- panels for these topics ----- */
 function verbSel() {
   const v = state.settings.verb2;
-  return (Array.isArray(v) ? v : (v && v !== "mix" ? [v] : [])).filter(x => V2[x]);
+  return (Array.isArray(v) ? v : (v && v !== "mix" ? [v] : [])).filter(x => V2[x] || x === "gustar");
 }
 function renderVerbPanel() {
   const st = state.settings, chosen = verbSel(), vc = $("#v2chips"); vc.replaceChildren();
   const setV = list => { st.verb2 = list; scheduleSave(); renderVerbPanel(); if (topic === "verbs") { source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } };
   vc.append(el("button", { class: "chip", "aria-pressed": String(!chosen.length), onclick: () => setV([]) }, "All verbs"));
-  for (const v of Object.keys(V2)) vc.append(el("button", { class: "chip", "aria-pressed": String(chosen.includes(v)), title: "Tap to add or remove",
+  for (const v of VERB_ALL) vc.append(el("button", { class: "chip", "aria-pressed": String(chosen.includes(v)), title: "Tap to add or remove",
     onclick: () => setV(chosen.includes(v) ? chosen.filter(x => x !== v) : [...chosen, v]) }, (chosen.includes(v) ? "✓ " : "") + v));
   const pc = $("#v2people"); if (pc) { pc.replaceChildren(); const ps = vPeopleSel();
     const setP = list => { st.vpeople2 = list.length ? list : VPEOPLE_DEFAULT; scheduleSave(); renderVerbPanel(); if (topic === "verbs") { source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } };
@@ -1569,6 +1574,7 @@ function renderVerbPanel() {
   vc.append(el("span", { class: "speech-note" }, chosen.length ? `Practising ${chosen.length} verb${chosen.length > 1 ? "s" : ""}. Tap more to add them.` : "Tap verbs to pick your own set."));
   const box = $("#v2cheat"); box.replaceChildren();
   const sel = chosen.length === 1 ? chosen[0] : "mix";
+  if (sel === "gustar") { box.innerHTML = $("#cheat").innerHTML; return; }
   if (sel !== "mix" && V2[sel]) {
     const V = V2[sel];
     box.append(el("h2", {}, `${sel} = ${V.m}`), el("div", { class: "cheat-grid" }, PERS.map((p, j) => el("div", {}, p + " ", el("b", { class: j !== 3 && V.ch ? "pr" : "vb" }, vChunk(V, j))))));
@@ -1873,12 +1879,13 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["gustar", "gustar"], ["qw", "Question words"], ["verbs", "Verbs"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
   if (!Array.isArray(q.topics)) q.topics = QB_TOPICS.map(t => t[0]);
   if (!Array.isArray(q.verbs)) q.verbs = [];
+  if (q.topics.includes("gustar")) { q.topics = q.topics.filter(t => t !== "gustar"); if (!q.topics.includes("verbs")) { q.topics.push("verbs"); q.verbs = ["gustar"]; } else if (q.verbs.length && !q.verbs.includes("gustar")) q.verbs.push("gustar"); }
   if (!Array.isArray(q.fmts) || !q.fmts.length) q.fmts = QB_FMTS.map(f => f[0]);
   return q;
 }
@@ -1912,7 +1919,7 @@ function renderQBPanel() {
     ...QB_TOPICS.map(([k, n]) => chip(q.topics.includes(k), n, () => { toggle(q.topics, k, false); changed(); })),
     el("button", { class: "link", onclick: () => { q.topics = allT ? [] : QB_TOPICS.map(t => t[0]); changed(); } }, allT ? "Untick all" : "Tick all")]));
   if (q.topics.includes("verbs")) box.append(group("Which verbs", q.verbs.length ? `(${q.verbs.length} ticked)` : "(none ticked = all verbs)", [
-    ...Object.keys(V2).map(v => chip(q.verbs.includes(v), v, () => { toggle(q.verbs, v, false); changed(); })),
+    ...VERB_ALL.map(v => chip(q.verbs.includes(v), v, () => { toggle(q.verbs, v, false); changed(); })),
     q.verbs.length ? el("button", { class: "link", onclick: () => { q.verbs = []; changed(); } }, "Use all verbs") : null]));
   box.append(group("Formats", allF ? "(all ticked)" : "", QB_FMTS.map(([k, n]) => chip(q.fmts.includes(k), n, () => { toggle(q.fmts, k, true); changed(); }))));
   const tn = allT ? "everything" : q.topics.map(k => QB_TOPICS.find(t => t[0] === k)[1]).join(", ");
@@ -2020,7 +2027,7 @@ function renderQuiz() {
       el("div", { class: "actions" },
         source.missed.length ? el("button", { class: "btn", onclick: () => startSet(set.id, null, true) }, `Retry the ${source.missed.length} I missed`) : null,
         el("button", { class: source.missed.length ? "btn ghost" : "btn", onclick: () => startSet(set.id) }, "Run the whole set again"),
-        el("button", { class: "btn ghost", onclick: () => { source = { kind: "built" }; selectTab("built"); } }, "Back to practice")));
+        el("button", { class: "btn ghost", onclick: () => { source = { kind: "built" }; selectTab("mixq"); } }, "Back to practice")));
     return;
   }
   const eb = el("div", { class: "eyebrow" });
@@ -2028,7 +2035,7 @@ function renderQuiz() {
     eb.append(el("span", { class: "tag" }, TOPIC_TITLE[it.topic] || "Practice"), it.stat && it.topic !== "qw" && it.topic !== "se" ? el("span", { class: "tag" }, it.stat) : null,
       it.focus && TAGS[it.focus] ? el("span", { class: "tag focus" }, "Practising: " + TAGS[it.focus]) : null, scoreLine());
   } else if (it.kind === "starter") {
-    eb.append(el("span", { class: "tag" }, it.type === "build" ? "Make the question" : "Just starting"), it.focus && TAGS[it.focus] ? el("span", { class: "tag focus" }, "Practising: " + TAGS[it.focus]) : null, scoreLine());
+    eb.append(el("span", { class: "tag" }, "Verbs"), el("span", { class: "tag" }, it.type === "build" ? "gustar · make the question" : "gustar"), it.focus && TAGS[it.focus] ? el("span", { class: "tag focus" }, "Practising: " + TAGS[it.focus]) : null, scoreLine());
   } else if (it.kind === "built") {
     eb.append(el("span", { class: "tag" }, { fill: "Fill the blank", choice: "Pick the right one", translate: "Translate" }[it.type]),
       el("span", { class: "tag" }, it.verb), it.tense !== "pres" ? el("span", { class: "tag" }, TENSE_NAME[it.tense]) : null,
@@ -2218,7 +2225,9 @@ function practise(tag) {
   if (tag === "lowercase" && state.settings.timeset === "time") state.settings.timeset = "days";
   if (t === "verbs" && /^(stem|refl)/.test(tag)) state.settings.verb2 = [];
   if (t === "qw") state.settings.qw = "mix";
-  topic = t; source = { kind: "built" }; newRound(); focusQueue.tag = tag; focusQueue.left = ROUND; selectTab(t === "gustar" ? "built" : t, false); applySettings(); next();
+  if (t === "gustar") { const vs = verbSel(); if (vs.length && !vs.includes("gustar")) state.settings.verb2 = [...vs, "gustar"]; }
+  const tt = t === "gustar" ? "verbs" : t;
+  topic = tt; source = { kind: "built" }; newRound(); focusQueue.tag = tag; focusQueue.left = ROUND; selectTab(tt, false); applySettings(); next();
   $("#quiz").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 function renderSets() {
@@ -2250,7 +2259,7 @@ $("#levels").addEventListener("click", e => { const b = e.target.closest("button
 $("#tenses").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.tenses = b.dataset.t; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "custom"];
 function selectTab(which, reset = true) {
-  if (!TABS.includes(which)) which = "built";
+  if (!TABS.includes(which) || which === "built") which = "mixq";
   for (const t of TABS) { $("#tab-" + t).setAttribute("aria-selected", t === which); $("#panel-" + t).hidden = t !== which; }
   if (which !== "custom") {
     const nt = which === "built" ? "gustar" : which;
