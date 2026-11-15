@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Repaso Spanish Quiz</title>
+<title>Repaso Spanish Practice</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -198,18 +198,18 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <h1>Repaso <span class="me">me</span> gusta</h1>
-      <p>Quizzes that name the exact mistake you made and keep a list of what to work on: gustar, question words, everyday verbs, ser vs estar, nouns and the time. Build your own mix with ⭐ Build a quiz. All free.</p>
+      <h1>Repaso <span class="me">de</span> español</h1>
+      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs, ser vs estar, gustar, nouns or the time.</p>
     </div>
     <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span></div>
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-built" aria-selected="true">Gustar</button>
     <button class="tab" role="tab" id="tab-mixq" aria-selected="false">⭐ Build a quiz</button>
     <button class="tab" role="tab" id="tab-qw" aria-selected="false">Question words</button>
     <button class="tab" role="tab" id="tab-verbs" aria-selected="false">Verbs</button>
     <button class="tab" role="tab" id="tab-se" aria-selected="false">ser vs estar</button>
+    <button class="tab" role="tab" id="tab-built" aria-selected="true">gustar</button>
     <button class="tab" role="tab" id="tab-nouns" aria-selected="false">Nouns</button>
     <button class="tab" role="tab" id="tab-time" aria-selected="false">Time</button>
     <button class="tab" role="tab" id="tab-custom" aria-selected="false">Make your own</button>
@@ -2281,7 +2281,7 @@ function switchProfile(name) {
   profile = name; lsSet("repaso.current", name);
   state = blank(); try { const raw = lsGet(storeKey()); if (raw) state = Object.assign(blank(), JSON.parse(raw)); } catch {}
   if (!state.skill) state.skill = {};
-  applySettings(); renderSide(); renderSets(); renderWho(); selectTab(state.settings.tab || "built", false); source = { kind: "built" }; newRound(); next();
+  applySettings(); renderSide(); renderSets(); renderWho(); selectTab(state.settings.tab || "mixq", false); source = { kind: "built" }; newRound(); next();
 }
 function renderWho() {
   const w = $("#who"); w.replaceChildren(); if (HAS_CLAUDE) return;
@@ -2319,7 +2319,7 @@ if (!HAS_CLAUDE) { const ct = $("#tab-custom"); if (ct) ct.hidden = true; $("#sy
 
 /* ---------- boot ---------- */
 window.__repaso = { makeItem, makeBuild, checkBuild, makeX, setTopic: t => (topic = t), checkFill, checkTranslate, spanish, english, expectedBlank, buildOptions, state: () => state };
-applySettings(); renderSide(); renderSets(); renderWho(); selectTab(state.settings.tab === "custom" && !HAS_CLAUDE ? "built" : (state.settings.tab || "built"), false); next();
+applySettings(); renderSide(); renderSets(); renderWho(); selectTab(state.settings.tab === "custom" && !HAS_CLAUDE ? "mixq" : (state.settings.tab || "mixq"), false); next();
 showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });

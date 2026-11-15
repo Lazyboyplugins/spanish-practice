@@ -1,4 +1,4 @@
-# Spanish practice (Repaso)
+# Repaso de español
 
 Free, beginner-friendly Spanish quizzes for Latin American Spanish. Everything runs in the browser: no accounts, no servers, no API keys.
 
