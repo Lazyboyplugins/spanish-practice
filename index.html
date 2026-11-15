@@ -160,6 +160,11 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 .bline .tile{background:var(--accent-soft);border-color:var(--accent)}
 .pic{display:flex;flex-direction:column;align-items:center;gap:4px}
 .pic svg{width:min(340px,86vw);height:auto;overflow:visible}
+#whogate{position:fixed;inset:0;z-index:50;background:var(--bg,#fff);display:flex;align-items:center;justify-content:center;padding:24px 16px;overflow:auto}
+#whogate .box{max-width:420px;width:100%;text-align:center}#whogate h1{font-size:30px;margin:0 0 6px}#whogate p{color:var(--muted);margin:0 0 20px}
+#whogate .people{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}#whogate .person{font:inherit;font-size:20px;font-weight:600;padding:16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+#whogate .person.last{border-color:var(--accent);background:var(--accent-soft)}#whogate .person small{display:block;font-size:12px;font-weight:400;color:var(--muted)}
+#whogate .add{display:flex;gap:8px}#whogate input{flex:1;min-width:0;font:inherit;font-size:17px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .pic svg.clock{width:min(190px,56vw)}.pic svg.bodyfig{width:min(230px,60vw)}.shirt{fill:#7fb2e5;stroke:#2c5a8a;stroke-width:2}.shirt2{fill:#a9cdf0;stroke:#2c5a8a;stroke-width:2}.shorts{fill:#5b6b7f;stroke:#333;stroke-width:2}.navel{fill:#7a4b2e}.smile{fill:none;stroke:#7a4b2e;stroke-width:2.5;stroke-linecap:round}.subchips{margin:6px 0 10px}
 .digital{font-family:var(--display);font-size:22px;color:var(--muted)}
 .skin{fill:#f3c6a0;stroke:#7a4b2e;stroke-width:2}.skin2{fill:#e7b189;stroke:#7a4b2e;stroke-width:2}.hair{fill:#4a2f1d}
@@ -2286,8 +2291,26 @@ function renderWho() {
     inp.addEventListener("keydown", e => { if (e.key === "Enter") go(); });
     w.append(el("span", { class: "speech-note" }, "Who's practising?"), ...profiles.map(p => el("button", { class: "chip", onclick: () => switchProfile(p) }, p)), inp, el("button", { class: "chip", onclick: go }, "Start"));
   } else {
-    w.append(el("span", { class: "pill ok" }, "👤 " + profile), el("button", { class: "link", onclick: () => { profile = ""; lsSet("repaso.current", ""); renderWho(); } }, "Switch person"));
+    w.append(el("span", { class: "pill ok" }, "👤 " + profile), el("button", { class: "link", onclick: () => showWhoGate() }, "Switch person"));
   }
+}
+function showWhoGate() {
+  if (HAS_CLAUDE) return;
+  const old = $("#whogate"); if (old) old.remove();
+  const last = lsGet("repaso.current") || "";
+  const close = () => { gate.remove(); document.body.style.overflow = ""; };
+  const pickP = n => { close(); if (n !== profile || !lsGet("repaso.current")) switchProfile(n); else { renderWho(); } };
+  const inp = el("input", { type: "text", placeholder: "Type your name", "aria-label": "Your name", maxlength: "20", autocomplete: "off" });
+  const add = () => { const n = inp.value.trim().slice(0, 20); if (n) { close(); switchProfile(n); } else inp.focus(); };
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") add(); });
+  const list = [...profiles].sort((a, b) => (b === last) - (a === last));
+  const gate = el("div", { id: "whogate", role: "dialog", "aria-modal": "true", "aria-label": "Who's practising?" }, el("div", { class: "box" },
+    el("h1", {}, "¡Hola! 👋"), el("p", {}, profiles.length ? "Who's practising today? Tap your name." : "Who's practising? Type your name to start. Each person gets their own progress."),
+    profiles.length ? el("div", { class: "people" }, list.map(n => el("button", { class: "person" + (n === last ? " last" : ""), type: "button", onclick: () => pickP(n) }, n, n === last ? el("small", {}, "practised last") : null))) : null,
+    el("div", { class: "add" }, inp, el("button", { class: "btn", type: "button", onclick: add }, profiles.length ? "Add" : "Start")),
+    profiles.length ? el("p", { style: "margin:12px 0 0;font-size:13px" }, "Someone new? Type their name and press Add.") : null));
+  document.body.append(gate); document.body.style.overflow = "hidden";
+  if (!profiles.length) setTimeout(() => inp.focus(), 50);
 }
 $("#exp").addEventListener("click", () => {
   const blob = new Blob([JSON.stringify({ app: "repaso", name: profile || "", saved: new Date().toISOString(), state }, null, 1)], { type: "application/json" });
@@ -2307,6 +2330,7 @@ if (!HAS_CLAUDE) { const ct = $("#tab-custom"); if (ct) ct.hidden = true; $("#sy
 /* ---------- boot ---------- */
 window.__repaso = { makeItem, makeBuild, checkBuild, makeX, setTopic: t => (topic = t), checkFill, checkTranslate, spanish, english, expectedBlank, buildOptions, state: () => state };
 applySettings(); renderSide(); renderSets(); renderWho(); selectTab(state.settings.tab === "custom" && !HAS_CLAUDE ? "built" : (state.settings.tab || "built"), false); next();
+showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 })();
