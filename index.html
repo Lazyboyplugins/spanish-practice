@@ -165,7 +165,16 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 #whogate .people{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}#whogate .person{font:inherit;font-size:20px;font-weight:600;padding:16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
 #whogate .person.last{border-color:var(--accent);background:var(--accent-soft)}#whogate .person small{display:block;font-size:12px;font-weight:400;color:var(--muted)}
 .whosel{font:inherit;font-weight:600;padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}#whogate .add{display:flex;gap:8px}#whogate input{flex:1;min-width:0;font:inherit;font-size:17px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
-.pic svg.clock{width:min(190px,56vw)}.pic svg.bodyfig{width:min(230px,60vw)}.shirt{fill:#7fb2e5;stroke:#2c5a8a;stroke-width:2}.shirt2{fill:#a9cdf0;stroke:#2c5a8a;stroke-width:2}.shorts{fill:#5b6b7f;stroke:#333;stroke-width:2}.navel{fill:#7a4b2e}.smile{fill:none;stroke:#7a4b2e;stroke-width:2.5;stroke-linecap:round}.subchips{margin:6px 0 10px}
+#popq{position:fixed;inset:0;z-index:45;background:rgba(10,14,22,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#popq .pbox{background:var(--surface);color:var(--ink);border-radius:20px;max-width:460px;width:100%;padding:20px 18px 18px;box-shadow:0 12px 40px rgba(0,0,0,.3);max-height:calc(100vh - 32px);overflow:auto}
+#popq .ptop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}#popq .pdots{display:flex;gap:4px}#popq .pdots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+#popq .pdots i.ok{background:#2f9e5b}#popq .pdots i.bad{background:#c8453b}#popq .pdots i.now{outline:2px solid var(--accent)}
+#popq .pq{text-align:center;margin:10px 0 14px}#popq .pq .em{font-size:84px;line-height:1.1}#popq .pq .w{font-size:30px;font-weight:700}
+#popq .popts{display:grid;grid-template-columns:1fr 1fr;gap:10px}#popq .popt{font:inherit;font-size:18px;font-weight:600;padding:14px 8px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;min-height:60px}
+#popq .popt.emo{font-size:46px;padding:8px}#popq .popt.ok{border-color:#2f9e5b;background:rgba(47,158,91,.15)}#popq .popt.bad{border-color:#c8453b;background:rgba(200,69,59,.15)}
+#popq .pdir{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}#popq .pfb{min-height:1.4em;text-align:center;margin:12px 0 4px;font-weight:600}
+#popq .pend li{margin:4px 0}
+.bigemoji{font-size:96px;line-height:1.1;text-align:center;margin:6px 0}.pic svg.clock{width:min(190px,56vw)}.pic svg.bodyfig{width:min(230px,60vw)}.shirt{fill:#7fb2e5;stroke:#2c5a8a;stroke-width:2}.shirt2{fill:#a9cdf0;stroke:#2c5a8a;stroke-width:2}.shorts{fill:#5b6b7f;stroke:#333;stroke-width:2}.navel{fill:#7a4b2e}.smile{fill:none;stroke:#7a4b2e;stroke-width:2.5;stroke-linecap:round}.subchips{margin:6px 0 10px}
 .digital{font-family:var(--display);font-size:22px;color:var(--muted)}
 .skin{fill:#f3c6a0;stroke:#7a4b2e;stroke-width:2}.skin2{fill:#e7b189;stroke:#7a4b2e;stroke-width:2}.hair{fill:#4a2f1d}
 .brow{fill:none;stroke:#3b2516;stroke-width:5;stroke-linecap:round}.eyew{fill:#fff;stroke:#7a4b2e;stroke-width:2}.pupil{fill:#2a1a10}
@@ -201,7 +210,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
       <h1>Repaso <span class="me">de</span> español</h1>
       <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns or the time.</p>
     </div>
-    <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span></div>
+    <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span><button class="btn" type="button" id="pop10">🎲 10 random nouns</button></div>
   </header>
 
   <nav class="tabs" role="tablist">
@@ -1018,7 +1027,8 @@ const XT_SE = {
   "se-time": "ser for time and days", "se-location": "estar for where something is", "se-feeling": "estar for feelings and how things are now",
   "se-person": "ser / estar forms (soy, estoy…)" };
 const XT_NOUNS = { "vocab-face": "Face words", "vocab-body": "Body parts", "vocab-people": "People words", "vocab-animals": "Animal words", "vocab-kitchen": "Kitchen words",
-  "vocab-bedroom": "Bedroom words", "vocab-things": "Everyday things", "vocab-gender": "el or la (word gender)" };
+  "vocab-bedroom": "Bedroom words", "vocab-things": "Everyday things", "vocab-food": "Food and drink", "vocab-clothes": "Clothes", "vocab-house": "House words",
+  "vocab-bathroom": "Bathroom words", "vocab-town": "Places in town", "vocab-transport": "Transport", "vocab-nature": "Nature and weather", "vocab-gender": "el or la (word gender)" };
 const XT_WORDS = {
   "days": "Days of the week", "months": "Months of the year",
   "days-order": "Before and after (days)", "months-order": "Before and after (months)", "lowercase": "No capitals for days and months",
@@ -1316,12 +1326,35 @@ const THINGS2 = [["el celular", "cell phone", "📱"], ["las llaves", "keys", "�
   ["el bolígrafo", "pen", "🖊️"], ["el lápiz", "pencil", "✏️"], ["la computadora", "computer", "💻"], ["el reloj", "watch / clock", "⌚"], ["los lentes", "glasses", "👓"],
   ["el paraguas", "umbrella", "☂️"], ["la bolsa", "bag", "👜"], ["la botella", "bottle", ""], ["el cuaderno", "notebook", "📓"], ["las tijeras", "scissors", "✂️"],
   ["el carro", "car", "🚗"], ["la bicicleta", "bicycle", "🚲"], ["el dinero", "money", "💵"], ["la televisión", "TV", "📺"]];
-const NOUNSETS = { face: FACE, body: BODY, people: PEOPLE, animals: ANIMALS, kitchen: KITCHEN, bedroom: BEDROOM, things: THINGS2 };
+const FOOD = [["el pan", "bread", "🍞"], ["el queso", "cheese", "🧀"], ["el huevo", "egg", "🥚"], ["la leche", "milk", "🥛"], ["el arroz", "rice", "🍚"], ["la manzana", "apple", "🍎"],
+  ["el plátano", "banana", "🍌"], ["la naranja", "orange", "🍊"], ["las uvas", "grapes", "🍇"], ["la fresa", "strawberry", "🍓"], ["el tomate", "tomato", "🍅"], ["la papa", "potato", "🥔"],
+  ["la zanahoria", "carrot", "🥕"], ["el pollo", "chicken", "🍗"], ["la carne", "meat", "🥩"], ["la sopa", "soup", "🍲"], ["la ensalada", "salad", "🥗"], ["el café", "coffee", "☕"],
+  ["el té", "tea", "🍵"], ["el jugo", "juice", "🧃"], ["la galleta", "cookie", "🍪"], ["el pastel", "cake", "🎂"], ["el helado", "ice cream", "🍦"], ["el chocolate", "chocolate", "🍫"],
+  ["la mantequilla", "butter", "🧈"], ["la sal", "salt", "🧂"], ["el limón", "lemon", "🍋"], ["la cebolla", "onion", "🧅"], ["el maíz", "corn", "🌽"], ["la hamburguesa", "burger", "🍔"]];
+const CLOTHES = [["la camisa", "shirt", "👔"], ["la camiseta", "T-shirt", "👕"], ["los pantalones", "trousers", "👖"], ["el vestido", "dress", "👗"], ["los zapatos", "shoes", "👞"],
+  ["los tenis", "trainers", "👟"], ["las botas", "boots", "🥾"], ["los calcetines", "socks", "🧦"], ["el sombrero", "hat", "👒"], ["la gorra", "cap", "🧢"], ["la chaqueta", "jacket", "🧥"],
+  ["la bufanda", "scarf", "🧣"], ["los guantes", "gloves", "🧤"], ["el traje de baño", "swimsuit", "🩱"], ["la falda", "skirt", ""], ["el cinturón", "belt", ""], ["la pijama", "pyjamas", ""],
+  ["los lentes de sol", "sunglasses", "🕶️"], ["el anillo", "ring", "💍"]];
+const HOUSE = [["la casa", "house", "🏠"], ["el apartamento", "flat / apartment", "🏢"], ["la sala", "living room", "🛋️"], ["el comedor", "dining room", ""], ["el baño", "bathroom", "🛁"],
+  ["el jardín", "garden", "🪴"], ["el garaje", "garage", ""], ["la pared", "wall", "🧱"], ["el techo", "roof / ceiling", ""], ["el piso", "floor", ""], ["la escalera", "stairs", ""],
+  ["la puerta", "door", "🚪"], ["la ventana", "window", "🪟"], ["el sofá", "sofa", "🛋️"], ["la llave", "key", "🔑"], ["el enchufe", "plug socket", "🔌"], ["la basura", "rubbish", "🗑️"]];
+const BATHROOM = [["la ducha", "shower", "🚿"], ["la tina", "bath", "🛁"], ["el inodoro", "toilet", "🚽"], ["el lavamanos", "sink", ""], ["el jabón", "soap", "🧼"], ["la toalla", "towel", ""],
+  ["el cepillo de dientes", "toothbrush", "🪥"], ["la pasta de dientes", "toothpaste", ""], ["el champú", "shampoo", "🧴"], ["el papel higiénico", "toilet paper", "🧻"], ["el peine", "comb", ""], ["el espejo", "mirror", "🪞"]];
+const TOWN = [["la tienda", "shop", "🏪"], ["el supermercado", "supermarket", "🛒"], ["el banco", "bank", "🏦"], ["el hospital", "hospital", "🏥"], ["la escuela", "school", "🏫"],
+  ["el parque", "park", "🏞️"], ["la iglesia", "church", "⛪"], ["el restaurante", "restaurant", "🍽️"], ["la farmacia", "pharmacy", "💊"], ["la calle", "street", "🛣️"], ["la playa", "beach", "🏖️"],
+  ["el museo", "museum", "🏛️"], ["la biblioteca", "library", "📚"], ["el hotel", "hotel", "🏨"], ["el aeropuerto", "airport", "🛫"], ["la estación", "station", "🚉"], ["la oficina", "office", "🏢"],
+  ["el mercado", "market", "🧺"], ["el cine", "cinema", "🎬"], ["la ciudad", "city", "🏙️"]];
+const TRANSPORT = [["el carro", "car", "🚗"], ["el autobús", "bus", "🚌"], ["el tren", "train", "🚆"], ["el avión", "plane", "✈️"], ["el barco", "boat / ship", "🚢"], ["la bicicleta", "bicycle", "🚲"],
+  ["la moto", "motorbike", "🏍️"], ["el taxi", "taxi", "🚕"], ["el metro", "underground / metro", "🚇"], ["el camión", "lorry / truck", "🚚"], ["el helicóptero", "helicopter", "🚁"], ["el boleto", "ticket", "🎫"]];
+const NATURE = [["el sol", "sun", "☀️"], ["la luna", "moon", "🌙"], ["la estrella", "star", "⭐"], ["la lluvia", "rain", "🌧️"], ["la nieve", "snow", "❄️"], ["el viento", "wind", "🌬️"],
+  ["la nube", "cloud", "☁️"], ["el árbol", "tree", "🌳"], ["la flor", "flower", "🌸"], ["el mar", "sea", "🌊"], ["el río", "river", ""], ["la montaña", "mountain", "⛰️"], ["el fuego", "fire", "🔥"],
+  ["el cielo", "sky", ""], ["el arcoíris", "rainbow", "🌈"], ["la hoja", "leaf", "🍃"], ["la piedra", "stone", "🪨"]];
+const NOUNSETS = { face: FACE, body: BODY, people: PEOPLE, animals: ANIMALS, food: FOOD, clothes: CLOTHES, house: HOUSE, kitchen: KITCHEN, bedroom: BEDROOM, bathroom: BATHROOM, town: TOWN, transport: TRANSPORT, nature: NATURE, things: THINGS2 };
 const DAYS = [["lunes", "Monday"], ["martes", "Tuesday"], ["miércoles", "Wednesday"], ["jueves", "Thursday"], ["viernes", "Friday"], ["sábado", "Saturday"], ["domingo", "Sunday"]];
 const MONTHS = [["enero", "January"], ["febrero", "February"], ["marzo", "March"], ["abril", "April"], ["mayo", "May"], ["junio", "June"], ["julio", "July"], ["agosto", "August"],
   ["septiembre", "September"], ["octubre", "October"], ["noviembre", "November"], ["diciembre", "December"]];
 const HOURS = ["", "una", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce"];
-const WORDSET_NAME = { face: "the face", body: "the body", people: "people", animals: "animals", kitchen: "kitchen", bedroom: "bedroom", things: "everyday things", days: "days of the week", months: "months", time: "telling the time" };
+const WORDSET_NAME = { face: "the face", body: "the body", people: "people", animals: "animals", food: "food and drink", clothes: "clothes", house: "the house", bathroom: "the bathroom", town: "around town", transport: "transport", nature: "nature and weather", kitchen: "kitchen", bedroom: "bedroom", things: "everyday things", days: "days of the week", months: "months", time: "telling the time" };
 const NSUB = {
   body: [["general", "Main parts"], ["head", "Head & face"], ["arm", "Arm & hand"], ["leg", "Leg & foot"], ["torso", "Chest & back"], ["inside", "Inside the body"], ["all", "Everything"]],
   animals: [["general", "Main animals"], ["pets", "Pets"], ["farm", "Farm"], ["wild", "Wild"], ["birds", "Birds"], ["sea", "Sea"], ["bugs", "Bugs"], ["all", "All animals"]] };
@@ -1351,7 +1384,7 @@ function bodySVG(hl, onPick) {
   if (onPick) svg.querySelectorAll("[data-p]").forEach(g => { g.classList.add("pickable"); g.addEventListener("click", e => { e.stopPropagation(); onPick(g.dataset.p, svg); }); });
   return d;
 }
-const NOUN_TABS = [["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["mix", "Mix"]];
+const NOUN_TABS = [["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["things", "Everyday things"], ["mix", "Mix"]];
 const TIME_TABS = [["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["mix", "Mix"]];
 
 function faceSVG(hl, onPick) {
@@ -1443,8 +1476,14 @@ function makeVocab(set, focus) {
   const isBodyPic = set === "body" && w[3];
   const it = { kind: "tap", type: "choice", topic: "nouns", stat: WORDSET_NAME[set], focus: focus || null, tested: [tag], full: w[0], mq: w[1], explain: `${w[0]} = ${w[1]}` };
   const emoji = set !== "face" && w[2] ? w[2] + " " : "";
-  let kind = set === "face" || isBodyPic ? pick(["pic", "pic", "tap", "tap", "gender", "en2es", "es2en"]) : pick(["en2es", "en2es", "es2en", "gender"]);
+  let kind = set === "face" || isBodyPic ? pick(["pic", "pic", "tap", "tap", "gender", "en2es", "es2en"]) : w[2] && set !== "face" ? pick(["emoji", "emoji", "en2es", "es2en", "es2en", "gender"]) : pick(["en2es", "en2es", "es2en", "gender"]);
   if (focus === "vocab-gender") kind = "gender";
+  if (kind === "emoji") {
+    it.lead = "What is this in Spanish?"; it.es = ""; it.en = ""; it.pic = () => el("div", { class: "pic bigemoji", "aria-label": "Picture" }, w[2]);
+    const po = shuffle(list.filter(x => x !== w && x[1] !== w[1] && x[2] !== w[2])).slice(0, 3);
+    it.options = tapOpts(w[0], po.map(o => ({ text: o[0], tag, msg: `${cap(o[0])} means ${o[1]}${o[2] ? " " + o[2] : ""}. This is ${w[0]} (${w[1]}).` })), focus);
+    return it;
+  }
   if (kind === "gender") {
     const noun = w[0].replace(/^(el|la|los|las) /, ""), art = w[0].split(" ")[0];
     it.lead = "el, la, los or las?"; it.es = "___ " + noun; it.en = w[1]; it.noGloss = true; it.tested = ["vocab-gender"];
@@ -1605,9 +1644,9 @@ function renderNounsPanel() {
     box.append(el("h2", {}, "La cara (the face)"), el("p", {}, "Tap the face to hear each word, then try the quiz below."), pic, label,
       el("div", { class: "wchips" }, FACE.map(w => el("button", { class: "chip", type: "button", onclick: () => show(w[2], pic.firstElementChild) }, el("b", {}, w[0]), " · " + w[1]))));
   } else if (sel === "mix") {
-    box.append(el("h2", {}, "All the nouns, mixed"), el("p", {}, "Face, people, animals, kitchen, bedroom and everyday things."));
+    box.append(el("h2", {}, "All the nouns, mixed"), el("p", {}, "Every noun group mixed together: the face and body, people, animals, food, clothes, the house, town, transport, nature and more."));
   } else {
-    const title = { body: "El cuerpo (the body)", people: "La gente (people)", animals: "Los animales (animals)", kitchen: "La cocina (the kitchen)", bedroom: "El dormitorio (the bedroom)", things: "Cosas de todos los días (everyday things)" }[sel];
+    const title = { body: "El cuerpo (the body)", people: "La gente (people)", animals: "Los animales (animals)", kitchen: "La cocina (the kitchen)", bedroom: "El dormitorio (the bedroom)", food: "La comida y las bebidas (food and drink)", clothes: "La ropa (clothes)", house: "La casa (the house)", bathroom: "El baño (the bathroom)", town: "En la ciudad (around town)", transport: "El transporte (transport)", nature: "La naturaleza y el tiempo (nature and weather)", things: "Cosas de todos los días (everyday things)" }[sel];
     const list = nounList(sel), sub = NSUB[sel] ? subOf(sel) : null;
     const setSub = k => { (state.settings.nsub || (state.settings.nsub = {}))[sel] = k; scheduleSave(); renderNounsPanel(); if (topic === "nouns") { source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } };
     const cards = list.map(w => {
@@ -1790,7 +1829,7 @@ Object.assign(GLOSS, { "nosotras": "we (all women)", "ellas": "they (all women)"
   "papas": "potatoes", "fritas": "fried", "conciertos": "concerts", "flores": "flowers", "aguacates": "avocados", "ver": "to watch", "cantar": "to sing", "jugar": "to play", "escuchar": "to listen to",
   "trabajar": "to work", "aprender": "to learn", "dormir": "to sleep", "siesta": "nap", "quién": "who", "familia": "family", "tus": "your",
 });
-for (const [es, en] of [...FACE, ...BODY, ...KITCHEN, ...PEOPLE, ...ANIMALS, ...BEDROOM, ...THINGS2]) GLOSS[es.split(" ").slice(1).join(" ")] = GLOSS[es.split(" ").slice(1).join(" ")] || en;
+for (const [es, en] of [...FACE, ...BODY, ...KITCHEN, ...PEOPLE, ...ANIMALS, ...BEDROOM, ...THINGS2, ...FOOD, ...CLOTHES, ...HOUSE, ...BATHROOM, ...TOWN, ...TRANSPORT, ...NATURE]) GLOSS[es.split(" ").slice(1).join(" ")] = GLOSS[es.split(" ").slice(1).join(" ")] || en;
 for (const [es, en] of [...DAYS, ...MONTHS]) GLOSS[es] = en;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
@@ -1879,7 +1918,7 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
@@ -2191,7 +2230,7 @@ function breakdown(it) {
   return el("div", {}, parts, el("div", { class: "lit", style: "margin-top:6px" }, lit));
 }
 document.addEventListener("keydown", e => {
-  if (!cur) return;
+  if (!cur || $("#popq") || $("#whogate")) return;
   if (answered && e.key === "Enter" && document.activeElement && document.activeElement.id !== "next" && !["TEXTAREA", "SELECT"].includes(document.activeElement.tagName) && !document.activeElement.closest(".form")) { e.preventDefault(); $("#next") && $("#next").click(); }
   if (!answered && cur.type === "choice" && /^[1-4]$/.test(e.key) && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) { const i = +e.key - 1; if (cur.options[i]) answerChoice(i); }
 });
@@ -2325,6 +2364,67 @@ $("#imp").addEventListener("change", async e => {
   e.target.value = "";
 });
 if (!HAS_CLAUDE) { const ct = $("#tab-custom"); if (ct) ct.hidden = true; $("#sync").textContent = "Saved in this browser"; }
+
+
+/* ---------- 🎲 10 random nouns pop-up ---------- */
+const POP_DIRS = [["es2en", "Spanish → English"], ["en2es", "English → Spanish"], ["pic", "Pictures"], ["mix", "Mixed"]];
+function popPool() { const seen = new Set(), out = []; for (const [k, l] of Object.entries(NOUNSETS)) { if (k === "face") continue; for (const w of l) if (!seen.has(w[0])) { seen.add(w[0]); out.push({ es: w[0], en: w[1], em: w[2] || "", set: k }); } } return out; }
+function popQuiz() {
+  const old = $("#popq"); if (old) old.remove();
+  const dir = state.settings.popdir || "es2en", pool = popPool();
+  const kinds = { es2en: ["es2en"], en2es: ["en2es"], pic: ["pic2es", "es2pic"], mix: ["es2en", "en2es", "pic2es", "es2pic"] }[dir] || ["es2en"];
+  const picks = [], usedEn = new Set();
+  for (const w of shuffle(pool.slice())) {
+    if (picks.length >= 10) break;
+    const k = pick(kinds), kk = (k === "pic2es" || k === "es2pic") && !w.em ? pick(["es2en", "en2es"]) : k;
+    if (dir === "pic" && !w.em) continue;
+    if (usedEn.has(w.en)) continue; usedEn.add(w.en); picks.push({ w, k: kk });
+  }
+  let i = 0, right = 0; const res = [];
+  const box = el("div", { class: "pbox", role: "dialog", "aria-modal": "true", "aria-label": "10 random nouns" });
+  const wrap = el("div", { id: "popq", onclick: e => { if (e.target === wrap) close(); } }, box);
+  const close = () => { wrap.remove(); document.body.style.overflow = ""; renderSide(); };
+  const dirRow = () => el("div", { class: "pdir" }, POP_DIRS.map(([k, n]) => el("button", { class: "chip", type: "button", "aria-pressed": String(dir === k), onclick: () => { state.settings.popdir = k; scheduleSave(); popQuiz(); } }, n)));
+  const show = () => {
+    box.replaceChildren();
+    const dots = el("div", { class: "pdots" }, picks.map((_, j) => el("i", { class: j < res.length ? (res[j] ? "ok" : "bad") : j === i ? "now" : "" })));
+    box.append(el("div", { class: "ptop" }, el("b", {}, "🎲 10 random nouns"), el("button", { class: "link", type: "button", onclick: close }, "Close ✕")), dirRow(), dots);
+    if (i >= picks.length) return end();
+    const { w, k } = picks[i];
+    const others = shuffle(pool.filter(o => o.en !== w.en && o.es !== w.es && (k !== "es2pic" && k !== "pic2es" || (o.em && o.em !== w.em)))).slice(0, 3);
+    const optsW = shuffle([w, ...others]);
+    const q = el("div", { class: "pq" });
+    if (k === "es2en" || k === "es2pic") q.append(el("div", { class: "w" }, w.es), speakBtns(w.es), el("div", { class: "en", style: "margin-top:6px" }, k === "es2en" ? "What does it mean?" : "Tap the picture"));
+    else if (k === "en2es") q.append(el("div", { class: "w" }, w.en), el("div", { class: "en", style: "margin-top:6px" }, "Which is the Spanish?"));
+    else q.append(el("div", { class: "em" }, w.em), el("div", { class: "en" }, "What is this in Spanish?"));
+    const fb = el("div", { class: "pfb" });
+    const label = o => k === "es2en" ? o.en : k === "es2pic" ? o.em : o.es;
+    const btns = optsW.map(o => el("button", { class: "popt" + (k === "es2pic" ? " emo" : ""), type: "button", "aria-label": k === "es2pic" ? o.en : null, onclick: () => answer(o) }, label(o)));
+    const answer = o => {
+      if (btns[0].disabled) return; const ok = o === w; btns.forEach((b, j) => { b.disabled = true; if (optsW[j] === w) b.classList.add("ok"); else if (optsW[j] === o) b.classList.add("bad"); });
+      res.push(ok); if (ok) right++;
+      bump("vocab-" + w.set, !ok); if (!ok) bump("vocab-" + o.set, false);
+      const tk = state.skill.nouns || (state.skill.nouns = { n: 0, v: 0.3 }); tk.n++; tk.v = tk.v * 0.85 + (ok ? 0.15 : 0);
+      if (!ok) { state.mistakes.unshift({ t: Date.now(), q: `${w.en}${w.em ? " " + w.em : ""}`, given: k === "es2en" ? o.en : k === "es2pic" ? o.em : o.es, correct: w.es + (k === "es2en" ? ` = ${w.en}` : ""), why: labelOf("vocab-" + w.set) }); state.mistakes = state.mistakes.slice(0, 30); }
+      scheduleSave(); say(w.es);
+      fb.replaceChildren(ok ? "✅ " : "❌ ", `${w.es} = ${w.en}${w.em ? " " + w.em : ""}`); fb.style.color = ok ? "#2f9e5b" : "#c8453b";
+      if (ok) celebrate(fb);
+      box.append(el("div", { class: "actions", style: "justify-content:center" }, el("button", { class: "btn", type: "button", id: "popnext", onclick: () => { i++; show(); } }, i === picks.length - 1 ? "See my score" : "Next ⏎")));
+      setTimeout(() => { const n = $("#popnext"); n && n.focus({ preventScroll: true }); }, 0);
+    };
+    box.append(q, el("div", { class: "popts" }, btns), fb);
+  };
+  const end = () => {
+    const missed = picks.filter((_, j) => !res[j]);
+    box.append(el("h2", { style: "text-align:center;font-size:26px;margin:14px 0 6px" }, right === 10 ? "¡Perfecto! 10 / 10 🎉" : right >= 7 ? `¡Muy bien! ${right} / 10` : `${right} / 10. ¡Sigue así!`),
+      missed.length ? el("div", { class: "pend" }, el("p", { class: "en" }, "Words to look at again:"), el("ul", {}, missed.map(({ w }) => el("li", {}, el("button", { class: "chip", type: "button", onclick: () => say(w.es) }, el("b", {}, w.es), ` · ${w.en} ${w.em}`))))) : null,
+      el("div", { class: "actions", style: "justify-content:center" }, el("button", { class: "btn", type: "button", onclick: popQuiz }, "🎲 Another 10"), el("button", { class: "btn ghost", type: "button", onclick: close }, "Done")));
+    if (right === 10) celebrate(box);
+  };
+  document.body.append(wrap); document.body.style.overflow = "hidden"; show();
+}
+$("#pop10").addEventListener("click", popQuiz);
+document.addEventListener("keydown", e => { const w = $("#popq"); if (!w) return; if (e.key === "Escape") { w.remove(); document.body.style.overflow = ""; } else if (/^[1-4]$/.test(e.key)) { const b = w.querySelectorAll(".popt")[+e.key - 1]; b && !b.disabled && b.click(); } });
 
 /* ---------- boot ---------- */
 window.__repaso = { makeItem, makeBuild, checkBuild, makeX, setTopic: t => (topic = t), checkFill, checkTranslate, spanish, english, expectedBlank, buildOptions, state: () => state };
