@@ -1211,6 +1211,9 @@ const V2 = {
   jugar: { m: "to play (a sport or game)", ch: "u→ue", f: ["juego", "juegas", "juega", "jugamos", "juegan"], c: [["al fútbol los sábados", "play football on Saturdays"], ["al tenis con mi hermana", "play tennis with my sister"], ["básquetbol en el parque", "play basketball in the park"], ["al béisbol", "play baseball"]] },
   practicar: { m: "to do / practise (a sport)", f: ["practico", "practicas", "practica", "practicamos", "practican"], c: [["natación", "do swimming"], ["yoga los lunes", "do yoga on Mondays"], ["kárate", "do karate"], ["mucho deporte", "do a lot of sport"]] },
   traer: { m: "to bring", yo: true, f: ["traigo", "traes", "trae", "traemos", "traen"], c: [["el almuerzo", "bring lunch"], ["la comida a la fiesta", "bring the food to the party"], ["un libro a clase", "bring a book to class"], ["agua a la playa", "bring water to the beach"]] },
+  bailar: { m: "to dance", f: ["bailo", "bailas", "baila", "bailamos", "bailan"], c: [["salsa", "dance salsa"], ["en la fiesta", "dance at the party"], ["mucho los sábados", "dance a lot on Saturdays"], ["con mi hermana", "dance with my sister"]] },
+  caminar: { m: "to walk", f: ["camino", "caminas", "camina", "caminamos", "caminan"], c: [["al trabajo", "walk to work"], ["en el parque", "walk in the park"], ["a la escuela", "walk to school"], ["con el perro", "walk with the dog"]] },
+  correr: { m: "to run", f: ["corro", "corres", "corre", "corremos", "corren"], c: [["en el parque", "run in the park"], ["los domingos", "run on Sundays"], ["muy rápido", "run very fast"], ["cinco kilómetros", "run five kilometres"]] },
   terminar: { m: "to finish", f: ["termino", "terminas", "termina", "terminamos", "terminan"], c: [["el trabajo a las cinco", "finish work at five"], ["la tarea", "finish the homework"], ["de comer", "finish eating"]] },
 };
 const PERS = ["yo", "tú", "él / ella / usted", "nosotros", "ellos / ellas / ustedes"], RP = ["me", "te", "se", "nos", "se"];
@@ -2146,7 +2149,7 @@ for (const [es, en] of [...GG_FAM, ...GG_FAMP]) GLOSS[es] = GLOSS[es] || en;
 for (const t of GG_THINGS.flat()) { const w = t[0].split(" "); const k = w.length > 1 && /^(el|la|los|las)$/.test(w[0]) ? w.slice(1).join(" ") : t[0]; if (!k.includes(" ")) GLOSS[k] = GLOSS[k] || t[1]; }
 for (const [k, v] of Object.entries({ "más": "more", "o": "or", "qué": "what", "cuáles": "which ones", "cuál": "which one", "tu": "your", "tus": "your (more than one)", "mi": "my", "mis": "my (more than one)",
   "mí": "me (after a)", "ti": "you (after a)", "a": "to (a mí = to me)", "papas": "potatoes", "fritas": "fried" })) GLOSS[k] = GLOSS[k] || v;
-for (const [k, v] of [["almuerzo", "lunch / I have lunch"], ["agua", "water"], ["libro", "book"], ["clase", "class"], ["traer", "to bring"]]) GLOSS[k] = GLOSS[k] || v;
+for (const [k, v] of [["escuela", "school"], ["rápido", "fast"], ["kilómetros", "kilometres"], ["perro", "dog"], ["hermana", "sister"], ["almuerzo", "lunch / I have lunch"], ["agua", "water"], ["libro", "book"], ["clase", "class"], ["traer", "to bring"]]) GLOSS[k] = GLOSS[k] || v;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
 
