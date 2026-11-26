@@ -1052,7 +1052,7 @@ const XT_QW = {
   "porque": "por qué (why) vs porque (because)", "answer-match": "Matching a question to its answer" };
 const XT_VERBS = {
   "verb-person": "Matching the verb ending to the person", "stem-change": "Stem changes (o→ue, e→ie, u→ue)", "stem-nosotros": "No stem change with nosotros",
-  "verb-infinitive": "Leaving the verb as an infinitive", "refl-missing": "Leaving out me/te/se (reflexive verbs)", "refl-match": "Matching me/te/se to the person" };
+  "verb-infinitive": "Leaving the verb as an infinitive", "refl-missing": "Leaving out me/te/se (reflexive verbs)", "irreg-yo": "Irregular yo forms (traigo)", "refl-match": "Matching me/te/se to the person" };
 const XT_SE = {
   "se-origin": "ser for where you're from", "se-identity": "ser for who or what someone is", "se-trait": "ser for what someone or something is like",
   "se-time": "ser for time and days", "se-location": "estar for where something is", "se-feeling": "estar for feelings and how things are now",
@@ -1210,6 +1210,7 @@ const V2 = {
   preferir: { m: "to prefer", ch: "e→ie", f: ["prefiero", "prefieres", "prefiere", "preferimos", "prefieren"], c: [["el té", "prefer tea"], ["la playa", "prefer the beach"], ["caminar", "prefer walking"]] },
   jugar: { m: "to play (a sport or game)", ch: "u→ue", f: ["juego", "juegas", "juega", "jugamos", "juegan"], c: [["al fútbol los sábados", "play football on Saturdays"], ["al tenis con mi hermana", "play tennis with my sister"], ["básquetbol en el parque", "play basketball in the park"], ["al béisbol", "play baseball"]] },
   practicar: { m: "to do / practise (a sport)", f: ["practico", "practicas", "practica", "practicamos", "practican"], c: [["natación", "do swimming"], ["yoga los lunes", "do yoga on Mondays"], ["kárate", "do karate"], ["mucho deporte", "do a lot of sport"]] },
+  traer: { m: "to bring", yo: true, f: ["traigo", "traes", "trae", "traemos", "traen"], c: [["el almuerzo", "bring lunch"], ["la comida a la fiesta", "bring the food to the party"], ["un libro a clase", "bring a book to class"], ["agua a la playa", "bring water to the beach"]] },
   terminar: { m: "to finish", f: ["termino", "terminas", "termina", "terminamos", "terminan"], c: [["el trabajo a las cinco", "finish work at five"], ["la tarea", "finish the homework"], ["de comer", "finish eating"]] },
 };
 const PERS = ["yo", "tú", "él / ella / usted", "nosotros", "ellos / ellas / ustedes"], RP = ["me", "te", "se", "nos", "se"];
@@ -1246,10 +1247,11 @@ function makeVerb(focus) {
   if (first === "gustar") { const it = makeStarter({ focus: gFocus ? focus : null }); it.stat = "gustar"; it.topic = "verbs"; return it; }
   let names = (sel.length ? sel : Object.keys(V2)).filter(x => V2[x]);
   if (!names.length) names = Object.keys(V2);
-  if (names.length > 1 && focus) { const f = names.filter(v => (/^stem/.test(focus) && V2[v].ch) || (/^refl/.test(focus) && V2[v].refl)); if (f.length) names = f; }
+  if (names.length > 1 && focus) { const f = names.filter(v => (/^stem/.test(focus) && V2[v].ch) || (/^refl/.test(focus) && V2[v].refl) || (focus === "irreg-yo" && V2[v].yo)); if (f.length) names = f; }
   const inf = pick(names), V = V2[inf];
   let P = vPerson();
-  if (focus === "stem-nosotros" && V.ch && vPeopleSel().some(k => k === "nos" || k === "nosas")) P = vPerson(3);
+  if (focus === "irreg-yo" && V.yo && vPeopleSel().includes("yo")) P = vPerson(0);
+  else if (focus === "stem-nosotros" && V.ch && vPeopleSel().some(k => k === "nos" || k === "nosas")) P = vPerson(3);
   else if (focus === "stem-change" && V.ch && P.i === 3 && vPeopleSel().length !== 1) { let t = 0; while (P.i === 3 && t++ < 10) P = vPerson(); }
   const c = pickFresh(V.c, "vc" + inf, 2), neg = !c[2] && Math.random() < 0.2, i = P.i, correct = vChunk(V, i);
   const base = inf.replace(/se$/, ""), end = base.slice(-2), stem = base.slice(0, -2);
@@ -1260,6 +1262,7 @@ function makeVerb(focus) {
     if (i === 3) { const w = (V.refl ? "nos " : "") + V.f[0].slice(0, -1) + regEnd[3]; cands.push({ text: w, tag: "stem-nosotros", msg: `nosotros keeps the normal stem: ${correct}. The ${V.ch} change only happens in the other forms (${V.f[0]}, ${V.f[1]}, ${V.f[2]}, ${V.f[4]}).` }); }
     else { const w = (V.refl ? RP[i] + " " : "") + stem + regEnd[i]; cands.push({ text: w, tag: "stem-change", msg: `${inf} is a stem-changing verb (${V.ch}). The stem changes in every form except nosotros, so it's ${correct}, not ${w}.` }); }
   }
+  if (V.yo && i === 0) cands.push({ text: stem + regEnd[0], tag: "irreg-yo", msg: `${inf} has an irregular yo form: ${correct}, not ${stem + regEnd[0]}. The other forms are regular.` });
   if (V.refl) {
     cands.push({ text: V.f[i], tag: "refl-missing", msg: `${inf} ends in -se, so it needs its own pronoun before the verb: ${correct}. (yo me, tú te, él/ella/usted se, nosotros nos, ellos/ustedes se)` });
     const wp = ["se", "se", "le", "se", "les"][i];
@@ -1270,6 +1273,7 @@ function makeVerb(focus) {
   const it = { kind: "tap", type: "choice", topic: "verbs", stat: inf, focus: focus || null, tested: ["verb-person"], full: sent(correct), mq: en, explain: vTable(inf, V) };
   if (V.ch) it.tested.push(i === 3 ? "stem-nosotros" : "stem-change");
   if (V.refl) it.tested.push("refl-missing");
+  if (V.yo && i === 0) it.tested.push("irreg-yo");
   if (Math.random() < 0.7) { it.lead = "Pick the right form"; it.es = `${P.es} ${negS}___ ${c[0]}.`; it.en = en; it.options = tapOpts(correct, cands, focus); }
   else { it.lead = "Say it in Spanish"; it.es = en; it.esLang = "en"; it.en = ""; it.options = tapOpts(sent(correct), cands.map(x => ({ ...x, text: sent(x.text) })), focus); }
   return it;
@@ -1879,11 +1883,12 @@ function renderVerbPanel() {
   if (sel === "gustar") { box.innerHTML = $("#cheat").innerHTML; return; }
   if (sel !== "mix" && V2[sel]) {
     const V = V2[sel];
-    box.append(el("h2", {}, `${sel} = ${V.m}`), el("div", { class: "cheat-grid" }, PERS.map((p, j) => el("div", {}, p + " ", el("b", { class: j !== 3 && V.ch ? "pr" : "vb" }, vChunk(V, j))))));
+    box.append(el("h2", {}, `${sel} = ${V.m}`), el("div", { class: "cheat-grid" }, PERS.map((p, j) => el("div", {}, p + " ", el("b", { class: (j !== 3 && V.ch) || (j === 0 && V.yo) ? "pr" : "vb" }, vChunk(V, j))))));
     const notes = [];
     if (V.ch) notes.push(`Stem change ${V.ch}: the stem changes in every form except nosotros (shown in orange).`);
     if (V.refl) notes.push("Reflexive: the -se at the end becomes me, te, se, nos, se before the verb.");
-    if (!V.ch && !V.refl) notes.push("A regular verb: keep the stem and change the ending.");
+    if (V.yo) notes.push(`Irregular yo form: ${V.f[0]} (shown in orange). The other forms are regular.`);
+    if (!V.ch && !V.refl && !V.yo) notes.push("A regular verb: keep the stem and change the ending.");
     for (const n of notes) box.append(el("p", {}, n));
   } else {
     box.append(el("h2", {}, "Verb patterns"),
@@ -2141,6 +2146,7 @@ for (const [es, en] of [...GG_FAM, ...GG_FAMP]) GLOSS[es] = GLOSS[es] || en;
 for (const t of GG_THINGS.flat()) { const w = t[0].split(" "); const k = w.length > 1 && /^(el|la|los|las)$/.test(w[0]) ? w.slice(1).join(" ") : t[0]; if (!k.includes(" ")) GLOSS[k] = GLOSS[k] || t[1]; }
 for (const [k, v] of Object.entries({ "más": "more", "o": "or", "qué": "what", "cuáles": "which ones", "cuál": "which one", "tu": "your", "tus": "your (more than one)", "mi": "my", "mis": "my (more than one)",
   "mí": "me (after a)", "ti": "you (after a)", "a": "to (a mí = to me)", "papas": "potatoes", "fritas": "fried" })) GLOSS[k] = GLOSS[k] || v;
+for (const [k, v] of [["almuerzo", "lunch / I have lunch"], ["agua", "water"], ["libro", "book"], ["clase", "class"], ["traer", "to bring"]]) GLOSS[k] = GLOSS[k] || v;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
 
@@ -2770,7 +2776,7 @@ function addConj(inf, d) {
 }
 addConj("ser", { m: "to be (who / what someone is, where from, time)", f: SER, en: ["am", "are", "is", "are", "are"], note: "Irregular: learn these by heart." });
 addConj("estar", { m: "to be (where something is, how someone feels)", f: ESTAR, en: ["am", "are", "is", "are", "are"], note: "Irregular yo form: estoy. Accents on estás, está, están." });
-for (const [inf, V] of Object.entries(V2)) addConj(inf, { m: V.m, f: V.f, refl: V.refl, ch: V.ch, modal: V.modal });
+for (const [inf, V] of Object.entries(V2)) addConj(inf, { m: V.m, f: V.f, refl: V.refl, ch: V.ch, modal: V.modal, note: V.yo ? `Irregular yo form: ${V.f[0]}. The other forms are regular.` : null });
 addConj("tocar", { m: "to play (an instrument) / to touch", f: TOCO });
 for (const [inf, m, f, ch, note] of [
   ["tener", "to have", ["tengo", "tienes", "tiene", "tenemos", "tienen"], "e→ie", "Irregular yo form: tengo."],
