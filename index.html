@@ -220,7 +220,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
       <h1>Repaso <span class="me">de</span> español</h1>
       <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
     </div>
-    <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span><button class="btn" type="button" id="pop10">🎲 10 random nouns</button></div>
+    <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span><button class="chip" type="button" id="autoplay" aria-pressed="true" title="Play the Spanish answer out loud after you check">Sound after answers: on</button><button class="btn" type="button" id="pop10">🎲 10 random nouns</button></div>
   </header>
 
   <nav class="tabs" role="tablist">
@@ -2562,6 +2562,7 @@ function showFeedback(ok, errs, notes, correct, it) {
   const nb = el("button", { class: "btn", id: "next", onclick: () => { if (source.kind === "set") source.i++; next(); } }, "Next ⏎");
   box.append(el("div", { class: "actions" }, nb));
   fb.append(box); setTimeout(() => nb.focus({ preventScroll: true }), 0);
+  if (state.settings.autoplay !== false && errs.every(e => e.tag !== "pending")) { const t = it.full || correct; if (t) setTimeout(() => say(t), 250); }
   fb.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 function breakdown(it) {
@@ -2628,6 +2629,7 @@ function renderSets() {
 /* ---------- controls ---------- */
 function applySettings() {
   const st = state.settings;
+  { const ap = st.autoplay !== false, b = $("#autoplay"); b.setAttribute("aria-pressed", String(ap)); b.textContent = "Sound after answers: " + (ap ? "on" : "off"); }
   document.querySelectorAll("#levels button").forEach(b => b.setAttribute("aria-pressed", b.dataset.l === st.level));
   $("#panel-built").classList.toggle("starter", st.level === "starter");
   $("#cheat").hidden = st.level !== "starter";
@@ -2772,6 +2774,7 @@ function popQuiz() {
   document.body.append(wrap); document.body.style.overflow = "hidden"; show();
 }
 $("#pop10").addEventListener("click", popQuiz);
+$("#autoplay").addEventListener("click", () => { state.settings.autoplay = state.settings.autoplay === false; scheduleSave(); applySettings(); if (!state.settings.autoplay) try { speechSynthesis.cancel(); } catch {} });
 document.addEventListener("keydown", e => { const w = $("#popq"); if (!w) return; if (e.key === "Escape") { w.remove(); document.body.style.overflow = ""; } else if (/^[1-4]$/.test(e.key)) { const b = w.querySelectorAll(".popt")[+e.key - 1]; b && !b.disabled && b.click(); } });
 
 /* ---------- right-click (or press and hold) a verb: all its present-tense forms ---------- */
