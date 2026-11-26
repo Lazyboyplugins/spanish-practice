@@ -222,6 +222,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
     <button class="tab" role="tab" id="tab-nouns" aria-selected="false">Nouns</button>
     <button class="tab" role="tab" id="tab-time" aria-selected="false">Time</button>
     <button class="tab" role="tab" id="tab-sh" aria-selected="false">Hobbies</button>
+    <button class="tab" role="tab" id="tab-gg" aria-selected="false">gusta or gustan?</button>
     <button class="tab" role="tab" id="tab-custom" aria-selected="false">Make your own</button>
   </nav>
 
@@ -332,6 +333,12 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
         <div class="row"><span class="lbl">Topic</span><div class="seg" id="shsets"></div></div>
         <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
         <div class="cheat" id="shcheat"></div>
+      </section>
+
+      <section id="panel-gg" class="controls" hidden>
+        <div class="row"><span class="lbl">Practise</span><div class="seg" id="ggsets"></div></div>
+        <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
+        <div class="cheat" id="ggcheat"></div>
       </section>
 
       <section id="panel-custom" class="card" hidden>
@@ -1051,9 +1058,13 @@ const XT_SH = {
   "sh-words": "Hobby words", "sh-tocar": "tocar for instruments, jugar for sports", "sh-gusta": "me gusta (not gustan) + an activity",
   "sh-gusta-noun": "gusta (one thing) or gustan (more than one)", "sh-inf": "Verb after gusta stays as is (me gusta nadar)", "sh-pron": "me / te / le / nos / les with gusta",
   "sh-answer": "Answering ¿Te gusta a ti…? with a mí me gusta", "sh-neg": "no goes before me: no me gusta" };
+const XT_GG = {
+  "gg-que": "¿Qué … más? takes gusta", "gg-cuales": "¿Cuáles … más? takes gustan", "gg-qpron": "te / le / les in the question",
+  "gg-ans": "Answer: gusta for one thing or an action, gustan for more than one", "gg-apron": "me / le / nos / les in the answer",
+  "gg-switch": "Switch when you answer: a ti te → a mí me, tu → mi", "gg-qword": "Qué (gusta) or Cuáles (gustan)?" };
 const XTOPIC = {};
-for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
-Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH);
+for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH], ["gg", XT_GG]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
+Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH, XT_GG);
 
 function tapOpts(correct, cands, focus, n = 3) {
   const seen = new Set([correct]), out = [];
@@ -1696,13 +1707,120 @@ function makeSH(focus) {
   if (focus && SH_SET_OF[focus]) set = SH_SET_OF[focus]; else focus = null;
   return set === "words" ? shWords(focus) : set === "tocar" ? shTocar(focus) : shLike(focus, lv);
 }
+/* ----- gusta or gustan? ¿Qué le gusta más a…? questions and answers ----- */
+// q = how the question says the person, qp = its pronoun; a / ap = the same in the answer; en = English in the question, aen = English in the answer
+const GG_FAM = [["hermano", "brother"], ["hermana", "sister"], ["tío", "uncle"], ["tía", "aunt"], ["mamá", "mum"], ["papá", "dad"],
+  ["abuelo", "grandad"], ["abuela", "grandma"], ["primo", "cousin"], ["prima", "cousin"], ["hijo", "son"], ["hija", "daughter"], ["esposo", "husband"], ["esposa", "wife"], ["novio", "boyfriend"], ["novia", "girlfriend"]];
+const GG_FAMP = [["padres", "parents"], ["hermanos", "brothers and sisters"], ["abuelos", "grandparents"], ["primos", "cousins"], ["hijos", "children"], ["tíos", "aunts and uncles"]];
+function ggWho(lv) {
+  const r = Math.random();
+  if (r < 0.2) return { q: "a ti", qp: "te", a: "a mí", ap: "me", en: "you", aen: "I", s3: false, you: true };
+  if (lv > 0 && r < 0.3) return { q: "a ustedes", qp: "les", a: "a nosotros", ap: "nos", en: "you all", aen: "we", s3: false, you: true };
+  if (r < 0.38) { const [N] = otherNames(1); return { q: "a " + N, qp: "le", a: "a " + N, ap: "le", en: N, aen: N, s3: true }; }
+  if (lv > 0 && r < 0.55) { const [w, e] = pickFresh(GG_FAMP, "ggfp"); return { q: "a tus " + w, qp: "les", a: "a mis " + w, ap: "les", en: "your " + e, aen: "my " + e, s3: false }; }
+  const [w, e] = pickFresh(GG_FAM, "ggf");
+  return { q: "a tu " + w, qp: "le", a: "a mi " + w, ap: "le", en: "your " + e, aen: "my " + e, s3: true };
+}
+// [spanish, english, s = one thing / p = more than one / inf = an action]; pairs are picked from the same group
+const GG_THINGS = [
+  [["el café", "coffee", "s"], ["el té", "tea", "s"], ["el chocolate", "chocolate", "s"], ["el helado", "ice cream", "s"], ["la pizza", "pizza", "s"], ["el pescado", "fish", "s"], ["el pollo", "chicken", "s"],
+    ["los mangos", "mangoes", "p"], ["las manzanas", "apples", "p"], ["las fresas", "strawberries", "p"], ["los plátanos", "bananas", "p"], ["los tacos", "tacos", "p"], ["las papas fritas", "fries", "p"], ["las verduras", "vegetables", "p"]],
+  [["los perros", "dogs", "p"], ["los gatos", "cats", "p"], ["los caballos", "horses", "p"], ["los pájaros", "birds", "p"], ["el mar", "the sea", "s"], ["la montaña", "the mountains", "s"], ["la playa", "the beach", "s"], ["el campo", "the countryside", "s"]],
+  [["el fútbol", "soccer", "s"], ["el tenis", "tennis", "s"], ["el béisbol", "baseball", "s"], ["el básquetbol", "basketball", "s"], ["los deportes", "sports", "p"], ["los videojuegos", "video games", "p"], ["los libros", "books", "p"], ["las películas", "movies", "p"], ["la música", "music", "s"]],
+  [["el verano", "summer", "s"], ["el invierno", "winter", "s"], ["los lunes", "Mondays", "p"], ["los viernes", "Fridays", "p"], ["los sábados", "Saturdays", "p"], ["las vacaciones", "holidays", "p"], ["la lluvia", "the rain", "s"], ["el sol", "the sun", "s"]],
+  [["nadar", "swimming", "inf"], ["bailar", "dancing", "inf"], ["leer", "reading", "inf"], ["cocinar", "cooking", "inf"], ["correr", "running", "inf"], ["cantar", "singing", "inf"], ["dibujar", "drawing", "inf"], ["viajar", "traveling", "inf"], ["dormir", "sleeping", "inf"]]];
+const ggV = t => t[2] === "p" ? "gustan" : "gusta";
+const GG_QUE = "¿Qué … más? always takes gusta. Qué is the one thing you pick, so it is one, even when the choices are plural (los mangos o las fresas).";
+const GG_CUALES = "¿Cuáles…? is plural (which ones), so it takes gustan: ¿Cuáles te gustan más, los perros o los gatos?";
+const ggAgree = t => t[2] === "p" ? `In the answer, ${t[0]} is more than one thing, so it is gustan. (The question used gusta because qué is one choice.)` : t[2] === "inf" ? `${cap(t[0])} is an action, and actions always take gusta.` : `${cap(t[0])} is one thing, so it is gusta.`;
+const GG_PRON_FIX = { "a mí": "me", "a ti": "te", "a nosotros": "nos", "a ustedes": "les" };
+const ggPronWhy = (who, p) => `${cap(who)} goes with ${p}. ${PAIRS}.`;
+const GG_TABS = [["ask", "Ask: ¿Qué le gusta más…?"], ["answer", "Answer it"], ["qword", "qué or cuáles?"], ["mix", "Mix"]];
+const GG_SET_OF = { "gg-que": "ask", "gg-cuales": "ask", "gg-qpron": "ask", "gg-ans": "answer", "gg-apron": "answer", "gg-switch": "answer", "gg-qword": "qword" };
+function ggPair(onlyPl) {
+  const g = onlyPl ? GG_THINGS[pick([0, 1, 2])].filter(t => t[2] === "p") : pick(GG_THINGS);
+  return shuffle(g).slice(0, 2);
+}
+function ggQ(W, A, B, w = "Qué") { const v = w === "Cuáles" ? "gustan" : "gusta"; return `¿${w} ${W.qp} ${v} más ${W.q}, ${A[0]} o ${B[0]}?`; }
+function ggQen(W, A, B, w = "What") { return `${w} ${W.s3 ? "does" : "do"} ${W.en} like more, ${A[1]} or ${B[1]}?`; }
+function ggAsk(focus, lv) {
+  const W = ggWho(lv), it = { kind: "tap", type: "choice", topic: "gg", stat: "gusta or gustan: questions", focus: focus || null };
+  let kind = pick(["verb", "verb", "verb", "say", "say", "pron", lv > 0 ? "cuales" : "verb"]);
+  if (focus === "gg-cuales") kind = "cuales"; else if (focus === "gg-qpron") kind = "pron"; else if (focus === "gg-que") kind = pick(["verb", "say"]);
+  const cua = kind === "cuales", [A, B] = ggPair(cua), Qw = cua ? "Cuáles" : "Qué", v = cua ? "gustan" : "gusta", ov = cua ? "gusta" : "gustan";
+  const full = ggQ(W, A, B, Qw), en = ggQen(W, A, B, cua ? "Which" : "What"), rule = cua ? GG_CUALES : GG_QUE, tag = cua ? "gg-cuales" : "gg-que";
+  it.full = full; it.mq = en; it.explain = rule;
+  if (kind === "verb" || kind === "cuales") {
+    it.lead = "gusta or gustan?"; it.es = `¿${Qw} ${W.qp} ___ más ${W.q}, ${A[0]} o ${B[0]}?`; it.en = en; it.tested = [tag];
+    it.options = shuffle([{ text: v, correct: true }, { text: ov, tag, msg: rule },
+      { text: W.qp === "te" ? "gustas" : "gusto", tag, msg: "Use gusta or gustan. The person is shown by " + W.qp + ", not by the end of gustar." }]);
+  } else if (kind === "pron") {
+    it.lead = "Pick the little word for the person"; it.es = `¿Qué ___ gusta más ${W.q}, ${A[0]} o ${B[0]}?`; it.en = en; it.tested = ["gg-qpron"];
+    it.explain = `${cap(W.q)} goes with ${W.qp}. ${PAIRS}.`;
+    it.options = tapOpts(W.qp, ["me", "te", "le", "nos", "les"].filter(p => p !== W.qp).map(p => ({ text: p, tag: "gg-qpron", msg: ggPronWhy(W.q, W.qp) })), focus);
+  } else {
+    it.lead = "Say it in Spanish"; it.es = en; it.esLang = "en"; it.en = ""; it.tested = ["gg-que", "gg-qpron"];
+    it.alts = [ggQ(W, B, A)];
+    const wp = pick(["me", "te", "le", "les"].filter(p => p !== W.qp));
+    it.options = tapOpts(full, [
+      { text: `¿Qué ${W.qp} gustan más ${W.q}, ${A[0]} o ${B[0]}?`, tag: "gg-que", msg: GG_QUE },
+      { text: `¿Qué ${wp} gusta más ${W.q}, ${A[0]} o ${B[0]}?`, tag: "gg-qpron", msg: ggPronWhy(W.q, W.qp) },
+      { text: `¿Qué gusta más ${W.q}, ${A[0]} o ${B[0]}?`, tag: "gg-qpron", msg: `Gustar needs the little word for the person too (${W.qp}): ${full}` }], focus);
+  }
+  return it;
+}
+function ggAnswer(focus, lv) {
+  const W = ggWho(lv), it = { kind: "tap", type: "choice", topic: "gg", stat: "gusta or gustan: answers", focus: focus || null };
+  const cua = lv > 0 && Math.random() < 0.15, [A, B] = ggPair(cua), T = Math.random() < 0.5 ? A : B, v = ggV(T), ov = v === "gusta" ? "gustan" : "gusta";
+  const q = ggQ(W, A, B, cua ? "Cuáles" : "Qué"), aW = cap(W.a), right = `${aW} ${W.ap} ${v} más ${T[0]}.`;
+  const enAns = `${cap(W.aen)} ${W.s3 ? "likes" : "like"} ${T[1]} more.`;
+  it.full = right; it.mq = q; it.explain = `In the answer, gusta / gustan matches the thing picked: one thing or an action → gusta, more than one → gustan.${W.you ? ` The question asks ${W.q} ${W.qp}, so you answer ${W.a} ${W.ap}.` : ""}`;
+  let kind = pick(["pick", "pick", "blank", "blank", "pron"]);
+  if (focus === "gg-ans") kind = pick(["pick", "blank"]); else if (focus === "gg-apron" || focus === "gg-switch") kind = pick(["pick", "pron"]);
+  if (kind === "blank") {
+    it.lead = q; it.es = `${aW} ${W.ap} ___ más ${T[0]}.`; it.en = enAns; it.tested = ["gg-ans"];
+    it.options = shuffle([{ text: v, correct: true }, { text: ov, tag: "gg-ans", msg: ggAgree(T) },
+      { text: W.ap === "me" ? "gusto" : "gustas", tag: "gg-ans", msg: "Use gusta or gustan. The person is shown by " + W.ap + "." }]);
+  } else if (kind === "pron") {
+    it.lead = q; it.es = `${aW} ___ ${v} más ${T[0]}.`; it.en = enAns; it.tested = W.you ? ["gg-apron", "gg-switch"] : ["gg-apron"];
+    const c = ["me", "te", "le", "nos", "les"].filter(p => p !== W.ap).map(p => ({ text: p, tag: p === W.qp ? "gg-switch" : "gg-apron",
+      msg: p === W.qp && W.you ? `The question says ${W.q} ${W.qp}. You answer about yourself, so it changes to ${W.a} ${W.ap}.` : ggPronWhy(W.a, W.ap) }));
+    it.options = tapOpts(W.ap, c, focus);
+  } else {
+    it.lead = "Pick the best answer"; it.es = q; it.en = `(${enAns})`; it.tested = W.you ? ["gg-ans", "gg-switch"] : ["gg-ans"];
+    const c = [{ text: `${aW} ${W.ap} ${ov} más ${T[0]}.`, tag: "gg-ans", msg: ggAgree(T) }];
+    if (W.you) c.push({ text: `${cap(W.q)} ${W.qp} ${v} más ${T[0]}.`, tag: "gg-switch", msg: `The question asks ${W.q} ${W.qp} (${W.en}). Answer for ${W.aen}: ${W.a} ${W.ap}.` });
+    else if (W.q !== W.a) c.push({ text: `${cap(W.q)} ${W.ap} ${v} más ${T[0]}.`, tag: "gg-switch", msg: `The question says ${W.q.replace(/^a /, "")} (${W.en}). When you answer, it is ${W.a.replace(/^a /, "")} (${W.aen}).` });
+    const wp = W.ap === "les" ? "le" : W.ap === "le" ? "les" : W.ap === "me" ? "te" : "les";
+    c.push({ text: `${aW} ${wp} ${v} más ${T[0]}.`, tag: "gg-apron", msg: ggPronWhy(W.a, W.ap) });
+    if (W.ap === "me") c.push({ text: `Yo gusto más ${T[0]}.`, tag: "gg-apron", msg: "Say a mí me gusta(n), not yo gusto. Gustar works backwards: the thing pleases me." });
+    it.options = tapOpts(right, c, focus);
+  }
+  return it;
+}
+function ggQword(focus, lv) {
+  const W = ggWho(lv), it = { kind: "tap", type: "choice", topic: "gg", stat: "gusta or gustan: qué or cuáles", focus: focus || null, tested: ["gg-qword"] };
+  const cua = Math.random() < 0.5, [A, B] = ggPair(cua), v = cua ? "gustan" : "gusta";
+  it.lead = "Qué or Cuáles?"; it.es = `¿___ ${W.qp} ${v} más ${W.q}, ${A[0]} o ${B[0]}?`; it.en = ggQen(W, A, B, cua ? "Which" : "What");
+  it.full = ggQ(W, A, B, cua ? "Cuáles" : "Qué"); it.mq = it.en; if (!cua) it.alts = ["Cuál"];
+  it.explain = "Look at the verb. gusta → Qué (or Cuál), one choice. gustan → Cuáles, more than one.";
+  it.options = shuffle([{ text: cua ? "Cuáles" : "Qué", correct: true }, { text: cua ? "Qué" : "Cuáles", tag: "gg-qword", msg: cua ? `The verb is gustan (more than one), so it is Cuáles. With Qué you would say ¿Qué ${W.qp} gusta más…?` : "The verb is gusta (one choice), so it is Qué. Cuáles goes with gustan." },
+    { text: "Quién", tag: "gg-qword", msg: "Quién means who. Here you are asking what someone likes." }]);
+  return it;
+}
+function makeGG(focus) {
+  const sel = state.settings.ggset || "ask", lv = levelOf("gg");
+  let set = sel === "mix" || !GG_TABS.some(t => t[0] === sel) ? pick(["ask", "answer", "answer", "qword"]) : sel;
+  if (focus && GG_SET_OF[focus]) set = GG_SET_OF[focus]; else focus = null;
+  return set === "ask" ? ggAsk(focus, lv) : set === "answer" ? ggAnswer(focus, lv) : ggQword(focus, lv);
+}
 function makeX(focus) {
   if (topic === "mixq") return makeMixQ(focus);
-  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
+  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "gg" ? makeGG(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
 }
 
 /* ----- rendering for these items ----- */
-const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Hobbies" };
+const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Hobbies", gg: "gusta or gustan?" };
 function renderTap(box, it) {
   box.append(el("p", { class: "en" }, el("b", {}, it.lead), it.en ? " · " + it.en : ""));
   if (it.pic) box.append(it.pic());
@@ -1854,9 +1972,21 @@ function renderSHPanel() {
       el("p", {}, el("b", { class: "vb" }, "tocar"), " for instruments: ", b("toco la guitarra"), ". ", el("b", { class: "pr" }, "jugar"), " for sports and games: ", b("juego al fútbol"), "."));
   } else box.append(el("h2", {}, "Hobbies, mixed"), el("p", {}, "Hobby words, me gusta and tocar or jugar, all together."));
 }
+function renderGGPanel() {
+  const sel = state.settings.ggset || "ask"; segButtons("#ggsets", GG_TABS, sel, "ggset");
+  const box = $("#ggcheat"); box.replaceChildren();
+  const b = t => el("b", { class: "es-i" }, t), g1 = el("b", { class: "vb" }, "gusta"), g2 = () => el("b", { class: "pr" }, "gustan");
+  box.append(el("h2", {}, "gusta or gustan?"),
+    el("p", {}, "gusta / gustan matches the thing that is liked, never the person."),
+    el("p", {}, "Question: ", b("¿Qué le gusta más a tu hermano, los mangos o las fresas?"), " Always ", el("b", { class: "vb" }, "gusta"), " with ¿Qué … más?, because qué is the one thing he picks."),
+    el("p", {}, "Answer: ", b("A mi hermano le gustan más los mangos."), " Now the thing is los mangos (more than one), so ", g2(), ". ", b("A mi hermano le gusta más el café."), " One thing, so gusta. An action is always gusta: ", b("me gusta más nadar"), "."),
+    el("p", {}, "Which ones? ", b("¿Cuáles te gustan más, los perros o los gatos?"), " Cuáles is plural, so ", g2(), "."),
+    el("p", {}, "Switch when you answer: a ti te → ", b("a mí me"), ", tu hermano → ", b("mi hermano"), ", a ustedes les → ", b("a nosotros nos"), ". le and les stay the same."),
+    el("p", {}, PAIRS));
+}
 function applyXSettings() {
   document.querySelectorAll("#qwmodes button").forEach(b => b.setAttribute("aria-pressed", b.dataset.q === (state.settings.qw || "mix")));
-  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
+  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderGGPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
 }
 
 /* ---------- gustar: build the question from tiles (worksheet style) ---------- */
@@ -1997,6 +2127,10 @@ TOCO.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `play (an instrument) · ${PERS[
 for (const [k, v] of Object.entries({ "tocar": "to play (an instrument) / to touch", "jugar": "to play (sports, games)", "al": "to the (a + el)", "gusta": "is pleasing (like) · gustar", "gustan": "are pleasing (like, more than one) · gustar",
   "y": "and", "hermano": "brother", "bicicleta": "bike", "fotos": "photos", "películas": "movies", "guitarra": "guitar", "videojuegos": "video games", "deportes": "sports", "partidos": "games / matches",
   "fiestas": "parties", "conciertos": "concerts", "montar": "to ride", "escuchar": "to listen to", "ver": "to watch / see", "tomar": "to take", "música": "music", "ustedes": "you all" })) GLOSS[k] = GLOSS[k] || v;
+for (const [es, en] of [...GG_FAM, ...GG_FAMP]) GLOSS[es] = GLOSS[es] || en;
+for (const t of GG_THINGS.flat()) { const w = t[0].split(" "); const k = w.length > 1 && /^(el|la|los|las)$/.test(w[0]) ? w.slice(1).join(" ") : t[0]; if (!k.includes(" ")) GLOSS[k] = GLOSS[k] || t[1]; }
+for (const [k, v] of Object.entries({ "más": "more", "o": "or", "qué": "what", "cuáles": "which ones", "cuál": "which one", "tu": "your", "tus": "your (more than one)", "mi": "my", "mis": "my (more than one)",
+  "mí": "me (after a)", "ti": "you (after a)", "a": "to (a mí = to me)", "papas": "potatoes", "fritas": "fried" })) GLOSS[k] = GLOSS[k] || v;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
 
@@ -2005,7 +2139,7 @@ const FMT_NAMES = [["mix", "Mix"], ["tap", "Tap the answer"], ["type", "Type it"
 const NO_LOWER = new Set([...NAMES.map(n => n.toLowerCase()), "lima", "bogotá"]);
 const LEVEL_NAME = ["⭐ Easy", "⭐⭐ Medium", "⭐⭐⭐ Hard"];
 const DIFF_NAMES = [["auto", "Auto (grows with you)"], ["0", "Easy"], ["1", "Medium"], ["2", "Hard"]];
-const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"]];
+const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"], ["panel-gg", "gg"]];
 const DIFF_HELP = { time: "Hard: no digital time, any 5 minutes, and you type the time yourself." };
 function diffOf(t) { const d = (state.settings.diff || {})[t]; return d == null ? "auto" : d; }
 function renderDiffSegs() {
@@ -2098,12 +2232,13 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["sh", "Hobbies"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["sh", "Hobbies"], ["gg", "gusta or gustan?"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
   if (!Array.isArray(q.topics)) q.topics = QB_TOPICS.map(t => t[0]);
   if (!Array.isArray(q.verbs)) q.verbs = [];
+  if (!q.gg) { q.gg = 1; if (QB_TOPICS.every(([k]) => k === "gg" || k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("gg")) q.topics.push("gg"); }
   if (!q.hb) { q.hb = 1; if (QB_TOPICS.every(([k]) => k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("sh")) q.topics.push("sh"); }
   if (!q.sp) { q.sp = 1; if (QB_TOPICS.every(([k]) => k === "sports" || q.topics.includes(k)) && !q.topics.includes("sports")) q.topics.push("sports"); }
   if (q.topics.includes("gustar")) { q.topics = q.topics.filter(t => t !== "gustar"); if (!q.topics.includes("verbs")) { q.topics.push("verbs"); q.verbs = ["gustar"]; } else if (q.verbs.length && !q.verbs.includes("gustar")) q.verbs.push("gustar"); }
@@ -2123,6 +2258,7 @@ function makeMixQ(focus) {
   if (t === "qw") it = makeQW(f);
   else if (t === "se") it = makeSE(f);
   else if (t === "sh") it = makeSH(f);
+  else if (t === "gg") it = makeGG(f);
   else if (t === "verbs") { const keep = state.settings.verb2; state.settings.verb2 = q.verbs; try { it = makeVerb(f); } finally { state.settings.verb2 = keep; } }
   else if (t === "time") it = makeTime(f);
   else if (t === "days" || t === "months") it = makeSeq(t, f);
@@ -2480,7 +2616,7 @@ function applySettings() {
 $("#modes").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.mode = b.dataset.mode; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#levels").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.level = b.dataset.l; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#tenses").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.tenses = b.dataset.t; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
-const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "custom"];
+const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "gg", "custom"];
 function selectTab(which, reset = true) {
   if (!TABS.includes(which) || which === "built") which = "mixq";
   for (const t of TABS) { $("#tab-" + t).setAttribute("aria-selected", t === which); $("#panel-" + t).hidden = t !== which; }
