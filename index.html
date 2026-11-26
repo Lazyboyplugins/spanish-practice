@@ -174,6 +174,16 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 #popq .popt.emo{font-size:46px;padding:8px}#popq .popt.ok{border-color:#2f9e5b;background:rgba(47,158,91,.15)}#popq .popt.bad{border-color:#c8453b;background:rgba(200,69,59,.15)}
 #popq .pdir{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}#popq .pfb{min-height:1.4em;text-align:center;margin:12px 0 4px;font-weight:600}
 #popq .pend li{margin:4px 0}
+#conjpop{position:fixed;inset:0;z-index:46;background:rgba(10,14,22,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#conjpop .pbox{background:var(--surface);color:var(--ink);border-radius:20px;max-width:480px;width:100%;padding:18px 18px 16px;box-shadow:0 12px 40px rgba(0,0,0,.3);max-height:calc(100vh - 32px);overflow:auto}
+#conjpop .ptop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+#conjpop .chead{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 10px;margin:2px 0 6px}#conjpop .cinf{font-size:30px;font-weight:700}#conjpop .cm{color:var(--muted);font-size:15px;flex-basis:100%}
+#conjpop .cnote{margin:0 0 8px;font-size:14px;background:var(--accent-soft);border-radius:10px;padding:8px 10px}
+#conjpop .ctab{width:100%;border-collapse:collapse;font-size:17px}#conjpop .ctab td,#conjpop .ctab th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+#conjpop .ctab th{font-size:12px;color:var(--muted);font-weight:500}#conjpop .ctab .cp{font-size:14px;color:var(--muted)}#conjpop .ctab .cen{font-size:12px}#conjpop .ctab td.ch{text-align:right;width:1%}
+#conjpop .ctab tr.on td{background:var(--accent-soft)}#conjpop .ctab b.hit{color:var(--accent)}
+#conjpop .chear{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:2px 8px;font-size:13px;line-height:1.4}#conjpop .chear:hover{border-color:var(--accent)}
+.wrap{-webkit-touch-callout:none}
 .bigemoji{font-size:96px;line-height:1.1;text-align:center;margin:6px 0}.pic svg.clock{width:min(190px,56vw)}.pic svg.bodyfig{width:min(230px,60vw)}.shirt{fill:#7fb2e5;stroke:#2c5a8a;stroke-width:2}.shirt2{fill:#a9cdf0;stroke:#2c5a8a;stroke-width:2}.shorts{fill:#5b6b7f;stroke:#333;stroke-width:2}.navel{fill:#7a4b2e}.smile{fill:none;stroke:#7a4b2e;stroke-width:2.5;stroke-linecap:round}.subchips{margin:6px 0 10px}
 .digital{font-family:var(--display);font-size:22px;color:var(--muted)}
 .skin{fill:#f3c6a0;stroke:#7a4b2e;stroke-width:2}.skin2{fill:#e7b189;stroke:#7a4b2e;stroke-width:2}.hair{fill:#4a2f1d}
@@ -208,7 +218,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
   <header class="top">
     <div class="brand">
       <h1>Repaso <span class="me">de</span> español</h1>
-      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or hobbies.</p>
+      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
     </div>
     <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span><button class="btn" type="button" id="pop10">🎲 10 random nouns</button></div>
   </header>
@@ -2550,7 +2560,7 @@ function breakdown(it) {
   return el("div", {}, parts, el("div", { class: "lit", style: "margin-top:6px" }, lit));
 }
 document.addEventListener("keydown", e => {
-  if (!cur || $("#popq") || $("#whogate")) return;
+  if (!cur || $("#popq") || $("#conjpop") || $("#whogate")) return;
   if (answered && e.key === "Enter" && document.activeElement && document.activeElement.id !== "next" && !["TEXTAREA", "SELECT"].includes(document.activeElement.tagName) && !document.activeElement.closest(".form")) { e.preventDefault(); $("#next") && $("#next").click(); }
   if (!answered && cur.type === "choice" && /^[1-4]$/.test(e.key) && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) { const i = +e.key - 1; if (cur.options[i]) answerChoice(i); }
 });
@@ -2745,6 +2755,142 @@ function popQuiz() {
 }
 $("#pop10").addEventListener("click", popQuiz);
 document.addEventListener("keydown", e => { const w = $("#popq"); if (!w) return; if (e.key === "Escape") { w.remove(); document.body.style.overflow = ""; } else if (/^[1-4]$/.test(e.key)) { const b = w.querySelectorAll(".popt")[+e.key - 1]; b && !b.disabled && b.click(); } });
+
+/* ---------- right-click (or press and hold) a verb: all its present-tense forms ---------- */
+const CONJ = {}, CONJ_OF = {};
+const PERS_FULL = ["yo", "tú", "él / ella / usted", "nosotros / nosotras", "ellos / ellas / ustedes"];
+const regForms = inf => { const st = inf.replace(/(ar|er|ir)(se)?$/, ""), e = inf.match(/(ar|er|ir)(se)?$/)[1];
+  return e === "ar" ? [st + "o", st + "as", st + "a", st + "amos", st + "an"] : e === "er" ? [st + "o", st + "es", st + "e", st + "emos", st + "en"] : [st + "o", st + "es", st + "e", st + "imos", st + "en"]; };
+function addConj(inf, d) {
+  if (CONJ[inf]) return;
+  const V = { inf, m: d.m, f: d.f || regForms(inf), refl: !!d.refl || /se$/.test(inf), ch: d.ch || null, note: d.note || null, en: d.en || null, modal: !!d.modal };
+  CONJ[inf] = V;
+  const keys = [inf, ...V.f]; if (V.refl) keys.push(inf.replace(/se$/, ""));
+  for (const k of keys) if (!CONJ_OF[k]) CONJ_OF[k] = inf;
+}
+addConj("ser", { m: "to be (who / what someone is, where from, time)", f: SER, en: ["am", "are", "is", "are", "are"], note: "Irregular: learn these by heart." });
+addConj("estar", { m: "to be (where something is, how someone feels)", f: ESTAR, en: ["am", "are", "is", "are", "are"], note: "Irregular yo form: estoy. Accents on estás, está, están." });
+for (const [inf, V] of Object.entries(V2)) addConj(inf, { m: V.m, f: V.f, refl: V.refl, ch: V.ch, modal: V.modal });
+addConj("tocar", { m: "to play (an instrument) / to touch", f: TOCO });
+for (const [inf, m, f, ch, note] of [
+  ["tener", "to have", ["tengo", "tienes", "tiene", "tenemos", "tienen"], "e→ie", "Irregular yo form: tengo."],
+  ["querer", "to want", ["quiero", "quieres", "quiere", "queremos", "quieren"], "e→ie"],
+  ["venir", "to come", ["vengo", "vienes", "viene", "venimos", "vienen"], "e→ie", "Irregular yo form: vengo."],
+  ["ir", "to go", ["voy", "vas", "va", "vamos", "van"], null, "Irregular: learn these by heart."],
+  ["hacer", "to do / to make", ["hago", "haces", "hace", "hacemos", "hacen"], null, "Irregular yo form: hago."],
+  ["ver", "to see / to watch", ["veo", "ves", "ve", "vemos", "ven"], null, "Irregular yo form: veo."],
+  ["salir", "to go out / to leave", ["salgo", "sales", "sale", "salimos", "salen"], null, "Irregular yo form: salgo."],
+  ["decir", "to say / to tell", ["digo", "dices", "dice", "decimos", "dicen"], "e→i", "Irregular yo form: digo."],
+  ["saber", "to know (a fact)", ["sé", "sabes", "sabe", "sabemos", "saben"], null, "Irregular yo form: sé."],
+  ["conocer", "to know (a person or place)", ["conozco", "conoces", "conoce", "conocemos", "conocen"], null, "Irregular yo form: conozco."],
+  ["empezar", "to start", ["empiezo", "empiezas", "empieza", "empezamos", "empiezan"], "e→ie"],
+  ["volver", "to come back", ["vuelvo", "vuelves", "vuelve", "volvemos", "vuelven"], "o→ue"],
+  ["almorzar", "to have lunch", ["almuerzo", "almuerzas", "almuerza", "almorzamos", "almuerzan"], "o→ue"],
+  ["llamarse", "to be called (your name)", null, null, "me llamo = my name is (I call myself)."],
+]) addConj(inf, { m, f, ch, note });
+for (const [inf, m] of [["hablar", "to speak"], ["estudiar", "to study"], ["trabajar", "to work"], ["vivir", "to live"], ["comer", "to eat"], ["beber", "to drink"],
+  ["llegar", "to arrive"], ["caminar", "to walk"], ["cocinar", "to cook"], ["viajar", "to travel"], ["bailar", "to dance"], ["cantar", "to sing"], ["escuchar", "to listen (to)"],
+  ["nadar", "to swim"], ["correr", "to run"], ["leer", "to read"], ["escribir", "to write"], ["aprender", "to learn"], ["tomar", "to take / to drink"], ["montar", "to ride"],
+  ["mirar", "to look at / to watch"], ["madrugar", "to get up early"], ["desayunar", "to have breakfast"], ["cenar", "to have dinner"], ["necesitar", "to need"], ["usar", "to use"],
+  ["comprar", "to buy"], ["pintar", "to paint"], ["dibujar", "to draw"], ["limpiar", "to clean"], ["abrir", "to open"], ["compartir", "to share"], ["vender", "to sell"], ["ayudar", "to help"]]) addConj(inf, { m });
+// gustar-type verbs: the thing liked is the subject, the person goes in me / te / le / nos / les
+for (const [inf, V] of Object.entries(VERBS)) {
+  CONJ[inf] = { inf, m: inf === "gustar" ? "to like (to be pleasing)" : V.gloss, like: V.forms.pres, body: V.type === "body" };
+  for (const k of [inf, ...V.forms.pres, ...V.forms.other.map(o => o[0])]) if (!CONJ_OF[k]) CONJ_OF[k] = inf;
+}
+const verbOf = w => { if (!w) return null; const k = w.toLowerCase().replace(PUNCT, ""); return CONJ_OF[k] || null; };
+const enBase = V => V.modal ? "can" : V.m.replace(/^to /, "").split(/ \(| \/ /)[0];
+function enRow(V, j) {
+  if (V.en) return ["I", "you", "he / she", "we", "they"][j] + " " + V.en[j];
+  const b = enBase(V), [w, ...rest] = b.split(" ");
+  const s3 = V.modal ? b : [w === "have" ? "has" : s3w(w), ...rest].join(" ");
+  return ["I " + b, "you " + b, "he / she " + s3, "we " + b, "they " + b][j];
+}
+const OBJ_EN = { I: "me", you: "you", "he / she": "him / her", we: "us", they: "them" };
+function likeEn(inf, who) { const E = VERBS[inf].en; return VERBS[inf].type === "like" ? `${who} ${who === "he / she" ? E.s : E.base}` : `${E.s} ${OBJ_EN[who]}`; }
+function conjPop(inf, clicked) {
+  const V = CONJ[inf]; if (!V) return;
+  const old = $("#conjpop"); if (old) old.remove();
+  const ck = clicked ? clicked.toLowerCase().replace(PUNCT, "") : "";
+  const box = el("div", { class: "pbox", role: "dialog", "aria-modal": "true", "aria-label": `All the forms of ${inf}` });
+  const wrap = el("div", { id: "conjpop", onclick: e => { if (e.target === wrap) close(); } }, box);
+  const close = () => { wrap.remove(); document.body.style.overflow = ""; };
+  const hear = (t, lbl) => el("button", { type: "button", class: "chear", title: "Hear it", "aria-label": "Hear " + (lbl || t), onclick: () => say(t) }, "🔊");
+  box.append(el("div", { class: "ptop" }, el("span", { class: "speech-note" }, "Present tense, all the forms"), el("button", { class: "link", type: "button", onclick: close }, "Close ✕")),
+    el("div", { class: "chead" }, el("span", { class: "cinf" }, inf), hear(inf), el("span", { class: "cm" }, V.m)));
+  let all;
+  if (V.like) {
+    const [sg, pl] = V.like, pr = [["a mí", "me", "I"], ["a ti", "te", "you"], ["a él / a ella / a usted", "le", "he / she"], ["a nosotros", "nos", "we"], ["a ellos / a ellas / a ustedes", "les", "they"]];
+    box.append(el("p", { class: "cnote" }, V.body ? `doler works like gustar: the thing that hurts comes after the verb. ${sg} for one thing, ${pl} for more than one.` : `${inf} works like gustar. Use ${sg} for one thing or an activity, ${pl} for more than one thing. The person goes in me / te / le / nos / les.`));
+    const t = el("table", { class: "ctab" }, el("thead", {}, el("tr", {}, el("th", {}, ""), el("th", {}, "one thing"), el("th", {}, "more than one"))),
+      el("tbody", {}, pr.map(([a, p, en]) => el("tr", {},
+        el("td", { class: "cp" }, el("div", {}, `(${a})`), el("div", { class: "cen" }, V.body ? `${{ I: "my", you: "your", "he / she": "his / her", we: "our", they: "their" }[en]} … hurts` : `${likeEn(inf, en)}`)),
+        el("td", {}, el("b", { class: ck === sg ? "hit" : "" }, `${p} ${sg}`), " ", hear(`${p} ${sg}`)),
+        el("td", {}, el("b", { class: ck === pl ? "hit" : "" }, `${p} ${pl}`), " ", hear(`${p} ${pl}`))))));
+    box.append(t); all = pr.map(([, p]) => `${p} ${sg}`).join(", ");
+  } else {
+    const notes = [];
+    if (V.ch) notes.push(`Stem change ${V.ch}, but not with nosotros (${V.f[3]}).`);
+    if (V.refl) notes.push("Reflexive: me / te / se / nos / se goes before the verb.");
+    if (V.note) notes.push(V.note);
+    if (notes.length) box.append(el("p", { class: "cnote" }, notes.join(" ")));
+    const rp = j => V.refl ? RP[j] + " " : "";
+    box.append(el("table", { class: "ctab" }, el("tbody", {}, V.f.map((f, j) => el("tr", { class: ck === f ? "on" : "" },
+      el("td", { class: "cp" }, el("div", {}, PERS_FULL[j]), el("div", { class: "cen" }, enRow(V, j))),
+      el("td", {}, el("b", { class: ck === f ? "hit" : "" }, rp(j) + f)),
+      el("td", { class: "ch" }, hear(rp(j) + f)))))));
+    all = V.f.map((f, j) => `${PERS[j].split(" / ")[0]}, ${rp(j)}${f}`).join(". ");
+  }
+  box.append(el("div", { class: "actions", style: "justify-content:center" }, speakBtns(all), el("button", { class: "btn ghost", type: "button", onclick: close }, "Done")),
+    el("p", { class: "speech-note", style: "text-align:center;margin:6px 0 0" }, "ustedes = you all (Latin America)."));
+  document.body.append(wrap); document.body.style.overflow = "hidden";
+  setTimeout(() => { const b = box.querySelector(".link"); b && b.focus({ preventScroll: true }); }, 0);
+}
+function wordAtPoint(x, y, target) {
+  const w = target && target.closest && target.closest(".w");
+  if (w) { const t = w.firstChild; if (t && t.nodeType === 3) return t.textContent.replace(PUNCT, "").trim(); }
+  // Find the word under the pointer: check each word's on-screen box (works inside buttons too)
+  const root = target && target.nodeType === 1 ? target : document.elementFromPoint(x, y);
+  if (!root) return null;
+  const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), rg = document.createRange(), WRD = /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g;
+  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    if (n.parentElement && n.parentElement.closest(".gl")) continue;
+    for (const m of n.textContent.matchAll(WRD)) {
+      rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length);
+      for (const r of rg.getClientRects()) if (x >= r.left - 2 && x <= r.right + 2 && y >= r.top - 2 && y <= r.bottom + 2) return m[0];
+    }
+  }
+  return null;
+}
+function tryConj(x, y, target) {
+  if ($("#conjpop") || (target && target.closest && target.closest("input,textarea,select,#conjpop"))) return false;
+  const w = wordAtPoint(x, y, target), inf = verbOf(w);
+  if (!inf) return false;
+  conjPop(inf, w); return true;
+}
+document.addEventListener("contextmenu", e => { if (tryConj(e.clientX, e.clientY, e.target) || ($("#conjpop") && Date.now() - holdFired < 1500)) e.preventDefault(); });
+// touch: press and hold
+let holdT = null, holdXY = null, holdFired = 0, held = false;
+document.addEventListener("touchstart", e => {
+  if (e.touches.length !== 1) { clearTimeout(holdT); return; }
+  held = false; const t = e.touches[0], tg = e.target; holdXY = [t.clientX, t.clientY];
+  clearTimeout(holdT); holdT = setTimeout(() => { if (tryConj(holdXY[0], holdXY[1], tg)) { held = true; holdFired = Date.now(); try { getSelection().removeAllRanges(); } catch {} } }, 550);
+}, { passive: true });
+document.addEventListener("touchmove", e => { const t = e.touches[0]; if (holdXY && t && Math.hypot(t.clientX - holdXY[0], t.clientY - holdXY[1]) > 10) clearTimeout(holdT); }, { passive: true });
+document.addEventListener("touchend", e => { clearTimeout(holdT); if (held) { held = false; holdFired = Date.now(); if (e.cancelable) e.preventDefault(); } });
+document.addEventListener("touchcancel", () => clearTimeout(holdT));
+document.addEventListener("click", e => { if (Date.now() - holdFired < 450 && !e.target.closest("#conjpop")) { e.preventDefault(); e.stopPropagation(); } }, true);
+document.addEventListener("keydown", e => {
+  const w = $("#conjpop"); if (!w) return;
+  if (e.key === "Escape") { w.remove(); document.body.style.overflow = ""; }
+}, true);
+// keyboard: the context-menu key or Shift+F10 on a focused word
+document.addEventListener("keydown", e => {
+  if ((e.key === "ContextMenu" || (e.shiftKey && e.key === "F10")) && document.activeElement && document.activeElement.closest && document.activeElement.closest(".w")) {
+    const w = document.activeElement.closest(".w"), r = w.getBoundingClientRect();
+    if (tryConj(r.left + 2, r.top + 2, w)) e.preventDefault();
+  }
+});
 
 /* ---------- boot ---------- */
 window.__repaso = { makeItem, makeBuild, checkBuild, makeX, setTopic: t => (topic = t), checkFill, checkTranslate, spanish, english, expectedBlank, buildOptions, state: () => state };
