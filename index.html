@@ -576,7 +576,10 @@ const S_THINGS = [
   { es: "las arepas", en: "arepas", num: "p" }, { es: "los aguacates", en: "avocados", num: "p" },
   { es: "caminar en el parque", en: "walking in the park", num: "inf" }, { es: "ver películas", en: "watching movies", num: "inf" }, { es: "cantar", en: "singing", num: "inf" },
   { es: "jugar al fútbol", en: "playing soccer", num: "inf" }, { es: "escuchar música", en: "listening to music", num: "inf" }, { es: "trabajar los sábados", en: "working on Saturdays", num: "inf" },
-  { es: "aprender español", en: "learning Spanish", num: "inf" }, { es: "dormir la siesta", en: "taking a nap", num: "inf" }];
+  { es: "aprender español", en: "learning Spanish", num: "inf" }, { es: "dormir la siesta", en: "taking a nap", num: "inf" },
+  { es: "el tenis", en: "tennis", num: "s" }, { es: "el béisbol", en: "baseball", num: "s" }, { es: "la natación", en: "swimming", num: "s" }, { es: "el básquetbol", en: "basketball", num: "s" },
+  { es: "los deportes", en: "sports", num: "p" }, { es: "los partidos de fútbol", en: "football matches", num: "p" }, { es: "las carreras de bicicletas", en: "bike races", num: "p" },
+  { es: "jugar al tenis", en: "playing tennis", num: "inf" }, { es: "correr en el parque", en: "running in the park", num: "inf" }, { es: "ver el fútbol", en: "watching football", num: "inf" }];
 // who: a = the "a ..." phrase, en = English subject, s3 = English takes -s, ans = who answers (for "you" questions)
 const SL = {
   mi: { a: "a mí", pron: "me", en: "I" }, ti: { a: "a ti", pron: "te", en: "you", ans: "mi" },
@@ -1001,6 +1004,9 @@ const GLOSS = {
   "impuntuales": "unpunctual (late)", "dinero": "money", "notas": "grades", "familia": "family", "detalles": "details", "cabeza": "head", "estómago": "stomach", "espalda": "back",
   "pies": "feet", "piernas": "legs", "ojos": "eyes", "profesora": "teacher (female)", "abuelo": "grandfather", "niños": "kids", "turistas": "tourists", "primos": "cousins",
   "hermana": "sister", "padres": "parents", "amigos": "friends", "música latina": "Latin music",
+  "al": "to the (a + el)", "jugar": "to play", "tenis": "tennis (los tenis = trainers)", "béisbol": "baseball", "natación": "swimming", "básquetbol": "basketball",
+  "deportes": "sports", "partidos": "matches / games", "carreras": "races", "bicicletas": "bikes", "correr": "to run", "ver": "to watch / to see", "deporte": "sport",
+  "yoga": "yoga", "kárate": "karate", "mucho": "a lot", "sábados": "Saturdays",
 };
 (() => {
   const g = { gustar: "is pleasing (like)", encantar: "delights (love)", interesar: "interests", fascinar: "fascinates", molestar: "bothers", importar: "matters", doler: "hurts" };
@@ -1020,7 +1026,7 @@ const XT_QW = {
   "cual-ser": "¿Cuál es…? (name, number, favorite)", "cual-which": "cuál for which one", "cuales-plural": "cuál vs cuáles", "quien-plural": "quién vs quiénes",
   "porque": "por qué (why) vs porque (because)", "answer-match": "Matching a question to its answer" };
 const XT_VERBS = {
-  "verb-person": "Matching the verb ending to the person", "stem-change": "Stem changes (o→ue, e→ie)", "stem-nosotros": "No stem change with nosotros",
+  "verb-person": "Matching the verb ending to the person", "stem-change": "Stem changes (o→ue, e→ie, u→ue)", "stem-nosotros": "No stem change with nosotros",
   "verb-infinitive": "Leaving the verb as an infinitive", "refl-missing": "Leaving out me/te/se (reflexive verbs)", "refl-match": "Matching me/te/se to the person" };
 const XT_SE = {
   "se-origin": "ser for where you're from", "se-identity": "ser for who or what someone is", "se-trait": "ser for what someone or something is like",
@@ -1028,7 +1034,7 @@ const XT_SE = {
   "se-person": "ser / estar forms (soy, estoy…)" };
 const XT_NOUNS = { "vocab-face": "Face words", "vocab-body": "Body parts", "vocab-people": "People words", "vocab-animals": "Animal words", "vocab-kitchen": "Kitchen words",
   "vocab-bedroom": "Bedroom words", "vocab-things": "Everyday things", "vocab-food": "Food and drink", "vocab-clothes": "Clothes", "vocab-house": "House words",
-  "vocab-bathroom": "Bathroom words", "vocab-town": "Places in town", "vocab-transport": "Transport", "vocab-nature": "Nature and weather", "vocab-gender": "el or la (word gender)" };
+  "vocab-bathroom": "Bathroom words", "vocab-town": "Places in town", "vocab-transport": "Transport", "vocab-nature": "Nature and weather", "vocab-sports": "Sports words", "vocab-gender": "el or la (word gender)" };
 const XT_WORDS = {
   "days": "Days of the week", "months": "Months of the year",
   "days-order": "Before and after (days)", "months-order": "Before and after (months)", "lowercase": "No capitals for days and months",
@@ -1169,6 +1175,8 @@ const V2 = {
   pensar: { m: "to think", ch: "e→ie", f: ["pienso", "piensas", "piensa", "pensamos", "piensan"], c: [["en la familia", "think about family"], ["mucho", "think a lot"], ["en el fin de semana", "think about the weekend"]] },
   creer: { m: "to believe / to think", f: ["creo", "crees", "cree", "creemos", "creen"], c: [["en los fantasmas", "believe in ghosts"], ["que sí", "think so", 1], ["en la suerte", "believe in luck"]] },
   preferir: { m: "to prefer", ch: "e→ie", f: ["prefiero", "prefieres", "prefiere", "preferimos", "prefieren"], c: [["el té", "prefer tea"], ["la playa", "prefer the beach"], ["caminar", "prefer walking"]] },
+  jugar: { m: "to play (a sport or game)", ch: "u→ue", f: ["juego", "juegas", "juega", "jugamos", "juegan"], c: [["al fútbol los sábados", "play football on Saturdays"], ["al tenis con mi hermana", "play tennis with my sister"], ["básquetbol en el parque", "play basketball in the park"], ["al béisbol", "play baseball"]] },
+  practicar: { m: "to do / practise (a sport)", f: ["practico", "practicas", "practica", "practicamos", "practican"], c: [["natación", "do swimming"], ["yoga los lunes", "do yoga on Mondays"], ["kárate", "do karate"], ["mucho deporte", "do a lot of sport"]] },
   terminar: { m: "to finish", f: ["termino", "terminas", "termina", "terminamos", "terminan"], c: [["el trabajo a las cinco", "finish work at five"], ["la tarea", "finish the homework"], ["de comer", "finish eating"]] },
 };
 const PERS = ["yo", "tú", "él / ella / usted", "nosotros", "ellos / ellas / ustedes"], RP = ["me", "te", "se", "nos", "se"];
@@ -1349,18 +1357,30 @@ const TRANSPORT = [["el carro", "car", "🚗"], ["el autobús", "bus", "🚌"], 
 const NATURE = [["el sol", "sun", "☀️"], ["la luna", "moon", "🌙"], ["la estrella", "star", "⭐"], ["la lluvia", "rain", "🌧️"], ["la nieve", "snow", "❄️"], ["el viento", "wind", "🌬️"],
   ["la nube", "cloud", "☁️"], ["el árbol", "tree", "🌳"], ["la flor", "flower", "🌸"], ["el mar", "sea", "🌊"], ["el río", "river", ""], ["la montaña", "mountain", "⛰️"], ["el fuego", "fire", "🔥"],
   ["el cielo", "sky", ""], ["el arcoíris", "rainbow", "🌈"], ["la hoja", "leaf", "🍃"], ["la piedra", "stone", "🪨"]];
-const NOUNSETS = { face: FACE, body: BODY, people: PEOPLE, animals: ANIMALS, food: FOOD, clothes: CLOTHES, house: HOUSE, kitchen: KITCHEN, bedroom: BEDROOM, bathroom: BATHROOM, town: TOWN, transport: TRANSPORT, nature: NATURE, things: THINGS2 };
+const SP_SPORTS = [["el fútbol", "football / soccer", "⚽"], ["el básquetbol", "basketball", "🏀"], ["el béisbol", "baseball", "⚾"], ["el tenis", "tennis", "🎾"],
+  ["el voleibol", "volleyball", "🏐"], ["la natación", "swimming", "🏊"], ["el ciclismo", "cycling", "🚴"], ["el boxeo", "boxing", "🥊"], ["el golf", "golf", "⛳"],
+  ["el atletismo", "athletics", "🏃"], ["el esquí", "skiing", "⛷️"], ["el surf", "surfing", "🏄"], ["el rugby", "rugby", "🏉"], ["el ping-pong", "table tennis", "🏓"],
+  ["el hockey", "hockey", "🏒"], ["el yoga", "yoga", "🧘"], ["el kárate", "karate", "🥋"]];
+const SP_GEAR = [["la pelota", "ball", ""], ["la raqueta", "racket", ""], ["el bate", "bat", ""], ["el casco", "helmet", ""], ["los patines", "skates", "⛸️"],
+  ["la red", "net", ""], ["el silbato", "whistle", ""], ["la medalla", "medal", "🏅"], ["el trofeo", "trophy", "🏆"], ["el uniforme", "kit / uniform", ""], ["el gol", "goal (a score)", "🥅"]];
+const SP_PLACES = [["el estadio", "stadium", "🏟️"], ["la cancha", "court / pitch", ""], ["la piscina", "swimming pool", ""], ["el gimnasio", "gym", ""],
+  ["el equipo", "team", ""], ["el partido", "match / game", ""], ["el jugador", "player (man)", ""], ["la jugadora", "player (woman)", ""],
+  ["el entrenador", "coach (man)", ""], ["el árbitro", "referee", ""], ["el aficionado", "fan (man)", ""], ["el deporte", "sport", ""]];
+const SPORTS = dedupe(SP_SPORTS, SP_GEAR, SP_PLACES);
+const NOUNSETS = { face: FACE, body: BODY, people: PEOPLE, animals: ANIMALS, food: FOOD, clothes: CLOTHES, house: HOUSE, kitchen: KITCHEN, bedroom: BEDROOM, bathroom: BATHROOM, town: TOWN, transport: TRANSPORT, nature: NATURE, sports: SPORTS, things: THINGS2 };
 const DAYS = [["lunes", "Monday"], ["martes", "Tuesday"], ["miércoles", "Wednesday"], ["jueves", "Thursday"], ["viernes", "Friday"], ["sábado", "Saturday"], ["domingo", "Sunday"]];
 const MONTHS = [["enero", "January"], ["febrero", "February"], ["marzo", "March"], ["abril", "April"], ["mayo", "May"], ["junio", "June"], ["julio", "July"], ["agosto", "August"],
   ["septiembre", "September"], ["octubre", "October"], ["noviembre", "November"], ["diciembre", "December"]];
 const HOURS = ["", "una", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce"];
-const WORDSET_NAME = { face: "the face", body: "the body", people: "people", animals: "animals", food: "food and drink", clothes: "clothes", house: "the house", bathroom: "the bathroom", town: "around town", transport: "transport", nature: "nature and weather", kitchen: "kitchen", bedroom: "bedroom", things: "everyday things", days: "days of the week", months: "months", time: "telling the time" };
+const WORDSET_NAME = { face: "the face", body: "the body", people: "people", animals: "animals", food: "food and drink", clothes: "clothes", house: "the house", bathroom: "the bathroom", town: "around town", transport: "transport", nature: "nature and weather", sports: "sports", kitchen: "kitchen", bedroom: "bedroom", things: "everyday things", days: "days of the week", months: "months", time: "telling the time" };
 const NSUB = {
   body: [["general", "Main parts"], ["head", "Head & face"], ["arm", "Arm & hand"], ["leg", "Leg & foot"], ["torso", "Chest & back"], ["inside", "Inside the body"], ["all", "Everything"]],
-  animals: [["general", "Main animals"], ["pets", "Pets"], ["farm", "Farm"], ["wild", "Wild"], ["birds", "Birds"], ["sea", "Sea"], ["bugs", "Bugs"], ["all", "All animals"]] };
+  animals: [["general", "Main animals"], ["pets", "Pets"], ["farm", "Farm"], ["wild", "Wild"], ["birds", "Birds"], ["sea", "Sea"], ["bugs", "Bugs"], ["all", "All animals"]],
+  sports: [["general", "Sports"], ["gear", "Kit & equipment"], ["places", "Places & people"], ["all", "Everything"]] };
 const NSUBLIST = {
   body: { general: BODY_MAIN, head: FACE.map(f => [f[0], f[1], ""]), arm: BODY_ARM, leg: BODY_LEG, torso: BODY_TORSO, inside: BODY_IN, all: BODY },
-  animals: { general: AN_GEN, pets: AN_PETS, farm: AN_FARM, wild: AN_WILD, birds: AN_BIRDS, sea: AN_SEA, bugs: AN_BUGS, all: ANIMALS } };
+  animals: { general: AN_GEN, pets: AN_PETS, farm: AN_FARM, wild: AN_WILD, birds: AN_BIRDS, sea: AN_SEA, bugs: AN_BUGS, all: ANIMALS },
+  sports: { general: SP_SPORTS, gear: SP_GEAR, places: SP_PLACES, all: SPORTS } };
 const subOf = set => { const k = ((state.settings.nsub || {})[set]) || "general"; return NSUBLIST[set] && NSUBLIST[set][k] ? k : "general"; };
 const nounList = set => NSUBLIST[set] ? NSUBLIST[set][subOf(set)] : NOUNSETS[set];
 const AREA_SUB = { head: "head", neck: "torso", shoulder: "arm", arm: "arm", hand: "arm", chest: "torso", stomach: "torso", leg: "leg", knee: "leg", foot: "leg" };
@@ -1384,7 +1404,7 @@ function bodySVG(hl, onPick) {
   if (onPick) svg.querySelectorAll("[data-p]").forEach(g => { g.classList.add("pickable"); g.addEventListener("click", e => { e.stopPropagation(); onPick(g.dataset.p, svg); }); });
   return d;
 }
-const NOUN_TABS = [["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["things", "Everyday things"], ["mix", "Mix"]];
+const NOUN_TABS = [["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["mix", "Mix"]];
 const TIME_TABS = [["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["mix", "Mix"]];
 
 function faceSVG(hl, onPick) {
@@ -1626,6 +1646,7 @@ function renderVerbPanel() {
     box.append(el("h2", {}, "Verb patterns"),
       el("p", {}, "Change the ending to match the person: yo ", el("b", { class: "vb" }, "-o"), ", tú ", el("b", { class: "vb" }, "-as / -es"), ", él/ella/usted ", el("b", { class: "vb" }, "-a / -e"), ", nosotros ", el("b", { class: "vb" }, "-amos / -emos / -imos"), ", ellos/ustedes ", el("b", { class: "vb" }, "-an / -en"), "."),
       el("p", {}, el("b", { class: "pr" }, "o→ue"), " probar, poder, dormir: pruebo, puedo, duermo… but nosotros probamos, podemos, dormimos."),
+      el("p", {}, el("b", { class: "pr" }, "u→ue"), " jugar (to play): juego, juegas, juega… but nosotros jugamos. Only jugar does this."),
       el("p", {}, el("b", { class: "pr" }, "e→ie"), " pensar, preferir, despertarse: pienso, prefiero, me despierto… but nosotros pensamos."),
       el("p", {}, el("b", { class: "pr" }, "-se verbs"), " levantarse, despertarse, relajarse: me levanto, te levantas, se levanta, nos levantamos, se levantan."));
   }
@@ -1644,9 +1665,9 @@ function renderNounsPanel() {
     box.append(el("h2", {}, "La cara (the face)"), el("p", {}, "Tap the face to hear each word, then try the quiz below."), pic, label,
       el("div", { class: "wchips" }, FACE.map(w => el("button", { class: "chip", type: "button", onclick: () => show(w[2], pic.firstElementChild) }, el("b", {}, w[0]), " · " + w[1]))));
   } else if (sel === "mix") {
-    box.append(el("h2", {}, "All the nouns, mixed"), el("p", {}, "Every noun group mixed together: the face and body, people, animals, food, clothes, the house, town, transport, nature and more."));
+    box.append(el("h2", {}, "All the nouns, mixed"), el("p", {}, "Every noun group mixed together: the face and body, people, animals, food, clothes, the house, town, transport, nature, sports and more."));
   } else {
-    const title = { body: "El cuerpo (the body)", people: "La gente (people)", animals: "Los animales (animals)", kitchen: "La cocina (the kitchen)", bedroom: "El dormitorio (the bedroom)", food: "La comida y las bebidas (food and drink)", clothes: "La ropa (clothes)", house: "La casa (the house)", bathroom: "El baño (the bathroom)", town: "En la ciudad (around town)", transport: "El transporte (transport)", nature: "La naturaleza y el tiempo (nature and weather)", things: "Cosas de todos los días (everyday things)" }[sel];
+    const title = { body: "El cuerpo (the body)", people: "La gente (people)", animals: "Los animales (animals)", kitchen: "La cocina (the kitchen)", bedroom: "El dormitorio (the bedroom)", food: "La comida y las bebidas (food and drink)", clothes: "La ropa (clothes)", house: "La casa (the house)", bathroom: "El baño (the bathroom)", town: "En la ciudad (around town)", transport: "El transporte (transport)", nature: "La naturaleza y el tiempo (nature and weather)", sports: "Los deportes (sports)", things: "Cosas de todos los días (everyday things)" }[sel];
     const list = nounList(sel), sub = NSUB[sel] ? subOf(sel) : null;
     const setSub = k => { (state.settings.nsub || (state.settings.nsub = {}))[sel] = k; scheduleSave(); renderNounsPanel(); if (topic === "nouns") { source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } };
     const cards = list.map(w => {
@@ -1829,7 +1850,7 @@ Object.assign(GLOSS, { "nosotras": "we (all women)", "ellas": "they (all women)"
   "papas": "potatoes", "fritas": "fried", "conciertos": "concerts", "flores": "flowers", "aguacates": "avocados", "ver": "to watch", "cantar": "to sing", "jugar": "to play", "escuchar": "to listen to",
   "trabajar": "to work", "aprender": "to learn", "dormir": "to sleep", "siesta": "nap", "quién": "who", "familia": "family", "tus": "your",
 });
-for (const [es, en] of [...FACE, ...BODY, ...KITCHEN, ...PEOPLE, ...ANIMALS, ...BEDROOM, ...THINGS2, ...FOOD, ...CLOTHES, ...HOUSE, ...BATHROOM, ...TOWN, ...TRANSPORT, ...NATURE]) GLOSS[es.split(" ").slice(1).join(" ")] = GLOSS[es.split(" ").slice(1).join(" ")] || en;
+for (const [es, en] of [...FACE, ...BODY, ...KITCHEN, ...PEOPLE, ...ANIMALS, ...BEDROOM, ...THINGS2, ...FOOD, ...CLOTHES, ...HOUSE, ...BATHROOM, ...TOWN, ...TRANSPORT, ...NATURE, ...SPORTS]) GLOSS[es.split(" ").slice(1).join(" ")] = GLOSS[es.split(" ").slice(1).join(" ")] || en;
 for (const [es, en] of [...DAYS, ...MONTHS]) GLOSS[es] = en;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
@@ -1918,12 +1939,13 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
   if (!Array.isArray(q.topics)) q.topics = QB_TOPICS.map(t => t[0]);
   if (!Array.isArray(q.verbs)) q.verbs = [];
+  if (!q.sp) { q.sp = 1; if (QB_TOPICS.every(([k]) => k === "sports" || q.topics.includes(k)) && !q.topics.includes("sports")) q.topics.push("sports"); }
   if (q.topics.includes("gustar")) { q.topics = q.topics.filter(t => t !== "gustar"); if (!q.topics.includes("verbs")) { q.topics.push("verbs"); q.verbs = ["gustar"]; } else if (q.verbs.length && !q.verbs.includes("gustar")) q.verbs.push("gustar"); }
   if (!Array.isArray(q.fmts) || !q.fmts.length) q.fmts = QB_FMTS.map(f => f[0]);
   return q;
