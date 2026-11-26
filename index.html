@@ -516,7 +516,8 @@ const TAGS = {
 const blank = () => ({ v: 1, skill: {}, stats: {}, verbs: {}, labels: {}, mistakes: [], sets: [], settings: { level: "starter", mode: "smart", verbs: ["gustar"], tenses: "pres" } });
 let state = blank();
 const HAS_CLAUDE = !!(window.claude && window.claude.use);
-const PEOPLE_FIXED = ["Matt", "Rosie"];
+const JOINT = "Matt & Rosie";
+const PEOPLE_FIXED = ["Matt", "Rosie", JOINT];
 let profiles = [...PEOPLE_FIXED];
 let profile = HAS_CLAUDE ? "" : (PEOPLE_FIXED.includes(lsGet("repaso.current")) ? lsGet("repaso.current") : "");
 if (profile && !profiles.includes(profile)) profile = "";
@@ -2676,6 +2677,12 @@ $("#reset").addEventListener("click", confirmReset);
 function switchProfile(name) {
   // Matt keeps any progress made before names existed
   if (name === "Matt" && !lsGet("repaso.v1:Matt") && lsGet("repaso.v1")) lsSet("repaso.v1:Matt", lsGet("repaso.v1"));
+  // The joint profile starts as a copy of Matt's progress (Matt's own copy is left alone)
+  if (name === JOINT && !lsGet("repaso.v1:" + JOINT)) {
+    if (!lsGet("repaso.v1:Matt") && lsGet("repaso.v1")) lsSet("repaso.v1:Matt", lsGet("repaso.v1"));
+    const m = profile === "Matt" ? JSON.stringify(state) : lsGet("repaso.v1:Matt");
+    if (m) lsSet("repaso.v1:" + JOINT, m);
+  }
   profile = name; lsSet("repaso.current", name);
   state = blank(); try { const raw = lsGet(storeKey()); if (raw) state = Object.assign(blank(), JSON.parse(raw)); } catch {}
   if (!state.skill) state.skill = {};
