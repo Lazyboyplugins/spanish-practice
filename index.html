@@ -851,6 +851,7 @@ function coreCheck(rt, it) {
   return { errs, notes };
 }
 function checkFill(raw, it) {
+  raw = typedCore(raw, (it.showA ? it.liker.a + " " : "") + "___ " + it.thing.es + ".");
   const exp = expectedBlank(it), given = lowerKeep(raw);
   if (!given) return null;
   if (given === exp) return { ok: true, errs: [], notes: [] };
@@ -2054,25 +2055,39 @@ function renderTyped(box, it) {
   let input;
   if (it.typeMode === "blank") {
     const [before, ...rest] = it.es.split("___"), after = rest.join("___");
-    input = el("input", { class: "blank", id: "answer", type: "text", autocomplete: "off", autocapitalize: "off", spellcheck: "false", "aria-label": "Your answer", size: Math.max(6, it.answer.length + 2) });
+    input = el("input", { class: "blank", id: "answer", type: "text", autocomplete: "off", autocapitalize: "off", spellcheck: "false", autocorrect: "off", "aria-label": "Your answer", size: Math.max(6, it.answer.length + 2) });
     box.append(el("div", { class: "es" }, words(before), input, words(after), speakBtns(() => answered ? it.full : before + " … " + after)));
   } else {
     if (it.es) box.append(el("div", { class: "es" }, it.es));
-    input = el("input", { class: "long", id: "answer", type: "text", autocomplete: "off", autocapitalize: "sentences", spellcheck: "false", "aria-label": "Your Spanish", placeholder: "Escribe en español…" });
+    input = el("input", { class: "long", id: "answer", type: "text", autocomplete: "off", autocapitalize: "sentences", spellcheck: "false", autocorrect: "off", "aria-label": "Your Spanish", placeholder: "Escribe en español…" });
     box.append(input);
   }
   return input;
+}
+// What the learner typed, minus any words of the sentence that are already shown
+// around the blank (people often type the whole sentence, or the blank plus the rest).
+function typedCore(raw, es) {
+  let t = toks(raw);
+  if (es && es.includes("___")) {
+    const [before, ...rest] = es.split("___"), b = toks(before).map(norm), a = toks(rest.join("___")).map(norm);
+    const nt = () => t.map(norm);
+    if (b.length && t.length > b.length && b.every((w, i) => nt()[i] === w)) t = t.slice(b.length);
+    if (a.length && t.length > a.length && a.every((w, i) => nt()[t.length - a.length + i] === w)) t = t.slice(0, t.length - a.length);
+  }
+  return t.join(" ");
 }
 function submitTyped(raw) {
   const it = cur;
   if (answered || !lowerKeep(raw)) return;
   answered = true; lockInputs();
-  const exact = [it.answer, ...(it.alts || [])].some(a => lowerKeep(raw) === lowerKeep(a)), loose = [it.answer, ...(it.alts || [])].some(a => norm(raw) === norm(a));
+  const given = typedCore(raw, it.typeMode === "blank" ? it.es : ""), goods = [it.answer, ...(it.alts || [])];
+  const exact = goods.some(a => given === lowerKeep(a)), loose = goods.some(a => norm(given) === norm(a));
   let errs = [], notes = [];
   if (loose && !exact) notes.push({ tag: "accent", msg: `Watch the accents: ${it.answer}` });
   if (!loose) {
-    const w = it.wrongs.find(o => norm(o.text) === norm(raw));
+    const w = it.wrongs.find(o => norm(o.text) === norm(given));
     errs = [w ? { tag: w.tag, msg: w.msg } : { tag: it.tested[0], msg: `The answer is ${it.answer.replace(/\.$/, "")}.` }];
+    errs[0].msg = `You typed "${String(raw).trim()}". ` + errs[0].msg;
   }
   record(it, loose, errs, raw, it.full); showFeedback(loose, errs, notes, it.full, it);
 }
@@ -2269,13 +2284,13 @@ function renderQuiz() {
     }
     box.append(el("p", { class: "en" }, markNeg(english_)));
     const expLen = it.kind === "built" ? expectedBlank(it).length : it.q.answer.length;
-    input = el("input", { class: "blank", id: "answer", type: "text", autocomplete: "off", autocapitalize: "off", spellcheck: "false", "aria-label": "Your answer", size: Math.max(6, expLen + 2) });
+    input = el("input", { class: "blank", id: "answer", type: "text", autocomplete: "off", autocapitalize: "off", spellcheck: "false", autocorrect: "off", "aria-label": "Your answer", size: Math.max(6, expLen + 2) });
     box.append(el("div", { class: "es" }, words(before), input, words(after), speakBtns(() => answered ? (it.kind === "built" ? spanish(it, it.showA) : it.q.prompt.replace("___", it.q.answer)) : before + " … " + after)));
     getAnswer = () => input.value;
     box.append(hintRow(hintText));
   } else if (it.type === "translate") {
     box.append(el("p", { class: "en" }, "Say it in Spanish:"), el("div", { class: "es" }, markNeg(english(it))));
-    input = el("input", { class: "long", id: "answer", type: "text", autocomplete: "off", autocapitalize: "sentences", spellcheck: "false", "aria-label": "Your Spanish sentence", placeholder: "Escribe la frase…" });
+    input = el("input", { class: "long", id: "answer", type: "text", autocomplete: "off", autocapitalize: "sentences", spellcheck: "false", autocorrect: "off", "aria-label": "Your Spanish sentence", placeholder: "Escribe la frase…" });
     box.append(input); getAnswer = () => input.value;
     box.append(hintRow(`Pattern: (a + person) + pronoun + ${VERBS[it.verb].forms[it.tense].join("/")} + thing.`));
   } else {
@@ -2318,6 +2333,7 @@ async function submitText(raw) {
   } else {
     answered = true; lockInputs();
     const q = it.q, accepted = [q.answer, ...q.alternatives];
+    raw = typedCore(raw, q.prompt) || raw;
     const exact = accepted.some(a => lowerKeep(a) === lowerKeep(raw)), loose = accepted.some(a => norm(a) === norm(raw));
     const full = q.prompt.replace("___", q.answer);
     if (exact || loose) {
