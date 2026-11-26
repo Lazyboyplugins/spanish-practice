@@ -1214,12 +1214,15 @@ const V2 = {
   bailar: { m: "to dance", f: ["bailo", "bailas", "baila", "bailamos", "bailan"], c: [["salsa", "dance salsa"], ["en la fiesta", "dance at the party"], ["mucho los sábados", "dance a lot on Saturdays"], ["con mi hermana", "dance with my sister"]] },
   caminar: { m: "to walk", f: ["camino", "caminas", "camina", "caminamos", "caminan"], c: [["al trabajo", "walk to work"], ["en el parque", "walk in the park"], ["a la escuela", "walk to school"], ["con el perro", "walk with the dog"]] },
   correr: { m: "to run", f: ["corro", "corres", "corre", "corremos", "corren"], c: [["en el parque", "run in the park"], ["los domingos", "run on Sundays"], ["muy rápido", "run very fast"], ["cinco kilómetros", "run five kilometres"]] },
+  ser: { m: "to be (who you are, where you're from)", irr: true, be: true, f: ["soy", "eres", "es", "somos", "son"], c: [["de Colombia", "be from Colombia"], ["de México", "be from Mexico"], ["de la ciudad", "be from the city"], ["de Perú", "be from Peru"]] },
+  estar: { m: "to be (where you are, how you feel)", yo: true, be: true, f: ["estoy", "estás", "está", "estamos", "están"], c: [["en casa", "be at home"], ["en el parque", "be in the park"], ["en la playa", "be at the beach"], ["bien", "be well"]] },
   terminar: { m: "to finish", f: ["termino", "terminas", "termina", "terminamos", "terminan"], c: [["el trabajo a las cinco", "finish work at five"], ["la tarea", "finish the homework"], ["de comer", "finish eating"]] },
 };
 const PERS = ["yo", "tú", "él / ella / usted", "nosotros", "ellos / ellas / ustedes"], RP = ["me", "te", "se", "nos", "se"];
 const s3w = w => /[^aeiou]y$/.test(w) ? w.slice(0, -1) + "ies" : /(s|sh|ch|x|z|o)$/.test(w) ? w + "es" : w + "s";
 function enPred(V, c, P, neg) {
   if (V.modal) return (neg ? "can't " : "can ") + c[1];
+  if (V.be) { const b = P.i === 0 ? "am" : P.s3 ? "is" : "are"; return (neg ? (P.i === 0 ? "am not" : b + "n't") : b) + " " + c[1].replace(/^be /, ""); }
   if (neg) return (P.s3 ? "doesn't " : "don't ") + c[1];
   if (!P.s3) return c[1];
   const [w, ...rest] = c[1].split(" "); return [s3w(w), ...rest].join(" ");
@@ -1265,7 +1268,8 @@ function makeVerb(focus) {
     if (i === 3) { const w = (V.refl ? "nos " : "") + V.f[0].slice(0, -1) + regEnd[3]; cands.push({ text: w, tag: "stem-nosotros", msg: `nosotros keeps the normal stem: ${correct}. The ${V.ch} change only happens in the other forms (${V.f[0]}, ${V.f[1]}, ${V.f[2]}, ${V.f[4]}).` }); }
     else { const w = (V.refl ? RP[i] + " " : "") + stem + regEnd[i]; cands.push({ text: w, tag: "stem-change", msg: `${inf} is a stem-changing verb (${V.ch}). The stem changes in every form except nosotros, so it's ${correct}, not ${w}.` }); }
   }
-  if (V.yo && i === 0) cands.push({ text: stem + regEnd[0], tag: "irreg-yo", msg: `${inf} has an irregular yo form: ${correct}, not ${stem + regEnd[0]}. The other forms are regular.` });
+  if ((V.yo || V.irr) && i === 0) cands.push({ text: stem + regEnd[0], tag: "irreg-yo", msg: V.irr ? `${inf} is irregular in every form: ${V.f.join(", ")}. The yo form is ${correct}.` : `${inf} has an irregular yo form: ${correct}, not ${stem + regEnd[0]}.` + (inf === "estar" ? " The other forms are regular but have accents: estás, está, están." : " The other forms are regular.") });
+  if (V.irr && i !== 0) { const w = stem + regEnd[i]; if (!V.f.includes(w) && w !== "se") cands.push({ text: w, tag: "verb-person", msg: `${inf} is irregular, so the normal -${end} endings don't work. The ${PERS[i]} form is ${correct}.` }); }
   if (V.refl) {
     cands.push({ text: V.f[i], tag: "refl-missing", msg: `${inf} ends in -se, so it needs its own pronoun before the verb: ${correct}. (yo me, tú te, él/ella/usted se, nosotros nos, ellos/ustedes se)` });
     const wp = ["se", "se", "le", "se", "les"][i];
@@ -1276,7 +1280,7 @@ function makeVerb(focus) {
   const it = { kind: "tap", type: "choice", topic: "verbs", stat: inf, focus: focus || null, tested: ["verb-person"], full: sent(correct), mq: en, explain: vTable(inf, V) };
   if (V.ch) it.tested.push(i === 3 ? "stem-nosotros" : "stem-change");
   if (V.refl) it.tested.push("refl-missing");
-  if (V.yo && i === 0) it.tested.push("irreg-yo");
+  if ((V.yo || V.irr) && i === 0) it.tested.push("irreg-yo");
   if (Math.random() < 0.7) { it.lead = "Pick the right form"; it.es = `${P.es} ${negS}___ ${c[0]}.`; it.en = en; it.options = tapOpts(correct, cands, focus); }
   else { it.lead = "Say it in Spanish"; it.es = en; it.esLang = "en"; it.en = ""; it.options = tapOpts(sent(correct), cands.map(x => ({ ...x, text: sent(x.text) })), focus); }
   return it;
@@ -1886,12 +1890,14 @@ function renderVerbPanel() {
   if (sel === "gustar") { box.innerHTML = $("#cheat").innerHTML; return; }
   if (sel !== "mix" && V2[sel]) {
     const V = V2[sel];
-    box.append(el("h2", {}, `${sel} = ${V.m}`), el("div", { class: "cheat-grid" }, PERS.map((p, j) => el("div", {}, p + " ", el("b", { class: (j !== 3 && V.ch) || (j === 0 && V.yo) ? "pr" : "vb" }, vChunk(V, j))))));
+    box.append(el("h2", {}, `${sel} = ${V.m}`), el("div", { class: "cheat-grid" }, PERS.map((p, j) => el("div", {}, p + " ", el("b", { class: (j !== 3 && V.ch) || (j === 0 && V.yo) || V.irr ? "pr" : "vb" }, vChunk(V, j))))));
     const notes = [];
     if (V.ch) notes.push(`Stem change ${V.ch}: the stem changes in every form except nosotros (shown in orange).`);
     if (V.refl) notes.push("Reflexive: the -se at the end becomes me, te, se, nos, se before the verb.");
-    if (V.yo) notes.push(`Irregular yo form: ${V.f[0]} (shown in orange). The other forms are regular.`);
-    if (!V.ch && !V.refl && !V.yo) notes.push("A regular verb: keep the stem and change the ending.");
+    if (V.irr) notes.push(`Irregular in every form (shown in orange): learn ${V.f.join(", ")} by heart.`);
+    else if (V.yo) notes.push(`Irregular yo form: ${V.f[0]} (shown in orange).` + (sel === "estar" ? " The other forms are regular but have accents: estás, está, están." : " The other forms are regular."));
+    if (sel === "ser" || sel === "estar") notes.push("ser for who someone is and where they're from. estar for where someone is and how they feel. The ser vs estar tab practises choosing between them.");
+    if (!V.ch && !V.refl && !V.yo && !V.irr) notes.push("A regular verb: keep the stem and change the ending.");
     for (const n of notes) box.append(el("p", {}, n));
   } else {
     box.append(el("h2", {}, "Verb patterns"),
