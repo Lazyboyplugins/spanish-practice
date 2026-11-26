@@ -1216,6 +1216,9 @@ const V2 = {
   correr: { m: "to run", f: ["corro", "corres", "corre", "corremos", "corren"], c: [["en el parque", "run in the park"], ["los domingos", "run on Sundays"], ["muy rápido", "run very fast"], ["cinco kilómetros", "run five kilometres"]] },
   ser: { m: "to be (who you are, where you're from)", irr: true, be: true, f: ["soy", "eres", "es", "somos", "son"], c: [["de Colombia", "be from Colombia"], ["de México", "be from Mexico"], ["de la ciudad", "be from the city"], ["de Perú", "be from Peru"]] },
   estar: { m: "to be (where you are, how you feel)", yo: true, be: true, f: ["estoy", "estás", "está", "estamos", "están"], c: [["en casa", "be at home"], ["en el parque", "be in the park"], ["en la playa", "be at the beach"], ["bien", "be well"]] },
+  comer: { m: "to eat", f: ["como", "comes", "come", "comemos", "comen"], c: [["pollo con arroz", "eat chicken with rice"], ["en casa", "eat at home"], ["fruta todos los días", "eat fruit every day"], ["tacos los viernes", "eat tacos on Fridays"]] },
+  tomar: { m: "to drink / to take", f: ["tomo", "tomas", "toma", "tomamos", "toman"], c: [["café por la mañana", "drink coffee in the morning"], ["el autobús", "take the bus"], ["agua", "drink water"], ["té con leche", "drink tea with milk"]] },
+  beber: { m: "to drink", f: ["bebo", "bebes", "bebe", "bebemos", "beben"], c: [["agua", "drink water"], ["jugo de naranja", "drink orange juice"], ["leche", "drink milk"], ["mucho café", "drink a lot of coffee"]] },
   terminar: { m: "to finish", f: ["termino", "terminas", "termina", "terminamos", "terminan"], c: [["el trabajo a las cinco", "finish work at five"], ["la tarea", "finish the homework"], ["de comer", "finish eating"]] },
 };
 const PERS = ["yo", "tú", "él / ella / usted", "nosotros", "ellos / ellas / ustedes"], RP = ["me", "te", "se", "nos", "se"];
@@ -2155,7 +2158,7 @@ for (const [es, en] of [...GG_FAM, ...GG_FAMP]) GLOSS[es] = GLOSS[es] || en;
 for (const t of GG_THINGS.flat()) { const w = t[0].split(" "); const k = w.length > 1 && /^(el|la|los|las)$/.test(w[0]) ? w.slice(1).join(" ") : t[0]; if (!k.includes(" ")) GLOSS[k] = GLOSS[k] || t[1]; }
 for (const [k, v] of Object.entries({ "más": "more", "o": "or", "qué": "what", "cuáles": "which ones", "cuál": "which one", "tu": "your", "tus": "your (more than one)", "mi": "my", "mis": "my (more than one)",
   "mí": "me (after a)", "ti": "you (after a)", "a": "to (a mí = to me)", "papas": "potatoes", "fritas": "fried" })) GLOSS[k] = GLOSS[k] || v;
-for (const [k, v] of [["escuela", "school"], ["rápido", "fast"], ["kilómetros", "kilometres"], ["perro", "dog"], ["hermana", "sister"], ["almuerzo", "lunch / I have lunch"], ["agua", "water"], ["libro", "book"], ["clase", "class"], ["traer", "to bring"]]) GLOSS[k] = GLOSS[k] || v;
+for (const [k, v] of [["todos", "all / every"], ["días", "days"], ["viernes", "Friday(s)"], ["fruta", "fruit"], ["por", "in / for / through"], ["escuela", "school"], ["rápido", "fast"], ["kilómetros", "kilometres"], ["perro", "dog"], ["hermana", "sister"], ["almuerzo", "lunch / I have lunch"], ["agua", "water"], ["libro", "book"], ["clase", "class"], ["traer", "to bring"]]) GLOSS[k] = GLOSS[k] || v;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
 
