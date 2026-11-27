@@ -7,24 +7,33 @@
 <style>
 /* Layout: practice card on the left, a ledger of weak spots on the right; stacks to one column on phones */
 :root{
-  --bg:#f2f4f8; --surface:#ffffff; --sunk:#e9edf4; --ink:#18202e; --muted:#5a6477; --line:#d9dfe9;
-  --accent:#1d55a8; --accent-ink:#ffffff; --accent-soft:#e2ebf8;
-  --pron:#9a5d00; --pron-soft:#fbefd8;
-  --good:#1d7548; --good-soft:#e1f2e8; --bad:#b0281f; --bad-soft:#fbe5e2;
+  --bg:#fff7ec; --surface:#ffffff; --sunk:#fff1de; --ink:#2a1a2e; --muted:#6e5a66; --line:#f1d9c4;
+  --accent:#c8175d; --accent-ink:#ffffff; --accent-soft:#ffe1ec;
+  --pron:#c25200; --pron-soft:#ffe8cf;
+  --good:#11804a; --good-soft:#d9f7e5; --bad:#c62828; --bad-soft:#ffe1de;
+  --c1:#e91e63; --c2:#ff7a00; --c3:#ffc107; --c4:#00a99d; --c5:#2e7dd7; --c6:#8e44ad; --c7:#43a047;
+  --c1s:#ffe1ec; --c2s:#ffe8cf; --c3s:#fff3c4; --c4s:#d5f5f1; --c5s:#dcebfb; --c6s:#f0e1f8; --c7s:#e0f3e1;
+  --hot:linear-gradient(135deg,#e91e63 0%,#ff6a00 100%);
   --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --r:10px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f141c; --surface:#171e2a; --sunk:#111823; --ink:#e7ebf2; --muted:#9aa4b6; --line:#2a3445;
-  --accent:#86adef; --accent-ink:#0c1320; --accent-soft:#1c2a42;
-  --pron:#f2b650; --pron-soft:#3a2b12;
-  --good:#63cc93; --good-soft:#132d1f; --bad:#ff8f84; --bad-soft:#3a1a17; color-scheme:dark}}
+  --bg:#1a1020; --surface:#24172b; --sunk:#1e1324; --ink:#f6eaf1; --muted:#c3a9b8; --line:#43304c;
+  --accent:#ff6fa3; --accent-ink:#1a0b12; --accent-soft:#4a1a30;
+  --pron:#ffb05c; --pron-soft:#45280f;
+  --good:#5fd896; --good-soft:#143322; --bad:#ff8f84; --bad-soft:#3f1a18;
+  --c1:#ff5c93; --c2:#ff9a3d; --c3:#ffd24d; --c4:#2fd1c1; --c5:#69a8f0; --c6:#c38ae0; --c7:#6fcf73;
+  --c1s:#4a1a30; --c2s:#45280f; --c3s:#41360f; --c4s:#0f3a36; --c5s:#162d4a; --c6s:#35204a; --c7s:#183a1b;
+  --hot:linear-gradient(135deg,#e91e63 0%,#ff6a00 100%); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f141c; --surface:#171e2a; --sunk:#111823; --ink:#e7ebf2; --muted:#9aa4b6; --line:#2a3445;
-  --accent:#86adef; --accent-ink:#0c1320; --accent-soft:#1c2a42;
-  --pron:#f2b650; --pron-soft:#3a2b12;
-  --good:#63cc93; --good-soft:#132d1f; --bad:#ff8f84; --bad-soft:#3a1a17; color-scheme:dark}
+  --bg:#1a1020; --surface:#24172b; --sunk:#1e1324; --ink:#f6eaf1; --muted:#c3a9b8; --line:#43304c;
+  --accent:#ff6fa3; --accent-ink:#1a0b12; --accent-soft:#4a1a30;
+  --pron:#ffb05c; --pron-soft:#45280f;
+  --good:#5fd896; --good-soft:#143322; --bad:#ff8f84; --bad-soft:#3f1a18;
+  --c1:#ff5c93; --c2:#ff9a3d; --c3:#ffd24d; --c4:#2fd1c1; --c5:#69a8f0; --c6:#c38ae0; --c7:#6fcf73;
+  --c1s:#4a1a30; --c2s:#45280f; --c3s:#41360f; --c4s:#0f3a36; --c5s:#162d4a; --c6s:#35204a; --c7s:#183a1b;
+  --hot:linear-gradient(135deg,#e91e63 0%,#ff6a00 100%); color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
@@ -201,7 +210,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 .pic .hl>*:not(.hit){stroke:#1d55a8;stroke-width:4px}.pic .hl .zone{fill:rgba(29,85,168,.4)}
 .pic .hl-ok>*:not(.hit){stroke:#1d7548;stroke-width:5px}.pic .hl-ok .zone{fill:rgba(29,117,72,.45)}
 .pic .hl-bad>*:not(.hit){stroke:#b0281f;stroke-width:5px}.pic .hl-bad .zone{fill:rgba(176,40,31,.4)}
-.cface{fill:var(--surface);stroke:var(--ink);stroke-width:4}.cnum{font:600 16px var(--body);fill:var(--ink)}
+.cface{fill:var(--surface);stroke:var(--ink);stroke-width:4}.cnum{font:600 16px var(--body);fill:var(--ink)}.ctick{stroke:var(--ink);stroke-width:1.2;opacity:.55}.ctick5{stroke:var(--ink);stroke-width:2.6}
 .hh{stroke:var(--ink);stroke-width:7;stroke-linecap:round}.mh{stroke:var(--accent);stroke-width:4;stroke-linecap:round}.cdot{fill:var(--ink)}
 .wchips{display:flex;flex-wrap:wrap;gap:6px}
 .qbgroup{display:flex;flex-direction:column;gap:6px}.qbgroup h3{font-size:15px}
@@ -219,6 +228,111 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 @media (prefers-reduced-motion:reduce){.burst{display:none}}
 .xpanel{display:flex;flex-direction:column;gap:10px}
 @media (prefers-reduced-motion:no-preference){.fb{animation:pop .18s ease-out}@keyframes pop{from{transform:translateY(4px);opacity:.6}to{transform:none;opacity:1}}}
+/* ===== Fiesta theme: warm, bright colours (papel picado inspired) ===== */
+body{background:
+  radial-gradient(900px 500px at 0% 0%,color-mix(in srgb,var(--c3) 22%,transparent),transparent 70%),
+  radial-gradient(800px 500px at 100% 0%,color-mix(in srgb,var(--c1) 16%,transparent),transparent 70%),
+  radial-gradient(900px 700px at 50% 100%,color-mix(in srgb,var(--c4) 14%,transparent),transparent 70%),
+  var(--bg);background-attachment:fixed;padding-top:0}
+body::before{content:"";display:block;height:14px;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px))) 18px;
+  background:
+    conic-gradient(from 135deg at 50% 100%,transparent 0 90deg,var(--bg) 0 180deg,transparent 0) bottom/22px 8px repeat-x,
+    linear-gradient(90deg,var(--c1) 0 14.28%,var(--c2) 0 28.57%,var(--c3) 0 42.85%,var(--c7) 0 57.14%,var(--c4) 0 71.42%,var(--c5) 0 85.71%,var(--c6) 0);}
+.brand h1{font-size:clamp(30px,6vw,40px);background:linear-gradient(90deg,var(--c1),var(--c2) 45%,var(--c6));-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:4px}
+.brand h1 .me{color:var(--c4);-webkit-text-fill-color:var(--c4)}
+.brand p{color:var(--muted)}
+
+/* Buttons */
+.btn{background:var(--hot);border:0;color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--c1) 55%,#000),0 6px 14px color-mix(in srgb,var(--c1) 30%,transparent);transition:transform .12s,box-shadow .12s,filter .12s;text-shadow:0 1px 1px rgba(0,0,0,.18)}
+.btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05)}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--c1) 55%,#000)}
+.btn.ghost{background:var(--surface);color:var(--accent);border:2px solid var(--accent);box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 35%,transparent);text-shadow:none}
+.btn.ghost:hover:not(:disabled){background:var(--accent-soft)}
+#pop10{background:linear-gradient(135deg,var(--c4),var(--c5));box-shadow:0 4px 0 color-mix(in srgb,var(--c4) 55%,#000),0 6px 14px color-mix(in srgb,var(--c4) 30%,transparent)}
+.chip{border-width:1.5px;transition:transform .1s}
+.chip:hover{transform:translateY(-1px)}
+.chip[aria-pressed="true"]{background:var(--c4s);border-color:var(--c4);color:var(--ink);font-weight:600}
+.seg{background:var(--c3s);border-color:color-mix(in srgb,var(--c3) 50%,var(--line))}
+.seg button[aria-pressed="true"]{background:var(--hot);color:#fff;box-shadow:0 2px 6px color-mix(in srgb,var(--c1) 35%,transparent);font-weight:600}
+.pill{background:var(--c7s);color:var(--good);border-color:transparent}
+.whosel{border:2px solid var(--c6);background:var(--c6s)}
+
+/* Tabs: each one its own colour */
+.tabs{border-bottom:0;gap:8px;padding-bottom:4px}
+.tab{--t:var(--c1);--ts:var(--c1s);border:2px solid color-mix(in srgb,var(--t) 40%,transparent);background:var(--ts);color:var(--ink);border-radius:99px;padding:8px 16px;margin:0;transition:transform .12s,background .12s}
+.tab:hover{transform:translateY(-2px)}
+.tab[aria-selected="true"]{background:var(--t);border-color:var(--t);color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--t) 40%,transparent)}
+#tab-qw{--t:var(--c2);--ts:var(--c2s)} #tab-verbs{--t:var(--c5);--ts:var(--c5s)} #tab-se{--t:var(--c6);--ts:var(--c6s)}
+#tab-built{--t:var(--c1);--ts:var(--c1s)} #tab-nouns{--t:var(--c4);--ts:var(--c4s)} #tab-time{--t:var(--c7);--ts:var(--c7s)}
+#tab-sh{--t:var(--c2);--ts:var(--c2s)} #tab-gg{--t:var(--c6);--ts:var(--c6s)} #tab-custom{--t:var(--c5);--ts:var(--c5s)}
+#tab-time[aria-selected="true"],#tab-nouns[aria-selected="true"]{color:#fff}
+
+/* Cards and side panels */
+.card,.panel,.cheat{border:0;border-top:6px solid var(--c1);box-shadow:0 6px 22px color-mix(in srgb,var(--c2) 14%,transparent),0 1px 2px rgba(0,0,0,.05);border-radius:18px}
+.main .card:nth-of-type(2n){border-top-color:var(--c2)}
+.cheat{border-top-color:var(--c3)}
+aside .panel:nth-child(5n+1){border-top-color:var(--c1)} aside .panel:nth-child(5n+2){border-top-color:var(--c2)}
+aside .panel:nth-child(5n+3){border-top-color:var(--c4)} aside .panel:nth-child(5n+4){border-top-color:var(--c6)}
+aside .panel:nth-child(5n+5){border-top-color:var(--c7)}
+.cheat-grid div{background:var(--c3s)}
+.tag{background:var(--c5s);color:var(--c5);border-color:transparent;font-weight:600}
+.tag:nth-child(2n){background:var(--c6s);color:var(--c6)}
+.empty,.hint{background:var(--c3s)}
+
+/* Answer options */
+.opt{border:2px solid var(--line);transition:transform .1s,border-color .1s,background .1s}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft);transform:translateX(3px)}
+.opt .k{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:50%;background:var(--c2);color:#fff;font-weight:700}
+.opt:nth-child(4n+2) .k{background:var(--c4)} .opt:nth-child(4n+3) .k{background:var(--c6)} .opt:nth-child(4n+4) .k{background:var(--c5)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.tile{border:2px solid color-mix(in srgb,var(--c2) 40%,var(--line));background:var(--c2s);border-radius:10px;font-weight:600}
+.bline .tile{background:var(--c4s);border-color:var(--c4)}
+.blank{background:var(--c3s);border-bottom-color:var(--c2)}
+.long{border:2px solid var(--line)} .long:focus{border-color:var(--accent)}
+
+/* Feedback */
+.fb{border:2px solid transparent}
+.fb.ok{background:var(--good-soft);border-color:color-mix(in srgb,var(--good) 45%,transparent)}
+.fb.no{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.fb .verdict{font-size:21px}
+@media (prefers-reduced-motion:no-preference){
+  .fb.ok{animation:yay .45s cubic-bezier(.3,1.6,.5,1)}
+  .fb.no{animation:shake .35s ease-in-out}
+  @keyframes yay{0%{transform:scale(.94);opacity:.4}100%{transform:none;opacity:1}}
+  @keyframes shake{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+}
+.streak{color:var(--c2)}
+.bar i{background:var(--c1)} .bar i.mid{background:var(--c3)} .bar i.hi{background:var(--c7)}
+
+/* Noun cards */
+.ncard{border:2px solid transparent;background:var(--c1s)}
+.ncard:nth-child(6n+2){background:var(--c2s)} .ncard:nth-child(6n+3){background:var(--c3s)}
+.ncard:nth-child(6n+4){background:var(--c4s)} .ncard:nth-child(6n+5){background:var(--c5s)} .ncard:nth-child(6n+6){background:var(--c6s)}
+.ncard:hover{border-color:var(--accent)}
+.ncard.open{border-color:var(--accent);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 25%,transparent)}
+
+/* Picture highlights follow the new accent */
+.pic .hl>*:not(.hit){stroke:var(--accent)}.pic .hl .zone{fill:color-mix(in srgb,var(--accent) 40%,transparent)}
+
+/* Who's practising screen */
+#whogate{background:
+  radial-gradient(600px 400px at 0% 0%,color-mix(in srgb,var(--c3) 30%,transparent),transparent 70%),
+  radial-gradient(600px 400px at 100% 100%,color-mix(in srgb,var(--c1) 22%,transparent),transparent 70%),var(--bg)}
+#whogate h1{background:linear-gradient(90deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+#whogate .person{border:0;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 5px 0 color-mix(in srgb,var(--c1) 55%,#000);transition:transform .12s}
+#whogate .person:nth-child(3n+2){background:linear-gradient(135deg,var(--c4),var(--c5));box-shadow:0 5px 0 color-mix(in srgb,var(--c4) 55%,#000)}
+#whogate .person:nth-child(3n+3){background:linear-gradient(135deg,var(--c6),var(--c1));box-shadow:0 5px 0 color-mix(in srgb,var(--c6) 55%,#000)}
+#whogate .person:hover{transform:translateY(-2px)}
+#whogate .person:active{transform:translateY(4px)}
+#whogate .person small{color:rgba(255,255,255,.9)}
+#whogate .person.last{outline:4px solid var(--c3);outline-offset:3px;border:0}
+
+/* Pop-ups */
+#popq .pbox,#conjpop .pbox{border-top:8px solid var(--c1);border-radius:22px}
+#popq .popt{border-width:2px;background:var(--c3s)}
+#popq .popt:nth-child(2){background:var(--c4s)} #popq .popt:nth-child(3){background:var(--c1s)} #popq .popt:nth-child(4){background:var(--c5s)}
+#popq .popt.ok{background:var(--good-soft)} #popq .popt.bad{background:var(--bad-soft)}
 </style>
 
 <div class="wrap">
@@ -1075,7 +1189,7 @@ const XT_NOUNS = { "vocab-face": "Face words", "vocab-body": "Body parts", "voca
 const XT_WORDS = {
   "days": "Days of the week", "months": "Months of the year",
   "days-order": "Before and after (days)", "months-order": "Before and after (months)", "lowercase": "No capitals for days and months",
-  "time-hour": "Reading the hour", "time-es-son": "Es la una vs Son las…", "time-menos": "menos (counting back from the next hour)", "time-quarter": "cuarto and media" };
+  "time-hour": "Reading the hour", "time-es-son": "Es la una vs Son las…", "time-menos": "menos (counting back from the next hour)", "time-quarter": "cuarto and media", "time-minutes": "Reading the minutes (long hand)" };
 const XT_SH = {
   "sh-words": "Hobby words", "sh-tocar": "tocar for instruments, jugar for sports", "sh-gusta": "me gusta (not gustan) + an activity",
   "sh-gusta-noun": "gusta (one thing) or gustan (more than one)", "sh-inf": "Verb after gusta stays as is (me gusta nadar)", "sh-pron": "me / te / le / nos / les with gusta",
@@ -1475,7 +1589,7 @@ function bodySVG(hl, onPick) {
   return d;
 }
 const NOUN_TABS = [["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["mix", "Mix"]];
-const TIME_TABS = [["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["mix", "Mix"]];
+const TIME_TABS = [["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["mix", "Mix"]];
 
 function faceSVG(hl, onPick) {
   const d = el("div", { class: "pic" });
@@ -1500,13 +1614,14 @@ function faceSVG(hl, onPick) {
   if (onPick) svg.querySelectorAll("[data-p]").forEach(g => { g.classList.add("pickable"); g.addEventListener("click", e => { e.stopPropagation(); onPick(g.dataset.p, svg); }); });
   return d;
 }
-function clockSVG(h, m, noDig) {
+function clockSVG(h, m, noDig, hard) {
   const r = Math.PI / 180, a = (h % 12 + m / 60) * 30 * r, b = m * 6 * r;
-  const nums = HOURS.slice(1).map((_, k) => { const t = (k + 1) * 30 * r; return `<text x="${(100 + 72 * Math.sin(t)).toFixed(1)}" y="${(106 - 72 * Math.cos(t)).toFixed(1)}" text-anchor="middle" class="cnum">${k + 1}</text>`; }).join("");
+  const nr = hard ? 66 : 72, nums = HOURS.slice(1).map((_, k) => { const t = (k + 1) * 30 * r; return `<text x="${(100 + nr * Math.sin(t)).toFixed(1)}" y="${(106 - nr * Math.cos(t)).toFixed(1)}" text-anchor="middle" class="cnum">${k + 1}</text>`; }).join("");
   const d = el("div", { class: "pic" });
-  d.innerHTML = `<svg viewBox="0 0 200 200" class="clock" role="img" aria-label="Clock showing ${h}:${String(m).padStart(2, "0")}"><circle cx="100" cy="100" r="92" class="cface"/>${nums}
+  const ticks = hard ? Array.from({ length: 60 }, (_, k) => { const t = k * 6 * r, i = k % 5 ? 85 : 81; return `<line x1="${(100 + i * Math.sin(t)).toFixed(1)}" y1="${(100 - i * Math.cos(t)).toFixed(1)}" x2="${(100 + 89 * Math.sin(t)).toFixed(1)}" y2="${(100 - 89 * Math.cos(t)).toFixed(1)}" class="${k % 5 ? "ctick" : "ctick5"}"/>`; }).join("") : "";
+  d.innerHTML = `<svg viewBox="0 0 200 200" class="clock" role="img" aria-label="${hard ? "Clock" : `Clock showing ${h}:${String(m).padStart(2, "0")}`}"><circle cx="100" cy="100" r="92" class="cface"/>${ticks}${nums}
 <line x1="100" y1="100" x2="${(100 + 45 * Math.sin(a)).toFixed(1)}" y2="${(100 - 45 * Math.cos(a)).toFixed(1)}" class="hh"/>
-<line x1="100" y1="100" x2="${(100 + 70 * Math.sin(b)).toFixed(1)}" y2="${(100 - 70 * Math.cos(b)).toFixed(1)}" class="mh"/><circle cx="100" cy="100" r="5" class="cdot"/></svg>
+<line x1="100" y1="100" x2="${(100 + (hard ? 82 : 70) * Math.sin(b)).toFixed(1)}" y2="${(100 - (hard ? 82 : 70) * Math.cos(b)).toFixed(1)}" class="mh"/><circle cx="100" cy="100" r="5" class="cdot"/></svg>
 ${noDig ? "" : `<div class="digital">${h}:${String(m).padStart(2, "0")}</div>`}`;
   return d;
 }
@@ -1557,6 +1672,87 @@ function makeTime(focus) {
     it.lead = "What time is this?"; it.es = correct; it.en = "";
     it.options = tapOpts(dig(h, m), c, focus);
   }
+  return it;
+}
+/* ----- Clock only (hard): just the clock face, any minute, type the time ----- */
+const UNI = ["", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve", "veinte", "veintiuno", "veintidós", "veintitrés", "veinticuatro", "veinticinco", "veintiséis", "veintisiete", "veintiocho", "veintinueve"];
+{ const EN = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
+  const en = n => n <= 20 ? EN[n] : ["twenty", "thirty", "forty", "fifty"][Math.floor(n / 10) - 2] + (n % 10 ? "-" + EN[n % 10] : "");
+  for (let n = 1; n < 30; n++) if (!GLOSS[UNI[n]]) GLOSS[UNI[n]] = en(n);
+  Object.assign(GLOSS, { treinta: GLOSS.treinta || "thirty", cuarenta: "forty", cincuenta: "fifty", minuto: "minute", minutos: "minutes", para: GLOSS.para || "for / to (time: veinte para las tres = twenty to three)" }); }
+const minW = n => n < 30 ? UNI[n] : (["treinta", "cuarenta", "cincuenta"][Math.floor(n / 10) - 3] + (n % 10 ? " y " + UNI[n % 10] : ""));
+const MINV = (() => { const o = { un: 1, cuarto: 15, media: 30 }; for (let n = 1; n < 60; n++) o[norm(minW(n))] = n; return o; })();
+const hourLead = hh => hh === 1 ? "Es la una" : `Son las ${HOURS[hh]}`;
+const minSay = (n, menos) => n === 15 ? "cuarto" : n === 30 && !menos ? "media" : minW(n);
+function clockForms(h, m) {
+  const f = [];
+  if (m === 0) f.push(`${hourLead(h)} en punto.`, `${hourLead(h)}.`);
+  else {
+    f.push(`${hourLead(h)} y ${minSay(m)}.`);
+    if (m === 15 || m === 30) f.push(`${hourLead(h)} y ${minW(m)}.`);
+    if (m === 1) f.push(`${hourLead(h)} y un minuto.`); else f.push(`${hourLead(h)} y ${minW(m)} minutos.`);
+  }
+  if (m > 30) {
+    const n = 60 - m, H = nextH(h), las = H === 1 ? "la una" : `las ${HOURS[H]}`;
+    f.unshift(`${hourLead(H)} menos ${minSay(n, true)}.`);
+    if (n === 15) f.push(`${hourLead(H)} menos quince.`);
+    for (const lead of ["Son ", "Es ", ""]) {
+      f.push(`${lead}${n === 1 ? "un minuto" : n === 15 ? "cuarto" : minW(n)} para ${las}.`);
+      if (n === 15) f.push(`${lead}un cuarto para ${las}.`, `${lead}quince para ${las}.`);
+    }
+  }
+  return f;
+}
+// Read what someone typed as a time: { lead: "es"/"son"/"", art, H, M (minutes past H, may be negative), menos, para }
+function parseClock(text) {
+  let t = toks(text).map(norm);
+  if (t.some(w => /\d/.test(w))) return { digits: true };
+  let lead = ""; if (t[0] === "es" || t[0] === "son") lead = t.shift();
+  const HV = w => HOURS.map(norm).indexOf(w);
+  const num = ws => { ws = ws.filter(w => w !== "minuto" && w !== "minutos"); if (ws[0] === "un" && ws[1] === "cuarto") ws = ws.slice(1); const k = ws.join(" "); return k in MINV ? MINV[k] : null; };
+  const pi = t.indexOf("para");
+  if (pi > 0) {
+    const n = num(t.slice(0, pi)), rest = t.slice(pi + 1); if (rest[0] === "la" || rest[0] === "las") rest.shift();
+    const H = HV(rest[0]); if (n == null || H < 1 || rest.length > 1) return null;
+    return { lead, H, M: -n, para: true };
+  }
+  const art = t[0] === "la" || t[0] === "las" ? t.shift() : "";
+  const H = HV(t[0]); if (H < 1) return null; t = t.slice(1);
+  if (!t.length || (t[0] === "en" && t[1] === "punto" && t.length === 2)) return { lead, art, H, M: 0 };
+  if (t[0] === "y" || t[0] === "menos") { const n = num(t.slice(1)); if (n == null) return null; return { lead, art, H, M: t[0] === "y" ? n : -n, menos: t[0] === "menos" }; }
+  return null;
+}
+function makeClockHard(focus) {
+  const h = 1 + Math.floor(Math.random() * 12);
+  let m = Math.floor(Math.random() * 60);
+  if (focus === "time-menos") m = 31 + Math.floor(Math.random() * 29); else if (focus === "time-quarter") m = pick([15, 30, 45]);
+  const forms = clockForms(h, m), correct = forms[0];
+  const it = { kind: "tap", type: "typed", typeMode: "line", clockOnly: true, topic: "time", stat: "clock only (hard)", focus: focus || null,
+    tested: ["time-hour", "time-minutes", "time-es-son"], full: correct, answer: correct, alts: forms.slice(1), wrongs: [], mq: "Clock showing " + dig(h, m),
+    lead: "¿Qué hora es?", en: "", es: "", pic: () => clockSVG(h, m, true, true) };
+  if (m > 30) it.tested.push("time-menos"); if ([15, 30, 45].includes(m)) it.tested.push("time-quarter");
+  const yForm = m > 30 ? `${hourLead(h)} y ${minW(m)}.` : "";
+  it.explain = `The short hand is the hour and the long hand is the minutes. ${dig(h, m)} = ${correct}` + (yForm ? ` You can also say ${yForm.replace(/\.$/, "")}, or count back with para: ${forms.find(x => / para /.test(x) && /^Son |^Es /.test(x)).replace(/\.$/, "")}.` : "");
+  const target = (h % 12) * 60 + m;
+  it.diagnose = given => {
+    const p = parseClock(given), ans = correct.replace(/\.$/, "");
+    if (!p) return null;
+    if (p.digits) return { tag: "time-minutes", msg: `Write the time in Spanish words. The clock shows ${ans}.` };
+    const T = (((p.H % 12) * 60 + p.M) % 720 + 720) % 720;
+    if (T === target) {
+      const want = p.H === 1 ? ["es", "la"] : ["son", "las"];
+      if (p.para) return null;
+      return { tag: "time-es-son", msg: `${p.lead ? "" : "Start with Es or Son. "}Use Es la una only for one o'clock. Every other hour uses Son las…: ${ans}.` };
+    }
+    if (p.menos || p.para) {
+      if (((T + 60) % 720) === target) return { tag: "time-menos", msg: `With menos (or para) you count back from the next hour. The next hour is ${HOURS[nextH(h)]}, so: ${ans}.` };
+    }
+    if (((T % 60) + 60) % 60 === m) return { tag: "time-hour", msg: `The minutes are right. Look at the short hand for the hour: ${ans}.` };
+    const hh = p.M < 0 ? prevH(p.H) : p.H;
+    if (hh === h) return { tag: "time-minutes", msg: `The hour is right. Count the small marks to the long hand: it shows ${m} minutes. ${ans}.` };
+    return null;
+  };
+  // A right time with the wrong Es/Son or la/las: parseClock catches it above; these exact strings make it count as wrong.
   return it;
 }
 const GENDER_WHY = { el: "masculine, one", la: "feminine, one", los: "masculine, more than one", las: "feminine, more than one" };
@@ -1649,6 +1845,7 @@ function makeTimeTopic(focus) {
   if (fs && sel === "mix") set = fs;
   if (fs && fs !== set) focus = null;
   if (focus === "lowercase" && set === "time") set = "days";
+  if (set === "clock") return makeClockHard(fs === "time" ? focus : null);
   return set === "time" ? makeTime(focus) : makeSeq(set, focus);
 }
 /* ----- hobbies (sports words and jugar live in Nouns > Sports and Verbs) ----- */
@@ -2065,6 +2262,7 @@ function renderNounsPanel() {
 }
 function renderTimePanel() {
   const sel = state.settings.timeset || "time"; segButtons("#timesets", TIME_TABS, sel, "timeset");
+  for (const s of document.querySelectorAll("#panel-time .fmtseg, #panel-time .diffseg")) s.parentNode.hidden = sel === "clock";
   const box = $("#tcheat"); box.replaceChildren();
   if (sel === "days" || sel === "months") {
     const L = sel === "days" ? DAYS : MONTHS;
@@ -2076,6 +2274,8 @@ function renderTimePanel() {
       el("div", {}, el("b", { class: "es-i" }, "y cuarto"), " = :15"), el("div", {}, el("b", { class: "es-i" }, "y media"), " = :30"),
       el("div", {}, el("b", { class: "es-i" }, "menos cuarto"), " = :45"), el("div", {}, el("b", { class: "es-i" }, "en punto"), " = o'clock")),
       el("p", {}, "With menos, count back from the next hour: 3:45 = ", el("b", { class: "es-i" }, "son las cuatro menos cuarto"), "."));
+  } else if (sel === "clock") {
+    box.append(el("h2", {}, "Clock only"), el("p", {}, "Just the clock face, any time of day, and you type the time in Spanish. No hints until you answer."));
   } else box.append(el("h2", {}, "Time, days and months, mixed"));
 }
 function renderSHPanel() {
@@ -2307,6 +2507,7 @@ function renderDiffSegs() {
     seg.replaceChildren(...DIFF_NAMES.map(([k, n]) => el("button", { "aria-pressed": String(cur === k), title: k === "auto" ? "Starts easy and gets harder as you get more right" : DIFF_HELP[t] || "",
       onclick: () => { (state.settings.diff || (state.settings.diff = {}))[t] = k; scheduleSave(); renderDiffSegs(); source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } }, n)));
   }
+  for (const x of document.querySelectorAll("#panel-time .fmtseg, #panel-time .diffseg")) x.parentNode.hidden = state.settings.timeset === "clock";
 }
 function levelOf(t) { const d = diffOf(t); if (d !== "auto") return +d; const k = state.skill && state.skill[t]; if (!k || k.n < 8) return 0; return k.v >= 0.85 ? 2 : k.v >= 0.65 ? 1 : 0; }
 function applyFormat(it, fmts) {
@@ -2335,7 +2536,7 @@ function applyFormat(it, fmts) {
   return it;
 }
 function renderTyped(box, it) {
-  box.append(el("p", { class: "en" }, el("b", {}, it.typeMode === "blank" ? "Type the missing part" : it.lead === "Read the clock" ? it.lead : "Type it in Spanish"), it.en ? " · " + it.en : ""));
+  box.append(el("p", { class: "en" }, el("b", {}, it.clockOnly ? it.lead : it.typeMode === "blank" ? "Type the missing part" : it.lead === "Read the clock" ? it.lead : "Type it in Spanish"), it.en ? " · " + it.en : ""));
   if (it.pic) box.append(it.pic());
   let input;
   if (it.typeMode === "blank") {
@@ -2370,7 +2571,7 @@ function submitTyped(raw) {
   let errs = [], notes = [];
   if (loose && !exact) notes.push({ tag: "accent", msg: `Watch the accents: ${it.answer}` });
   if (!loose) {
-    const w = it.wrongs.find(o => norm(o.text) === norm(given));
+    const w = it.wrongs.find(o => norm(o.text) === norm(given)) || (it.diagnose && it.diagnose(given));
     errs = [w ? { tag: w.tag, msg: w.msg } : { tag: it.tested[0], msg: `The answer is ${it.answer.replace(/\.$/, "")}.` }];
     errs[0].msg = `You typed "${String(raw).trim()}". ` + errs[0].msg;
   }
@@ -2383,11 +2584,11 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gusta or gustan?"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gusta or gustan?"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
-  if (!Array.isArray(q.topics)) q.topics = QB_TOPICS.map(t => t[0]);
+  if (!Array.isArray(q.topics)) q.topics = QB_TOPICS.map(t => t[0]).filter(k => k !== "clock");
   if (!Array.isArray(q.verbs)) q.verbs = [];
   if (!q.gg) { q.gg = 1; if (QB_TOPICS.every(([k]) => k === "gg" || k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("gg")) q.topics.push("gg"); }
   if (!q.hb) { q.hb = 1; if (QB_TOPICS.every(([k]) => k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("sh")) q.topics.push("sh"); }
@@ -2412,6 +2613,7 @@ function makeMixQ(focus) {
   else if (t === "gg") it = makeGG(f);
   else if (t === "verbs") { const keep = state.settings.verb2; state.settings.verb2 = q.verbs; try { it = makeVerb(f); } finally { state.settings.verb2 = keep; } }
   else if (t === "time") it = makeTime(f);
+  else if (t === "clock") return makeClockHard(focus && /^time-/.test(focus) ? focus : null);
   else if (t === "days" || t === "months") it = makeSeq(t, f);
   else it = makeVocab(t, f);
   return applyFormat(it, q.fmts);
@@ -2611,8 +2813,9 @@ function insert(c) {
   i.value = i.value.slice(0, s) + c + i.value.slice(e); i.focus(); i.setSelectionRange(s + 1, s + 1);
 }
 function scoreLine() {
-  const lt = topic === "mixq" ? null : levelOf(topic === "gustar" ? "gustar" : topic);
-  if (source.kind === "built") return el("span", { class: "score" }, (lt != null && (topic !== "gustar" || state.settings.level === "starter") ? LEVEL_NAME[lt] + (diffOf(topic) === "auto" ? " (auto)" : "") + " · " : "") + `Question ${Math.min(round.n + 1, ROUND)} of ${ROUND}` + (round.n ? ` · ${round.right} right` : ""));
+  const clockHard = topic === "time" && state.settings.timeset === "clock";
+  const lt = topic === "mixq" ? null : clockHard ? 2 : levelOf(topic === "gustar" ? "gustar" : topic);
+  if (source.kind === "built") return el("span", { class: "score" }, (lt != null && (topic !== "gustar" || state.settings.level === "starter") ? LEVEL_NAME[lt] + (diffOf(topic) === "auto" && !clockHard ? " (auto)" : "") + " · " : "") + `Question ${Math.min(round.n + 1, ROUND)} of ${ROUND}` + (round.n ? ` · ${round.right} right` : ""));
   return el("span", { class: "score" }, session.total ? `This session ${session.right}/${session.total}` + (session.streak > 1 ? ` · streak ${session.streak}` : "") : "");
 }
 function renderQuiz() {
