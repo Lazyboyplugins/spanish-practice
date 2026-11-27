@@ -2898,9 +2898,9 @@ function renderQBPanel() {
   const chip = (on, text, fn) => el("button", { class: "chip", "aria-pressed": String(on), onclick: fn }, (on ? "✓ " : "") + text);
   const group = (title, hint, kids) => el("div", { class: "qbgroup" }, el("h3", {}, title, el("span", { class: "speech-note" }, "  " + hint)), el("div", { class: "row" }, kids));
   const allT = q.topics.length === QB_TOPICS.length, allF = q.fmts.length === QB_FMTS.length;
-  box.append(el("h2", {}, "⭐ Build your own quiz"), el("p", {}, "1. Tick what you want to practise. 2. Press Start. You can pick one thing, a few, or everything."));
+  box.append(el("h2", {}, "⭐ Build your own quiz"), el("p", {}, "1. Tick what you want to practise. 2. Press Start. You can pick one thing, a few, or everything. When everything is ticked, tapping one topic picks just that one."));
   box.append(group("Topics", allT ? "(all ticked)" : q.topics.length ? `(${q.topics.length} ticked)` : "(tick at least one)", [
-    ...QB_TOPICS.map(([k, n]) => chip(q.topics.includes(k), n, () => { toggle(q.topics, k, false); changed(); })),
+    ...QB_TOPICS.map(([k, n]) => chip(q.topics.includes(k), n, () => { if (q.topics.length >= QB_TOPICS.length - 1 && QB_TOPICS.every(([x]) => x === "clock" || q.topics.includes(x))) q.topics = [k]; else toggle(q.topics, k, false); changed(); })),
     el("button", { class: "link", onclick: () => { q.topics = allT ? [] : QB_TOPICS.map(t => t[0]); changed(); } }, allT ? "Untick all" : "Tick all")]));
   if (q.topics.includes("verbs")) box.append(group("Which verbs", q.verbs.length ? `(${q.verbs.length} ticked)` : "(none ticked = all verbs)", [
     ...VERB_ALL.map(v => chip(q.verbs.includes(v), v, () => { toggle(q.verbs, v, false); changed(); })),
@@ -2971,7 +2971,13 @@ function funPool(t, depth = 0) {
     case "nouns": { const sel = state.settings.nouns || "face"; return N(sel === "mix" || !NOUNSETS[sel] ? Object.values(NOUNSETS).flat() : nounList(sel)); }
     case "sh": return [...N(SH_PICS), ...N(SH_ACTS), ...N(SP_ALLW), ...FQ.map(f => [f[0], f[1], ""])];
     case "sports": return N(SP_ALLW);
-    case "verbs": { const v = verbSel().filter(x => V2[x]); return (v.length > 1 ? v : Object.keys(V2)).map(k => [k, V2[k].m, ""]); }
+    case "verbs": {
+      // one verb picked: games use its forms (puedo = yo · poder), so nothing else sneaks in
+      const all = depth ? (qbConf().verbs || []) : verbSel(), v = all.filter(x => V2[x]);
+      if (all.length === 1 && all[0] === "gustar") return [["me gusta", "I like", ""], ["te gusta", "you like (tú)", ""], ["le gusta", "he / she likes", ""], ["nos gusta", "we like", ""], ["les gusta", "they like", ""]];
+      if (v.length === 1) return V2[v[0]].f.map((_, j) => [vChunk(V2[v[0]], j), `${PERS[j]} · ${v[0]}`, ""]);
+      return (v.length > 1 ? v : Object.keys(V2)).map(k => [k, V2[k].m, ""]);
+    }
     case "gustar": return Object.entries(VERBS).map(([k, V]) => [k, k === "gustar" ? "to like" : V.gloss, ""]);
     case "qw": return Object.entries(QW_MEAN).map(([k, v]) => [k, v, ""]);
     case "se": return [...SER.map((f, i) => [f, PERS[i] + " · ser", ""]), ...ESTAR.map((f, i) => [f, PERS[i] + " · estar", ""])];
@@ -3659,6 +3665,16 @@ applySettings(); renderSide(); renderSets(); renderWho(); selectTab(state.settin
 showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
+/* phones can keep an old copy of the page for a while: check for a newer one and reload once */
+const BUILD = "2026-11-27-c";
+(async () => { try {
+  if (!/^https?:/.test(location.protocol)) return;
+  const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
+  const m = (await r.text()).match(/const BUILD = "([^"]+)"/);
+  if (!m || m[1] === BUILD) return;
+  const k = "repaso-reloaded-" + m[1]; if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1");
+  location.replace(location.pathname + "?v=" + encodeURIComponent(m[1]) + location.hash);
+} catch {} })();
 })();
 </script>
 
