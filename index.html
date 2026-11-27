@@ -2704,6 +2704,7 @@ function funPool(t, depth = 0) {
     case "days": return DAYS.map(d => [d[0], d[1], ""]);
     case "months": return MONTHS.map(d => [d[0], d[1], ""]);
     case "gg": return GG_THINGS.flat().map(x => [x[0], x[1], ""]);
+    case "clock": return [];
     case "mixq": if (!depth) { const ts = qbConf().topics; return (ts.length ? ts : ["face"]).flatMap(x => funPool(x, 1)); }
   }
   return N(Object.values(NOUNSETS).flat());
