@@ -3010,13 +3010,15 @@ function funItem() {
   if (!funOn() || source.kind !== "built" || focusQueue.left > 0 || topic === "custom") return null;
   const g = state.settings.game || "mix";
   if (g === "quiz" || (g === "mix" && Math.random() < 0.45)) return null;
+  // gustar questions: only question-and-answer games, never plain word (noun) matching
+  if (topic === "gg") { const k = g === "listen" ? "listen" : g === "match" ? "match" : pick(["match", "match", "listen"]);
+    return gqFun(k, { kind: "tap", topic: "gg", fun: k, tested: [], noBuild: true, noGloss: true, focus: null }); }
   const pool = funUnique(funPool(topic)), pics = funUnique(pool.filter(w => w[2])).filter((w, i, a) => a.findIndex(x => x[2] === w[2]) === i);
   const can = { match: pool.length >= 5, pic: pics.length >= 6, listen: pool.length >= 4 };
   let kind = g === "mix" ? pick(["match", "match", "pic", "pic", "listen"].filter(k => can[k])) : g;
   if (!kind || !can[kind]) kind = can.match ? "match" : null;
   if (!kind) return null;
   const T = topic === "gustar" ? "verbs" : topic, base = { kind: "tap", topic: T, fun: kind, tested: [], noBuild: true, noGloss: true, focus: null };
-  if (topic === "gg" && (kind === "match" || kind === "listen") && Math.random() < 0.7) return gqFun(kind, base);
   if (kind === "match") {
     const ps = pool.slice(0, 5), usePic = ps.every(w => w[2]) && Math.random() < 0.4;
     return { ...base, type: "match", stat: "games: match the pairs", lead: usePic ? "Match the pairs: Spanish to picture" : "Match the pairs", pairs: ps, usePic,
