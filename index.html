@@ -345,6 +345,7 @@ aside .panel:nth-child(5n+5){border-top-color:var(--c7)}
 html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:44;pointer-events:none}
 .top{display:flex;flex-direction:column;align-items:stretch;gap:8px}
 .topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px}
+.playbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:6px 0 10px}.playbar .lbl{min-width:0}.gchips{display:flex;flex-wrap:wrap;gap:6px}.gchips .chip{font-size:14px;padding:6px 12px}.gchips .chip[aria-pressed="true"]::before{content:"✓ "}
 .topacts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto}
 .brand h1{white-space:nowrap}
 .intro{margin:0;color:var(--muted);max-width:70ch}
@@ -413,8 +414,6 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <p class="intro">Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or sports and hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
     <div class="setpanel" id="setpanel" hidden>
-      <div class="sprow"><span class="lbl">Games</span><button class="chip" type="button" id="funmode" aria-pressed="true" title="Mix word games into every topic, or turn them off for plain quizzes">Fun mode: on</button>
-        <label class="row" style="gap:6px" id="gamewrap"><select id="gametype" aria-label="Which games"></select></label></div>
       <div class="sprow"><span class="lbl">Sound</span><button class="chip" type="button" id="mute" aria-pressed="true" title="Mute or unmute all sound">🔊 Sound</button>
         <input type="range" id="vol" min="0" max="1" step="0.05" aria-label="Volume" style="width:120px"></div>
       <div class="sprow"><span class="lbl">Voice</span><button class="chip" type="button" id="autoplay" aria-pressed="true" title="Play the Spanish answer out loud after you check">Sound after answers: on</button></div>
@@ -424,6 +423,10 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
   </header>
 
+  <div class="playbar">
+    <div class="row" style="gap:8px"><span class="lbl">Show me</span><div class="seg" id="playseg"></div></div>
+    <div class="row" style="gap:8px" id="gamesrow"><span class="lbl">Games</span><div class="gchips" id="gchips"></div></div>
+  </div>
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" id="tab-mixq" aria-selected="true">⭐ Build a quiz</button>
     <button class="tab" role="tab" id="tab-qw" aria-selected="false">Question words</button>
@@ -2966,7 +2969,19 @@ document.addEventListener("click", () => { if (openGloss) { openGloss.classList.
 
 /* ---------- fun mode: match the pairs, point to it, listen and tap, sound effects ---------- */
 const GAMES = [["mix", "Mix of everything"], ["quiz", "Quizzes only"], ["match", "Match the pairs"], ["pic", "Point to it"], ["listen", "Listen and tap"]];
-const funOn = () => state.settings.funOff !== true;
+// Show me: quiz (questions only), games (games only), all (both mixed). Games ticked one by one.
+const PLAY = [["quiz", "Quiz"], ["games", "Games"], ["all", "All"]];
+const GAME_KINDS = [["match", "Match the pairs"], ["pic", "Point to it"], ["listen", "Listen and tap"]];
+const playMode = () => state.settings.play || (state.settings.funOff === true ? "quiz" : "all");
+const gamesOn = () => Array.isArray(state.settings.games) ? state.settings.games : ["pic", "listen"];
+const funOn = () => playMode() !== "quiz" && gamesOn().length > 0;
+function renderPlayBar() {
+  const m = playMode(), gs = gamesOn(), redo = () => { scheduleSave(); renderPlayBar(); if (source.kind === "built") { newRound(); focusQueue.left = 0; next(); } };
+  $("#playseg").replaceChildren(...PLAY.map(([k, n]) => el("button", { "aria-pressed": String(m === k), onclick: () => { state.settings.play = k; redo(); } }, n)));
+  $("#gamesrow").hidden = m === "quiz";
+  $("#gchips").replaceChildren(...GAME_KINDS.map(([k, n]) => el("button", { class: "chip", type: "button", "aria-pressed": String(gs.includes(k)),
+    onclick: () => { state.settings.games = gs.includes(k) ? gs.filter(x => x !== k) : [...gs, k]; redo(); } }, n)));
+}
 function funPool(t, depth = 0) {
   const N = list => list.map(w => [w[0], w[1], /\p{Extended_Pictographic}/u.test(w[2] || "") ? w[2] : ""]);
   if (NOUNSETS[t]) return N(NOUNSETS[t]);
@@ -3008,15 +3023,14 @@ function timePool() {
 function funUnique(list) { const a = new Set(), b = new Set(), out = []; for (const w of shuffle(list)) { const k1 = w[0].toLowerCase(), k2 = w[1].toLowerCase(); if (a.has(k1) || b.has(k2)) continue; a.add(k1); b.add(k2); out.push(w); } return out; }
 function funItem() {
   if (!funOn() || source.kind !== "built" || focusQueue.left > 0 || topic === "custom") return null;
-  const g = state.settings.game || "mix";
-  if (g === "quiz" || (g === "mix" && Math.random() < 0.45)) return null;
+  const en = gamesOn(), mOn = en.includes("match");
+  if (playMode() === "all" && Math.random() < 0.45) return null;
   // gustar questions: only question-and-answer games, never plain word (noun) matching
-  if (topic === "gg") { const k = g === "listen" ? "listen" : g === "match" ? "match" : pick(["match", "match", "listen"]);
+  if (topic === "gg") { const ks = ["match", "listen"].filter(k => en.includes(k)); if (!ks.length) return null; const k = pick(ks);
     return gqFun(k, { kind: "tap", topic: "gg", fun: k, tested: [], noBuild: true, noGloss: true, focus: null }); }
   const pool = funUnique(funPool(topic)), pics = funUnique(pool.filter(w => w[2])).filter((w, i, a) => a.findIndex(x => x[2] === w[2]) === i);
-  const can = { match: pool.length >= 5, pic: pics.length >= 6, listen: pool.length >= 4 };
-  let kind = g === "mix" ? pick(["match", "match", "pic", "pic", "listen"].filter(k => can[k])) : g;
-  if (!kind || !can[kind]) kind = can.match ? "match" : null;
+  const can = { match: mOn && pool.length >= 5, pic: en.includes("pic") && pics.length >= 6, listen: en.includes("listen") && pool.length >= 4 };
+  const kind = pick(["match", "match", "pic", "pic", "listen"].filter(k => can[k]));
   if (!kind) return null;
   const T = topic === "gustar" ? "verbs" : topic, base = { kind: "tap", topic: T, fun: kind, tested: [], noBuild: true, noGloss: true, focus: null };
   if (kind === "match") {
@@ -3350,8 +3364,7 @@ function renderSets() {
 /* ---------- controls ---------- */
 function applySettings() {
   const st = state.settings;
-  { const fb = $("#funmode"), on = funOn(); fb.setAttribute("aria-pressed", String(on)); fb.textContent = on ? "Fun mode: on" : "Quiz only"; $("#gamewrap").hidden = !on;
-    const gs = $("#gametype"); if (!gs.options.length) for (const [k, n] of GAMES) gs.append(el("option", { value: k }, n)); gs.value = st.game || "mix"; renderSoundControls(); }
+  renderPlayBar(); renderSoundControls();
   { const ap = st.autoplay !== false, b = $("#autoplay"); b.setAttribute("aria-pressed", String(ap)); b.textContent = "Sound after answers: " + (ap ? "on" : "off"); }
   document.querySelectorAll("#levels button").forEach(b => b.setAttribute("aria-pressed", b.dataset.l === st.level));
   $("#panel-built").classList.toggle("starter", st.level === "starter");
@@ -3524,8 +3537,6 @@ function popQuiz() {
   document.body.append(wrap); document.body.style.overflow = "hidden"; show();
 }
 $("#pop10").addEventListener("click", popQuiz);
-$("#funmode").addEventListener("click", () => { state.settings.funOff = funOn(); scheduleSave(); applySettings(); if (source.kind === "built") { newRound(); next(); } });
-$("#gametype").addEventListener("change", e => { state.settings.game = e.target.value; scheduleSave(); if (source.kind === "built") { newRound(); next(); } });
 $("#mute").addEventListener("click", () => { try { localStorage.setItem("repaso-mute", localStorage.getItem("repaso-mute") === "1" ? "0" : "1"); } catch {} renderSoundControls(); if (sfxVol()) sfx("tap"); else try { speechSynthesis.cancel(); } catch {} });
 $("#vol").addEventListener("input", e => { try { localStorage.setItem("repaso-vol", e.target.value); } catch {} });
 $("#vol").addEventListener("change", () => sfx("pair"));
