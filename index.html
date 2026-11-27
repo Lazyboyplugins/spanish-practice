@@ -64,7 +64,8 @@ button{cursor:pointer}
 .blank{font:inherit;font-size:inherit;border:0;border-bottom:2px solid var(--accent);background:var(--accent-soft);border-radius:6px 6px 0 0;padding:0 8px;min-width:6ch;max-width:100%;color:var(--ink)}
 .blank:disabled{opacity:1}
 .long{width:100%;font-size:18px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk)}
-.opts{display:grid;gap:8px}
+.opts{display:grid;gap:8px}.opts.emo{grid-template-columns:repeat(3,1fr)}.opt.emo{justify-content:center;font-size:44px;line-height:1.2;padding:14px 6px;position:relative}.opt.emo .k{position:absolute;top:4px;left:6px;font-size:12px}
+.weekrow{display:flex;gap:6px;justify-content:center;margin:6px 0}.wday{display:flex;flex-direction:column;align-items:center;width:34px;padding:4px 0;border-radius:8px;border:2px solid #ccc;font-size:18px;font-weight:700;color:#999}.wday small{font-size:11px;font-weight:600}.wday.on{border-color:#2e9d5b;background:#e3f6ea;color:#1d6b3c}
 .opt{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:baseline;font-size:17px}
 .opt:hover:not(:disabled){border-color:var(--accent)}
 .opt .k{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:1ch}
@@ -218,7 +219,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
   <header class="top">
     <div class="brand">
       <h1>Repaso <span class="me">de</span> español</h1>
-      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
+      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or sports and hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
     </div>
     <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span><button class="chip" type="button" id="autoplay" aria-pressed="true" title="Play the Spanish answer out loud after you check">Sound after answers: on</button><button class="btn" type="button" id="pop10">🎲 10 random nouns</button></div>
   </header>
@@ -231,7 +232,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
     <button class="tab" role="tab" id="tab-built" aria-selected="false" hidden>gustar</button>
     <button class="tab" role="tab" id="tab-nouns" aria-selected="false">Nouns</button>
     <button class="tab" role="tab" id="tab-time" aria-selected="false">Time</button>
-    <button class="tab" role="tab" id="tab-sh" aria-selected="false">Hobbies</button>
+    <button class="tab" role="tab" id="tab-sh" aria-selected="false">Sports & hobbies</button>
     <button class="tab" role="tab" id="tab-gg" aria-selected="false">gusta or gustan?</button>
     <button class="tab" role="tab" id="tab-custom" aria-selected="false">Make your own</button>
   </nav>
@@ -1068,7 +1069,8 @@ const XT_WORDS = {
 const XT_SH = {
   "sh-words": "Hobby words", "sh-tocar": "tocar for instruments, jugar for sports", "sh-gusta": "me gusta (not gustan) + an activity",
   "sh-gusta-noun": "gusta (one thing) or gustan (more than one)", "sh-inf": "Verb after gusta stays as is (me gusta nadar)", "sh-pron": "me / te / le / nos / les with gusta",
-  "sh-answer": "Answering ¿Te gusta a ti…? with a mí me gusta", "sh-neg": "no goes before me: no me gusta" };
+  "sh-answer": "Answering ¿Te gusta a ti…? with a mí me gusta", "sh-neg": "no goes before me: no me gusta",
+  "sh-point": "Point to it (sports and hobby pictures)", "sh-sportw": "Sports words", "sh-often": "How often (siempre, a menudo, nunca…)", "sh-nunca": "Where nunca goes (nunca juego)" };
 const XT_GG = {
   "gg-que": "¿Qué … más? takes gusta", "gg-cuales": "¿Cuáles … más? takes gustan", "gg-qpron": "te / le / les in the question",
   "gg-ans": "Answer: gusta for one thing or an action, gustan for more than one", "gg-apron": "me / le / nos / les in the answer",
@@ -1209,8 +1211,8 @@ const V2 = {
   pensar: { m: "to think", ch: "e→ie", f: ["pienso", "piensas", "piensa", "pensamos", "piensan"], c: [["en la familia", "think about family"], ["mucho", "think a lot"], ["en el fin de semana", "think about the weekend"]] },
   creer: { m: "to believe / to think", f: ["creo", "crees", "cree", "creemos", "creen"], c: [["en los fantasmas", "believe in ghosts"], ["que sí", "think so", 1], ["en la suerte", "believe in luck"]] },
   preferir: { m: "to prefer", ch: "e→ie", f: ["prefiero", "prefieres", "prefiere", "preferimos", "prefieren"], c: [["el té", "prefer tea"], ["la playa", "prefer the beach"], ["caminar", "prefer walking"]] },
-  jugar: { m: "to play (a sport or game)", ch: "u→ue", f: ["juego", "juegas", "juega", "jugamos", "juegan"], c: [["al fútbol los sábados", "play football on Saturdays"], ["al tenis con mi hermana", "play tennis with my sister"], ["básquetbol en el parque", "play basketball in the park"], ["al béisbol", "play baseball"]] },
-  practicar: { m: "to do / practise (a sport)", f: ["practico", "practicas", "practica", "practicamos", "practican"], c: [["natación", "do swimming"], ["yoga los lunes", "do yoga on Mondays"], ["kárate", "do karate"], ["mucho deporte", "do a lot of sport"]] },
+  jugar: { m: "to play (a sport or game)", ch: "u→ue", f: ["juego", "juegas", "juega", "jugamos", "juegan"], c: [["al fútbol los sábados", "play football on Saturdays"], ["al tenis con mi hermana", "play tennis with my sister"], ["básquetbol en el parque", "play basketball in the park"], ["al béisbol", "play baseball"], ["al tenis a menudo", "play tennis often"], ["al básquetbol todos los días", "play basketball every day"]] },
+  practicar: { m: "to do / practise (a sport)", f: ["practico", "practicas", "practica", "practicamos", "practican"], c: [["natación", "do swimming"], ["yoga los lunes", "do yoga on Mondays"], ["kárate", "do karate"], ["mucho deporte", "do a lot of sport"], ["deporte todos los días", "do sport every day"], ["el fútbol en el equipo", "practise football with the team"]] },
   traer: { m: "to bring", yo: true, f: ["traigo", "traes", "trae", "traemos", "traen"], c: [["el almuerzo", "bring lunch"], ["la comida a la fiesta", "bring the food to the party"], ["un libro a clase", "bring a book to class"], ["agua a la playa", "bring water to the beach"]] },
   bailar: { m: "to dance", f: ["bailo", "bailas", "baila", "bailamos", "bailan"], c: [["salsa", "dance salsa"], ["en la fiesta", "dance at the party"], ["mucho los sábados", "dance a lot on Saturdays"], ["con mi hermana", "dance with my sister"]] },
   caminar: { m: "to walk", f: ["camino", "caminas", "camina", "caminamos", "caminan"], c: [["al trabajo", "walk to work"], ["en el parque", "walk in the park"], ["a la escuela", "walk to school"], ["con el perro", "walk with the dog"]] },
@@ -1220,6 +1222,13 @@ const V2 = {
   comer: { m: "to eat", f: ["como", "comes", "come", "comemos", "comen"], c: [["pollo con arroz", "eat chicken with rice"], ["en casa", "eat at home"], ["fruta todos los días", "eat fruit every day"], ["tacos los viernes", "eat tacos on Fridays"]] },
   tomar: { m: "to drink / to take", f: ["tomo", "tomas", "toma", "tomamos", "toman"], c: [["café por la mañana", "drink coffee in the morning"], ["el autobús", "take the bus"], ["agua", "drink water"], ["té con leche", "drink tea with milk"]] },
   beber: { m: "to drink", f: ["bebo", "bebes", "bebe", "bebemos", "beben"], c: [["agua", "drink water"], ["jugo de naranja", "drink orange juice"], ["leche", "drink milk"], ["mucho café", "drink a lot of coffee"]] },
+  levantar: { m: "to lift", f: ["levanto", "levantas", "levanta", "levantamos", "levantan"], c: [["pesas en el gimnasio", "lift weights at the gym"], ["pesas los lunes", "lift weights on Mondays"], ["pesas con mi hermano", "lift weights with my brother"], ["pesas a menudo", "lift weights often"]] },
+  mirar: { m: "to look at / to watch", note: "mirar = to look at (on purpose). ver = to see or watch. For TV both work: miro la tele, veo la tele.", f: ["miro", "miras", "mira", "miramos", "miran"], c: [["las estrellas", "look at the stars"], ["el partido", "watch the match"], ["por la ventana", "look out of the window"], ["la tele a veces", "watch TV sometimes"]] },
+  ver: { m: "to see / to watch", yo: true, note: "ver = to see or watch. mirar = to look at. For TV both work: veo la tele, miro la tele.", f: ["veo", "ves", "ve", "vemos", "ven"], c: [["la tele por la noche", "watch TV at night"], ["el fútbol los domingos", "watch football on Sundays"], ["películas", "watch films"], ["a mis amigos", "see my friends"]] },
+  esquiar: { m: "to ski", note: "Normal -ar endings, but with an accent on the í: esquío, esquías, esquía, esquían. No accent in esquiamos.", f: ["esquío", "esquías", "esquía", "esquiamos", "esquían"], c: [["en las montañas", "ski in the mountains"], ["en invierno", "ski in winter"], ["muy bien", "ski very well"], ["en las vacaciones", "ski on holiday"]] },
+  andar: { m: "to walk / to ride (a skateboard, a bike)", f: ["ando", "andas", "anda", "andamos", "andan"], c: [["en patineta", "skateboard"], ["en patineta en el parque", "skateboard in the park"], ["en bicicleta", "ride a bike"], ["en patineta todos los días", "skateboard every day"]] },
+  entrenar: { m: "to train", f: ["entreno", "entrenas", "entrena", "entrenamos", "entrenan"], c: [["en el gimnasio", "train at the gym"], ["con el equipo", "train with the team"], ["los martes", "train on Tuesdays"], ["tres veces por semana", "train three times a week"]] },
+  nadar: { m: "to swim", f: ["nado", "nadas", "nada", "nadamos", "nadan"], c: [["en el mar", "swim in the sea"], ["en la piscina", "swim in the pool"], ["los sábados", "swim on Saturdays"], ["a menudo", "swim often"]] },
   terminar: { m: "to finish", f: ["termino", "terminas", "termina", "terminamos", "terminan"], c: [["el trabajo a las cinco", "finish work at five"], ["la tarea", "finish the homework"], ["de comer", "finish eating"]] },
 };
 const PERS = ["yo", "tú", "él / ella / usted", "nosotros", "ellos / ellas / ustedes"], RP = ["me", "te", "se", "nos", "se"];
@@ -1408,13 +1417,16 @@ const NATURE = [["el sol", "sun", "☀️"], ["la luna", "moon", "🌙"], ["la e
 const SP_SPORTS = [["el fútbol", "football / soccer", "⚽"], ["el básquetbol", "basketball", "🏀"], ["el béisbol", "baseball", "⚾"], ["el tenis", "tennis", "🎾"],
   ["el voleibol", "volleyball", "🏐"], ["la natación", "swimming", "🏊"], ["el ciclismo", "cycling", "🚴"], ["el boxeo", "boxing", "🥊"], ["el golf", "golf", "⛳"],
   ["el atletismo", "athletics", "🏃"], ["el esquí", "skiing", "⛷️"], ["el surf", "surfing", "🏄"], ["el rugby", "rugby", "🏉"], ["el ping-pong", "table tennis", "🏓"],
-  ["el hockey", "hockey", "🏒"], ["el yoga", "yoga", "🧘"], ["el kárate", "karate", "🥋"]];
+  ["el hockey", "hockey", "🏒"], ["el yoga", "yoga", "🧘"], ["el kárate", "karate", "🥋"],
+  ["el levantamiento de pesas", "weightlifting", "🏋️"], ["el patinaje", "skating", ""], ["el senderismo", "hiking", "🥾"], ["la escalada", "climbing", "🧗"], ["la equitación", "horse riding", "🏇"]];
 const SP_GEAR = [["la pelota", "ball", ""], ["la raqueta", "racket", ""], ["el bate", "bat", ""], ["el casco", "helmet", ""], ["los patines", "skates", "⛸️"],
-  ["la red", "net", ""], ["el silbato", "whistle", ""], ["la medalla", "medal", "🏅"], ["el trofeo", "trophy", "🏆"], ["el uniforme", "kit / uniform", ""], ["el gol", "goal (a score)", "🥅"]];
+  ["la red", "net", ""], ["el silbato", "whistle", ""], ["la medalla", "medal", "🏅"], ["el trofeo", "trophy", "🏆"], ["el uniforme", "kit / uniform", ""], ["el gol", "goal (a score)", "🥅"],
+  ["las pesas", "weights", ""], ["la patineta", "skateboard", "🛹"], ["los esquís", "skis", "🎿"], ["la tabla de surf", "surfboard", ""], ["los guantes de boxeo", "boxing gloves", ""]];
 const SP_PLACES = [["el estadio", "stadium", "🏟️"], ["la cancha", "court / pitch", ""], ["la piscina", "swimming pool", ""], ["el gimnasio", "gym", ""],
   ["el equipo", "team", ""], ["el partido", "match / game", ""], ["el jugador", "player (man)", ""], ["la jugadora", "player (woman)", ""],
-  ["el entrenador", "coach (man)", ""], ["el árbitro", "referee", ""], ["el aficionado", "fan (man)", ""], ["el deporte", "sport", ""]];
-const SPORTS = dedupe(SP_SPORTS, SP_GEAR, SP_PLACES);
+  ["el entrenador", "coach (man)", ""], ["el árbitro", "referee", ""], ["el aficionado", "fan (man)", ""], ["el deporte", "sport", ""],
+  ["el entrenamiento", "training (a session)", ""], ["la práctica", "practice", ""], ["la carrera", "race", ""], ["el campeón", "champion (man)", ""]];
+const SPORTS = dedupe(SP_SPORTS, SP_GEAR, SP_PLACES), SP_ALLW = SPORTS;
 const NOUNSETS = { face: FACE, body: BODY, people: PEOPLE, animals: ANIMALS, food: FOOD, clothes: CLOTHES, house: HOUSE, kitchen: KITCHEN, bedroom: BEDROOM, bathroom: BATHROOM, town: TOWN, transport: TRANSPORT, nature: NATURE, sports: SPORTS, things: THINGS2 };
 const DAYS = [["lunes", "Monday"], ["martes", "Tuesday"], ["miércoles", "Wednesday"], ["jueves", "Thursday"], ["viernes", "Friday"], ["sábado", "Saturday"], ["domingo", "Sunday"]];
 const MONTHS = [["enero", "January"], ["febrero", "February"], ["marzo", "March"], ["abril", "April"], ["mayo", "May"], ["junio", "June"], ["julio", "July"], ["agosto", "August"],
@@ -1636,30 +1648,106 @@ const SH_ACTS = [["nadar", "to swim", "🏊"], ["correr", "to run", "🏃"], ["b
   ["dibujar", "to draw", "✏️"], ["pintar", "to paint", "🎨"], ["cocinar", "to cook", "🍳"], ["viajar", "to travel", "✈️"], ["caminar", "to walk", "🚶"],
   ["montar en bicicleta", "to ride a bike", "🚴"], ["escuchar música", "to listen to music", "🎧"], ["ver películas", "to watch movies", "🎬"],
   ["tocar la guitarra", "to play the guitar", "🎸"], ["jugar videojuegos", "to play video games", "🎮"], ["tomar fotos", "to take photos", "📷"],
-  ["escribir", "to write", "✍️"], ["pescar", "to fish", "🎣"], ["acampar", "to go camping", "⛺"], ["tejer", "to knit", "🧶"]];
+  ["escribir", "to write", "✍️"], ["pescar", "to fish", "🎣"], ["acampar", "to go camping", "⛺"], ["tejer", "to knit", "🧶"],
+  ["levantar pesas", "to lift weights", "🏋️"], ["esquiar", "to ski", "⛷️"], ["andar en patineta", "to skateboard", "🛹"], ["ver la tele", "to watch TV", "📺"],
+  ["mirar las estrellas", "to look at the stars", "🔭"], ["entrenar", "to train", "💪"], ["practicar deporte", "to do sport", "🤸"], ["jugar al básquetbol", "to play basketball", "🏀"],
+  ["jugar al tenis", "to play tennis", "🎾"], ["jugar al fútbol", "to play football", "⚽"]];
 const SH_INSTR = [["la guitarra", "the guitar"], ["el piano", "the piano"], ["la batería", "the drums"], ["el violín", "the violin"]];
 const SH_PL = [["los deportes", "sports"], ["los videojuegos", "video games"], ["las películas de terror", "horror movies"], ["los partidos de fútbol", "soccer games"], ["las fiestas", "parties"], ["los conciertos", "concerts"]];
 const JUEGO = ["juego", "juegas", "juega", "jugamos", "juegan"], TOCO = ["toco", "tocas", "toca", "tocamos", "tocan"];
 const SH_GUSTA = "With an activity (a verb like nadar) always use gusta, never gustan, even for two: me gusta nadar y leer.";
 const SH_INF = "After gusta the verb stays in its dictionary form (the infinitive): me gusta nadar, not me gusta nado.";
-const shYo = a => { const [v, ...r] = a.split(" "), f = v === "ver" ? "veo" : v === "jugar" ? "juego" : v.slice(0, -2) + "o"; return [f, ...r].join(" "); };
-const shEl = a => { const [v, ...r] = a.split(" "), f = v === "jugar" ? "juega" : v.slice(0, -2) + (v.endsWith("ar") ? "a" : "e"); return [f, ...r].join(" "); };
-const SH_TABS = [["words", "Hobby words"], ["like", "Me gusta + hobby"], ["tocar", "tocar or jugar?"], ["mix", "Mix"]];
-const SH_SET_OF = { "sh-words": "words", "sh-tocar": "tocar", "sh-gusta": "like", "sh-inf": "like", "sh-pron": "like", "sh-answer": "like", "sh-neg": "like", "sh-gusta-noun": "like" };
-function shWords(focus) {
-  const w = pickFresh(SH_ACTS, "shw"), pool = SH_ACTS;
-  const others = shuffle(pool.filter(x => x !== w)).slice(0, 3), tag = "sh-words";
-  const it = { kind: "tap", type: "choice", topic: "sh", stat: "hobbies: words", focus: focus || null, tested: [tag], full: w[0], mq: w[1], explain: `${w[0]} = ${w[1]}`, noBuild: true };
-  const kind = pick(["en2es", "en2es", "es2en", "pic"]);
+const shYo = a => { const [v, ...r] = a.split(" "), f = v === "ver" ? "veo" : v === "jugar" ? "juego" : v === "esquiar" ? "esquío" : v.slice(0, -2) + "o"; return [f, ...r].join(" "); };
+const shEl = a => { const [v, ...r] = a.split(" "), f = v === "jugar" ? "juega" : v === "esquiar" ? "esquía" : v.slice(0, -2) + (v.endsWith("ar") ? "a" : "e"); return [f, ...r].join(" "); };
+const SH_TABS = [["point", "Point to it"], ["words", "Hobby words"], ["sports", "Sports words"], ["often", "How often?"], ["like", "Me gusta + hobby"], ["tocar", "tocar or jugar?"], ["mix", "Mix"]];
+const SH_SET_OF = { "sh-point": "point", "sh-words": "words", "sh-sportw": "sports", "sh-often": "often", "sh-nunca": "often", "sh-tocar": "tocar", "sh-gusta": "like", "sh-inf": "like", "sh-pron": "like", "sh-answer": "like", "sh-neg": "like", "sh-gusta-noun": "like" };
+/* how often: [spanish, english, "pre" = goes before the verb / "end" = goes at the end] */
+const FQ = [["siempre", "always", "pre"], ["casi siempre", "almost always", "pre"], ["todos los días", "every day", "end"], ["a menudo", "often", "end"],
+  ["a veces", "sometimes", "pre"], ["de vez en cuando", "now and then", "end"], ["pocas veces", "not often", "pre"], ["casi nunca", "almost never", "pre"], ["nunca", "never", "pre"]];
+// words too close in meaning to be wrong answers for each other
+const FQ_NEAR = { "a veces": ["de vez en cuando"], "de vez en cuando": ["a veces", "pocas veces"], "pocas veces": ["casi nunca", "de vez en cuando"], "casi nunca": ["pocas veces"], "siempre": ["todos los días"], "todos los días": ["siempre"] };
+const FQ_RULE = "Short words like siempre, a veces, casi nunca and nunca usually go before the verb: siempre juego. Longer ones like a menudo, todos los días and de vez en cuando usually go at the end: juego a menudo.";
+const FQ_NOT = "Not often = pocas veces, or no … a menudo: no juego al tenis a menudo. muchas veces also means often.";
+// [yo form, él / ella form, English (I), English (he / she), picture]
+const FQ_ACTS = [["juego al fútbol", "juega al fútbol", "play football", "plays football", "⚽"], ["juego al básquetbol", "juega al básquetbol", "play basketball", "plays basketball", "🏀"],
+  ["juego al tenis", "juega al tenis", "play tennis", "plays tennis", "🎾"], ["juego al béisbol", "juega al béisbol", "play baseball", "plays baseball", "⚾"],
+  ["levanto pesas", "levanta pesas", "lift weights", "lifts weights", "🏋️"], ["esquío", "esquía", "ski", "skis", "⛷️"], ["ando en patineta", "anda en patineta", "skateboard", "skateboards", "🛹"],
+  ["veo la tele", "ve la tele", "watch TV", "watches TV", "📺"], ["miro las estrellas", "mira las estrellas", "look at the stars", "looks at the stars", "🔭"],
+  ["entreno en el gimnasio", "entrena en el gimnasio", "train at the gym", "trains at the gym", "💪"], ["practico yoga", "practica yoga", "do yoga", "does yoga", "🧘"],
+  ["nado", "nada", "swim", "swims", "🏊"], ["corro en el parque", "corre en el parque", "run in the park", "runs in the park", "🏃"], ["monto en bicicleta", "monta en bicicleta", "ride a bike", "rides a bike", "🚴"],
+  ["bailo", "baila", "dance", "dances", "💃"], ["toco la guitarra", "toca la guitarra", "play the guitar", "plays the guitar", "🎸"]];
+// a frequency sentence: who (yo or a name), activity, frequency word
+function fqSent(f, a, N) {
+  const v = N ? a[1] : a[0], en = N ? a[3] : a[2], S = N ? N + " " : "", enS = N || "I";
+  const es = f[2] === "pre" ? `${S}${f[0]} ${v}.` : `${S}${v} ${f[0]}.`;
+  const enx = f[0] === "pocas veces" ? `${enS} ${N ? "doesn't" : "don't"} ${a[2]} often.` : f[2] === "end" || f[0] === "todos los días" ? `${enS} ${en} ${f[1]}.` : `${enS} ${f[1]} ${en}.`;
+  return { es: es[0].toUpperCase() + es.slice(1), en: enx, blank: f[2] === "pre" ? `${S}___ ${v}.` : `${S}${v} ___.` };
+}
+const fqWrong = (f, n = 3) => shuffle(FQ.filter(x => x !== f && !(FQ_NEAR[f[0]] || []).includes(x[0]))).slice(0, n);
+const WEEK = ["L", "M", "M", "J", "V", "S", "D"];
+function weekPic(em, days) {
+  const on = new Set(shuffle([0, 1, 2, 3, 4, 5, 6]).slice(0, days));
+  return el("div", { class: "pic", style: "text-align:center" }, el("div", { class: "bigemoji" }, em),
+    el("div", { class: "weekrow" }, WEEK.map((d, i) => el("span", { class: "wday" + (on.has(i) ? " on" : "") }, el("small", {}, d), on.has(i) ? "✓" : "·"))),
+    el("div", { class: "speech-note" }, `${days} day${days === 1 ? "" : "s"} out of 7 this week`));
+}
+function shOften(focus) {
+  const [N] = otherNames(1), who = Math.random() < 0.5 ? null : N, a = pickFresh(FQ_ACTS, "fqa");
+  const it = { kind: "tap", type: "choice", topic: "sh", stat: "hobbies: how often", focus: focus || null, tested: ["sh-often"], explain: `${FQ_RULE} ${FQ_NOT}` };
+  let kind = pick(["word", "fill", "fill", "week", "week", "nunca"]);
+  if (focus === "sh-nunca") kind = "nunca";
+  if (kind === "word") {
+    const f = pickFresh(FQ, "fqw"), o = fqWrong(f), es2en = Math.random() < 0.5;
+    it.full = f[0]; it.mq = f[1]; it.noBuild = true; it.explain = `${f[0]} = ${f[1]}. ${FQ_NOT}`;
+    if (es2en) { it.lead = "What does this mean?"; it.es = f[0]; it.en = ""; it.noGloss = true; it.options = tapOpts(f[1], o.map(x => ({ text: x[1], tag: "sh-often", msg: `"${x[1]}" is ${x[0]}. ${f[0]} means ${f[1]}.` })), focus); }
+    else { it.lead = "How do you say this in Spanish?"; it.es = f[1]; it.esLang = "en"; it.en = ""; it.options = tapOpts(f[0], o.map(x => ({ text: x[0], tag: "sh-often", msg: `${x[0]} means ${x[1]}. "${f[1]}" is ${f[0]}.` })), focus); }
+  } else if (kind === "fill") {
+    const f = pickFresh(FQ, "fqf"), S = fqSent(f, a, who);
+    it.lead = "Pick the missing word"; it.es = S.blank; it.en = S.en; it.full = S.es; it.mq = S.en;
+    it.options = tapOpts(f[0], fqWrong(f).map(x => ({ text: x[0], tag: "sh-often", msg: `${x[0]} means ${x[1]}. "${f[1]}" is ${f[0]}.` })), focus);
+  } else if (kind === "week") {
+    const C = [[7, "todos los días", ["nunca", "casi nunca", "pocas veces", "a veces"]], [5, "a menudo", ["nunca", "casi nunca", "pocas veces"]], [2, "a veces", ["nunca", "siempre", "todos los días"]],
+      [1, "pocas veces", ["siempre", "todos los días", "a menudo"]], [0, "nunca", ["siempre", "todos los días", "a menudo", "casi siempre"]]];
+    const [days, right, wr] = pick(C), f = FQ.find(x => x[0] === right), S = fqSent(f, a, who);
+    it.lead = who ? `How often does ${who} do this?` : "How often do you do this?"; it.es = ""; it.en = ""; it.full = S.es; it.mq = S.en; it.noBuild = true;
+    it.pic = () => weekPic(a[4], days);
+    it.options = tapOpts(right, shuffle(wr).slice(0, 3).map(w => { const x = FQ.find(y => y[0] === w); return { text: w, tag: "sh-often", msg: `${w} means ${x[1]}. ${days} days out of 7 is ${right} (${f[1]}): ${S.es}` }; }), focus);
+  } else {
+    const S = fqSent(FQ.find(x => x[0] === "nunca"), a, who), v = who ? a[1] : a[0], Sx = who ? who + " " : "";
+    const [v1, ...rest] = v.split(" "), after = rest.length ? " " + rest.join(" ") : "";
+    it.lead = "Say it in Spanish"; it.es = S.en; it.esLang = "en"; it.en = ""; it.full = S.es; it.mq = S.en; it.tested = ["sh-nunca"];
+    it.explain = "nunca goes before the verb: nunca juego. You can also say no … nunca: no juego nunca. Never put no and nunca side by side.";
+    const cap1 = t => t[0].toUpperCase() + t.slice(1);
+    it.options = tapOpts(S.es, [{ text: cap1(`${Sx}${v1} nunca${after}.`), tag: "sh-nunca", msg: `nunca goes before the verb: ${S.es} (or with no: ${cap1(`${Sx}no ${v}`)} nunca.)` },
+      { text: cap1(`${Sx}no nunca ${v}.`), tag: "sh-nunca", msg: `Don't put no and nunca together. Say ${S.es}` },
+      { text: cap1(`${Sx}siempre ${v}.`), tag: "sh-often", msg: "siempre means always. Never is nunca." }], focus);
+  }
+  return it;
+}
+// point to it: read (and hear) the Spanish, tap the right picture
+const SH_PICS = (() => { const seen = new Set(), out = []; for (const w of [...FQ_ACTS.map(a => [a[0], "I " + a[2], a[4], "s"]), ...SH_ACTS, ...SP_SPORTS, ...SP_GEAR]) { if (!w[2] || seen.has(w[2])) continue; seen.add(w[2]); out.push(w); } return out; })();
+function shPoint(focus) {
+  const w = pickFresh(SH_PICS, "shp"), others = shuffle(SH_PICS.filter(x => x[2] !== w[2])).slice(0, 5);
+  const it = { kind: "tap", type: "choice", topic: "sh", stat: "hobbies: point to it", focus: focus || null, tested: ["sh-point"], full: w[3] ? cap(w[0]) + "." : w[0], mq: w[1], noBuild: true, noGloss: true, emojiOpts: true, sayFirst: true };
+  it.lead = "Point to it: tap the right picture"; it.es = w[3] ? cap(w[0]) + "." : w[0]; it.en = ""; it.explain = `${w[0]} = ${w[1]} ${w[2]}`;
+  it.options = tapOpts(w[2], others.map(o => ({ text: o[2], tag: "sh-point", msg: `${o[2]} is ${o[0]} (${o[1]}). ${cap(w[0])} is ${w[2]} (${w[1]}).` })), focus, 5);
+  return it;
+}
+function shWords(focus, sports) {
+  const pool = sports ? SP_ALLW : SH_ACTS, w = pickFresh(pool, sports ? "shs" : "shw");
+  const others = shuffle(pool.filter(x => x !== w)).slice(0, 3), tag = sports ? "sh-sportw" : "sh-words";
+  const it = { kind: "tap", type: "choice", topic: "sh", stat: sports ? "hobbies: sports words" : "hobbies: words", focus: focus || null, tested: [tag], full: w[0], mq: w[1], explain: `${w[0]} = ${w[1]}`, noBuild: true };
+  let kind = pick(["en2es", "en2es", "es2en", "pic"]);
+  if (kind === "pic" && (!w[2] || others.some(o => !o[2]))) kind = "en2es";
   if (kind === "es2en") {
     it.lead = "What does this mean?"; it.es = w[0]; it.en = ""; it.noGloss = true;
     it.options = tapOpts(w[1], others.map(o => ({ text: o[1], tag, msg: `"${o[1]}" is ${o[0]}. ${cap(w[0])} means ${w[1]}.` })), focus);
   } else if (kind === "pic") {
-    it.lead = "What is this person doing for fun?"; it.es = ""; it.en = "";
+    it.lead = sports ? "What is this in Spanish?" : "What is this person doing for fun?"; it.es = ""; it.en = "";
     it.pic = () => el("div", { class: "pic", style: "font-size:84px;text-align:center;line-height:1.2" }, w[2]);
     it.options = tapOpts(w[0], others.map(o => ({ text: o[0], tag, msg: `${cap(o[0])} means ${o[1]}. The picture is ${w[0]} (${w[1]}).` })), focus);
   } else {
-    it.lead = "How do you say this in Spanish?"; it.es = w[2] + " " + w[1]; it.esLang = "en"; it.en = "";
+    it.lead = "How do you say this in Spanish?"; it.es = ((w[2] || "") + " " + w[1]).trim(); it.esLang = "en"; it.en = "";
     it.options = tapOpts(w[0], others.map(o => ({ text: o[0], tag, msg: `${cap(o[0])} means ${o[1]}. "${w[1]}" is ${w[0]}.` })), focus);
   }
   return it;
@@ -1727,10 +1815,10 @@ function shLike(focus, lv) {
   return it;
 }
 function makeSH(focus) {
-  const sel = state.settings.shset || "words", lv = levelOf("sh");
-  let set = sel === "mix" || !SH_TABS.some(t => t[0] === sel) ? pick(["words", "like", "like", "tocar"]) : sel;
+  const sel = state.settings.shset || "point", lv = levelOf("sh");
+  let set = sel === "mix" || !SH_TABS.some(t => t[0] === sel) ? pick(["point", "point", "words", "sports", "often", "often", "like", "like", "tocar"]) : sel;
   if (focus && SH_SET_OF[focus]) set = SH_SET_OF[focus]; else focus = null;
-  return set === "words" ? shWords(focus) : set === "tocar" ? shTocar(focus) : shLike(focus, lv);
+  return set === "point" ? shPoint(focus) : set === "words" ? shWords(focus) : set === "sports" ? shWords(focus, true) : set === "often" ? shOften(focus) : set === "tocar" ? shTocar(focus) : shLike(focus, lv);
 }
 /* ----- gusta or gustan? ¿Qué le gusta más a…? questions and answers ----- */
 // q = how the question says the person, qp = its pronoun; a / ap = the same in the answer; en = English in the question, aen = English in the answer
@@ -1845,7 +1933,7 @@ function makeX(focus) {
 }
 
 /* ----- rendering for these items ----- */
-const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Hobbies", gg: "gusta or gustan?" };
+const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Sports & hobbies", gg: "gusta or gustan?" };
 function renderTap(box, it) {
   box.append(el("p", { class: "en" }, el("b", {}, it.lead), it.en ? " · " + it.en : ""));
   if (it.pic) box.append(it.pic());
@@ -1859,7 +1947,8 @@ function renderTap(box, it) {
     const sp = it.esLang !== "en";
     box.append(el("div", { class: "es" }, sp && !it.noGloss ? words(it.es) : it.es, sp ? speakBtns(it.es) : null));
   }
-  box.append(el("div", { class: "opts" }, it.options.map((o, i) => el("button", { class: "opt", "data-i": i, onclick: () => answerChoice(i) }, el("span", { class: "k" }, i + 1), el("span", {}, o.text)))));
+  if (it.sayFirst && it.es && state.settings.autoplay !== false) setTimeout(() => say(it.es), 250);
+  box.append(el("div", { class: it.emojiOpts ? "opts emo" : "opts" }, it.options.map((o, i) => el("button", { class: it.emojiOpts ? "opt emo" : "opt", "data-i": i, onclick: () => answerChoice(i) }, el("span", { class: "k" }, i + 1), el("span", {}, o.text)))));
 }
 function answerPic(key) {
   if (answered || !cur || cur.type !== "pictap") return; answered = true;
@@ -1901,7 +1990,8 @@ function renderVerbPanel() {
     if (V.irr) notes.push(`Irregular in every form (shown in orange): learn ${V.f.join(", ")} by heart.`);
     else if (V.yo) notes.push(`Irregular yo form: ${V.f[0]} (shown in orange).` + (sel === "estar" ? " The other forms are regular but have accents: estás, está, están." : " The other forms are regular."));
     if (sel === "ser" || sel === "estar") notes.push("ser for who someone is and where they're from. estar for where someone is and how they feel. The ser vs estar tab practises choosing between them.");
-    if (!V.ch && !V.refl && !V.yo && !V.irr) notes.push("A regular verb: keep the stem and change the ending.");
+    if (!V.ch && !V.refl && !V.yo && !V.irr && sel !== "esquiar") notes.push("A regular verb: keep the stem and change the ending.");
+    if (V.note) notes.push(V.note);
     for (const n of notes) box.append(el("p", {}, n));
   } else {
     box.append(el("h2", {}, "Verb patterns"),
@@ -1976,16 +2066,31 @@ function renderTimePanel() {
   } else box.append(el("h2", {}, "Time, days and months, mixed"));
 }
 function renderSHPanel() {
-  const sel = state.settings.shset || "words"; segButtons("#shsets", SH_TABS, sel, "shset");
+  const sel = state.settings.shset || "point"; segButtons("#shsets", SH_TABS, sel, "shset");
   const box = $("#shcheat"); box.replaceChildren();
   const b = t => el("b", { class: "es-i" }, t);
-  if (sel === "words") {
+  const cardsOf = list => list.filter(w => w[2] !== undefined).map(w => {
+    const c = el("button", { class: "ncard", type: "button" }, el("span", { class: "em" }, w[2] || "·"), el("span", { class: "enw" }, w[1]));
+    c.addEventListener("click", () => { say(w[0]); if (c.classList.contains("open")) return; c.classList.add("open"); c.append(el("span", { class: "esw" }, w[0])); });
+    return c;
+  });
+  if (sel === "point") {
+    box.append(el("h2", {}, "Point to it"), el("p", {}, "You hear and see a Spanish word or sentence. Tap the picture that matches. Tap the Spanish to hear it again."));
+  } else if (sel === "sports") {
+    box.append(el("h2", {}, "Los deportes (sports)"), el("p", {}, "Tap a card to see and hear the Spanish. jugar for ball games: juego al tenis. practicar for others: practico yoga."),
+      el("div", { class: "cards" }, cardsOf(SP_ALLW)), el("div", { class: "actions" }, el("button", { class: "link", onclick: () => renderSHPanel() }, "Hide them all again")));
+  } else if (sel === "often") {
+    box.append(el("h2", {}, "How often? ¿Con qué frecuencia?"),
+      el("div", { class: "cheat-grid" }, FQ.map(f => el("div", {}, b(f[0]), " = " + f[1]))),
+      el("p", {}, FQ_RULE), el("p", {}, FQ_NOT),
+      el("p", {}, "Examples: ", b("Siempre juego al fútbol."), " ", b("Levanto pesas a menudo."), " ", b("Casi nunca esquío."), " ", b("Mi hermano nunca ve la tele.")));
+  } else if (sel === "words") {
     const cards = SH_ACTS.map(w => {
       const c = el("button", { class: "ncard", type: "button" }, el("span", { class: "em" }, w[2]), el("span", { class: "enw" }, w[1]));
       c.addEventListener("click", () => { say(w[0]); if (c.classList.contains("open")) return; c.classList.add("open"); c.append(el("span", { class: "esw" }, w[0])); });
       return c;
     });
-    box.append(el("h2", {}, "Los pasatiempos (hobbies)"), el("p", {}, "Tap a card to see and hear the Spanish. Can you guess it first? Sports words are in Nouns > Sports."),
+    box.append(el("h2", {}, "Los pasatiempos (hobbies)"), el("p", {}, "Tap a card to see and hear the Spanish. Can you guess it first? Sports words have their own tab here too."),
       el("div", { class: "cards" }, cards), el("div", { class: "actions" }, el("button", { class: "link", onclick: () => renderSHPanel() }, "Hide them all again")));
   } else if (sel === "like") {
     box.append(el("h2", {}, "Me gusta + a hobby"),
@@ -1998,7 +2103,7 @@ function renderSHPanel() {
     box.append(el("h2", {}, "tocar or jugar? Both mean \"to play\""), el("div", { class: "cheat-grid" },
       el("div", {}, el("b", { class: "vb" }, "tocar"), ": toco, tocas, toca, tocamos, tocan"), el("div", {}, el("b", { class: "pr" }, "jugar"), ": juego, juegas, juega, jugamos, juegan")),
       el("p", {}, el("b", { class: "vb" }, "tocar"), " for instruments: ", b("toco la guitarra"), ". ", el("b", { class: "pr" }, "jugar"), " for sports and games: ", b("juego al fútbol"), "."));
-  } else box.append(el("h2", {}, "Hobbies, mixed"), el("p", {}, "Hobby words, me gusta and tocar or jugar, all together."));
+  } else box.append(el("h2", {}, "Sports & hobbies, mixed"), el("p", {}, "Point to it, hobby and sports words, how often, me gusta and tocar or jugar, all together."));
 }
 function renderGGPanel() {
   const sel = state.settings.ggset || "ask"; segButtons("#ggsets", GG_TABS, sel, "ggset");
@@ -2156,6 +2261,10 @@ for (const [k, v] of Object.entries({ "tocar": "to play (an instrument) / to tou
   "y": "and", "hermano": "brother", "bicicleta": "bike", "fotos": "photos", "películas": "movies", "guitarra": "guitar", "videojuegos": "video games", "deportes": "sports", "partidos": "games / matches",
   "fiestas": "parties", "conciertos": "concerts", "montar": "to ride", "escuchar": "to listen to", "ver": "to watch / see", "tomar": "to take", "música": "music", "ustedes": "you all" })) GLOSS[k] = GLOSS[k] || v;
 for (const [es, en] of [...GG_FAM, ...GG_FAMP]) GLOSS[es] = GLOSS[es] || en;
+for (const [k, v] of Object.entries({ "siempre": "always", "casi": "almost", "nunca": "never", "menudo": "a menudo = often", "veces": "times (a veces = sometimes)", "vez": "time (de vez en cuando = now and then)",
+  "cuando": "when", "pocas": "few (pocas veces = not often)", "todos": "all / every", "días": "days", "pesas": "weights", "patineta": "skateboard", "tele": "TV", "estrellas": "stars", "gimnasio": "gym",
+  "yoga": "yoga", "esquiar": "to ski", "levantar": "to lift", "mirar": "to look at / to watch", "andar": "to walk / to ride", "entrenar": "to train", "practicar": "to do / practise", "deporte": "sport",
+  "equipo": "team", "piscina": "swimming pool", "montañas": "mountains", "vacaciones": "holidays", "ventana": "window", "partido": "match / game", "básquetbol": "basketball", "fútbol": "football / soccer" })) GLOSS[k] = GLOSS[k] || v;
 for (const t of GG_THINGS.flat()) { const w = t[0].split(" "); const k = w.length > 1 && /^(el|la|los|las)$/.test(w[0]) ? w.slice(1).join(" ") : t[0]; if (!k.includes(" ")) GLOSS[k] = GLOSS[k] || t[1]; }
 for (const [k, v] of Object.entries({ "más": "more", "o": "or", "qué": "what", "cuáles": "which ones", "cuál": "which one", "tu": "your", "tus": "your (more than one)", "mi": "my", "mis": "my (more than one)",
   "mí": "me (after a)", "ti": "you (after a)", "a": "to (a mí = to me)", "papas": "potatoes", "fritas": "fried" })) GLOSS[k] = GLOSS[k] || v;
@@ -2261,7 +2370,7 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["sh", "Hobbies"], ["gg", "gusta or gustan?"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gusta or gustan?"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
@@ -2798,7 +2907,8 @@ function addConj(inf, d) {
 }
 addConj("ser", { m: "to be (who / what someone is, where from, time)", f: SER, en: ["am", "are", "is", "are", "are"], note: "Irregular: learn these by heart." });
 addConj("estar", { m: "to be (where something is, how someone feels)", f: ESTAR, en: ["am", "are", "is", "are", "are"], note: "Irregular yo form: estoy. Accents on estás, está, están." });
-for (const [inf, V] of Object.entries(V2)) addConj(inf, { m: V.m, f: V.f, refl: V.refl, ch: V.ch, modal: V.modal, note: V.yo ? `Irregular yo form: ${V.f[0]}. The other forms are regular.` : null });
+for (const [inf, V] of Object.entries(V2)) addConj(inf, { m: V.m, f: V.f, refl: V.refl, ch: V.ch, modal: V.modal, note: [V.yo ? `Irregular yo form: ${V.f[0]}. The other forms are regular.` : "", V.note || ""].join(" ").trim() || null });
+CONJ.levantarse.note = "Without me / te / se, levantar means to lift: levanto pesas (I lift weights).";
 addConj("tocar", { m: "to play (an instrument) / to touch", f: TOCO });
 for (const [inf, m, f, ch, note] of [
   ["tener", "to have", ["tengo", "tienes", "tiene", "tenemos", "tienen"], "e→ie", "Irregular yo form: tengo."],
