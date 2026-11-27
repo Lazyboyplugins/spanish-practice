@@ -271,7 +271,7 @@ body::before{content:"";display:block;height:14px;margin:0 calc(-1 * max(16px,en
 .tab[aria-selected="true"]{background:var(--t);border-color:var(--t);color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--t) 40%,transparent)}
 #tab-qw{--t:var(--c2);--ts:var(--c2s)} #tab-verbs{--t:var(--c5);--ts:var(--c5s)} #tab-se{--t:var(--c6);--ts:var(--c6s)}
 #tab-built{--t:var(--c1);--ts:var(--c1s)} #tab-nouns{--t:var(--c4);--ts:var(--c4s)} #tab-time{--t:var(--c7);--ts:var(--c7s)}
-#tab-sh{--t:var(--c2);--ts:var(--c2s)} #tab-gg{--t:var(--c6);--ts:var(--c6s)} #tab-gr{--t:var(--c4);--ts:var(--c4s)} #tab-co{--t:var(--c5);--ts:var(--c5s)} #tab-custom{--t:var(--c5);--ts:var(--c5s)}
+#tab-sh{--t:var(--c2);--ts:var(--c2s)} #tab-gg{--t:var(--c6);--ts:var(--c6s)} #tab-gr{--t:var(--c4);--ts:var(--c4s)} #tab-co{--t:var(--c5);--ts:var(--c5s)} #tab-ab{--t:var(--c1);--ts:var(--c1s)} #tab-custom{--t:var(--c5);--ts:var(--c5s)}
 #tab-time[aria-selected="true"],#tab-nouns[aria-selected="true"],#tab-gr[aria-selected="true"]{color:#fff}
 
 /* Countries: world map, shapes, pop-quiz timer */
@@ -284,6 +284,11 @@ body::before{content:"";display:block;height:14px;margin:0 calc(-1 * max(16px,en
 .worldmap .colabel{font-weight:800;font-family:var(--body);paint-order:stroke;stroke:#fff;stroke-width:3.5px;vector-effect:non-scaling-stroke;fill:#1d6b3c;pointer-events:none}.worldmap .colabel.bad{fill:#b0281f}
 .pic.coshape svg{width:min(240px,64vw);height:min(190px,50vw);display:block;margin:6px auto;overflow:visible}.coshape path{stroke:rgba(0,0,0,.3);stroke-width:1.2px;vector-effect:non-scaling-stroke;stroke-linejoin:round}
 .bigemoji.coflag{font-size:110px}
+.bigemoji.ableter{font-size:88px;font-weight:800;letter-spacing:4px;color:var(--ink,#222)}
+.abgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin:8px 0}
+.abkey{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 4px;border-radius:12px;border:2px solid var(--c1s,#ddd);background:var(--card,#fff);color:inherit;font:inherit;cursor:pointer}
+.abkey b{font-size:22px}.abkey .abname{font-weight:600}.abkey small{font-size:12px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ablist{display:flex;flex-direction:column;gap:6px;margin:8px 0}.abtip{font-size:14px;line-height:1.4}
 .cotimer{height:12px;border-radius:99px;background:var(--sunk);border:1px solid var(--line);overflow:hidden;margin:4px 0 10px}.cotimer i{display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,#d64545,#ff9a3d 40%,#ffd24d 60%,#2e9d5b)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .worldmap .sea{fill:#143a57}:root:not([data-theme="light"]) .worldmap .land{fill:#4b3d55;stroke:#2a1f30}:root:not([data-theme="light"]) .worldmap .co{fill:#d9a13b;stroke:#2a1f30}}
 :root[data-theme="dark"] .worldmap .sea{fill:#143a57}:root[data-theme="dark"] .worldmap .land{fill:#4b3d55;stroke:#2a1f30}:root[data-theme="dark"] .worldmap .co{fill:#d9a13b;stroke:#2a1f30}
@@ -443,6 +448,7 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
   </div>
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" id="tab-mixq" aria-selected="true">⭐ Build a quiz</button>
+    <button class="tab" role="tab" id="tab-ab" aria-selected="false">Alphabet</button>
     <button class="tab" role="tab" id="tab-qw" aria-selected="false">Question words</button>
     <button class="tab" role="tab" id="tab-verbs" aria-selected="false">Verbs</button>
     <button class="tab" role="tab" id="tab-se" aria-selected="false">ser vs estar</button>
@@ -575,6 +581,12 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
         <div class="row"><span class="lbl">Practise</span><div class="seg" id="grsets"></div></div>
         <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
         <div class="cheat" id="grcheat"></div>
+      </section>
+
+      <section id="panel-ab" class="controls" hidden>
+        <div class="row"><span class="lbl">Practise</span><div class="seg" id="absets"></div></div>
+        <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
+        <div class="cheat" id="abcheat"></div>
       </section>
 
       <section id="panel-co" class="controls" hidden>
@@ -1313,9 +1325,12 @@ const XT_GR = { "gr-hi": "Saying hi (hola)", "gr-how": "How are you? and answers
   "gr-reply": "Picking the right reply (gracias → de nada)", "gr-bye": "Saying bye (chao, hasta luego, nos vemos)", "gr-time": "Buenos días, buenas tardes or buenas noches?" };
 const XT_CO = { "co-eu": "Countries in Europe", "co-na": "USA, Canada and Mexico", "co-ca": "Central America and the Caribbean", "co-sa": "South America",
   "co-af": "Africa and the Middle East", "co-as": "Countries in Asia", "co-oc": "Australia and the Pacific", "co-de": "Soy de… (saying where you're from)" };
+const XT_AB = { "ab-vowel": "The vowels: a, e, i, o, u", "ab-name": "Letter names (de, efe, ele, eme, pe, te)", "ab-bv": "b and v sound the same (be, ve, doble ve)",
+  "ab-csz": "c, s, z and x (ce, ese, zeta, equis)", "ab-gjh": "g, j and silent h (ge, jota, hache)", "ab-yi": "y and ll (ye)", "ab-kq": "c, k and qu: the k sound (ka, cu)",
+  "ab-nr": "ñ and r / rr (eñe, erre)", "ab-spell": "Spelling words aloud (deletrear)", "ab-phrase": "¿Cómo se escribe? (How do you spell it?)" };
 const XTOPIC = {};
-for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH], ["gg", XT_GG], ["gr", XT_GR], ["co", XT_CO]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
-Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH, XT_GG, XT_GR, XT_CO);
+for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH], ["gg", XT_GG], ["gr", XT_GR], ["co", XT_CO], ["ab", XT_AB]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
+Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH, XT_GG, XT_GR, XT_CO, XT_AB);
 
 function tapOpts(correct, cands, focus, n = 3) {
   const seen = new Set([correct]), out = [];
@@ -2568,6 +2583,224 @@ function grFun(kind, base) {
   return { ...base, type: "choice", stat: "games: listen and reply", lead: "Listen, then tap the best reply", es: w[0], en: "", full: w[0], mq: w[1], listen: true,
     explain: `${w[0]} → ${w[1]}`, options: tapOpts(w[1], ps.slice(1).map(o => ({ text: o[1], tag: "other", msg: `You heard ${w[0]} That reply goes with ${o[0]}` })), null) };
 }
+/* ----- the alphabet (el abecedario): letter names, sounds, spelling aloud. Latin American names ----- */
+// [letter, name, other names people use, example word, english, picture, tag, how it sounds]
+const AB = [
+  ["a", "a", [], "avión", "plane", "✈️", "ab-vowel", "a sounds like the a in father."],
+  ["b", "be", ["be larga", "be alta", "be grande"], "barco", "boat", "⛵", "ab-bv", "b sounds the same as v. To make clear you mean b, say be larga (long b)."],
+  ["c", "ce", [], "casa", "house", "🏠", "ab-csz", "c sounds like k before a, o, u (casa, cosa). Before e or i it sounds like s (cine, cena)."],
+  ["d", "de", [], "dado", "dice", "🎲", "ab-name", "d is soft, a bit like the th in this when it's between vowels (dado)."],
+  ["e", "e", [], "elefante", "elephant", "🐘", "ab-vowel", "e sounds like the e in bed."],
+  ["f", "efe", [], "foca", "seal", "🦭", "ab-name", "f sounds like English f."],
+  ["g", "ge", [], "gato", "cat", "🐱", "ab-gjh", "g is hard before a, o, u (gato). Before e or i it sounds like the jota, a breathy h (gente)."],
+  ["h", "hache", [], "helado", "ice cream", "🍦", "ab-gjh", "h is always silent: hola sounds like ola."],
+  ["i", "i", ["i latina"], "isla", "island", "🏝️", "ab-vowel", "i sounds like the ee in see."],
+  ["j", "jota", [], "jirafa", "giraffe", "🦒", "ab-gjh", "j (jota) sounds like a strong, breathy h, as in hot (jirafa, jugo)."],
+  ["k", "ka", [], "kiwi", "kiwi", "🥝", "ab-kq", "k sounds like English k. It's only in a few borrowed words (kilo, kiwi)."],
+  ["l", "ele", [], "luna", "moon", "🌙", "ab-name", "l sounds like English l."],
+  ["m", "eme", [], "mano", "hand", "✋", "ab-name", "m sounds like English m."],
+  ["n", "ene", [], "nariz", "nose", "👃", "ab-nr", "n sounds like English n."],
+  ["ñ", "eñe", [], "niño", "boy", "🧒", "ab-nr", "ñ sounds like the ny in canyon (niño, España). It's its own letter, right after n."],
+  ["o", "o", [], "oso", "bear", "🐻", "ab-vowel", "o is short and round, like the o in or."],
+  ["p", "pe", [], "pato", "duck", "🦆", "ab-name", "p sounds like English p, a bit softer."],
+  ["q", "cu", [], "queso", "cheese", "🧀", "ab-kq", "q always comes with u: que, qui. The u is silent, so queso sounds like keso."],
+  ["r", "erre", ["ere"], "ratón", "mouse", "🐭", "ab-nr", "One r between vowels is a quick tap (pero). r at the start of a word, and rr, are rolled (ratón, perro)."],
+  ["s", "ese", [], "sol", "sun", "☀️", "ab-csz", "s sounds like the s in sun."],
+  ["t", "te", [], "tomate", "tomato", "🍅", "ab-name", "t sounds like English t, a bit softer."],
+  ["u", "u", [], "uva", "grape", "🍇", "ab-vowel", "u sounds like the oo in food."],
+  ["v", "ve", ["ve corta", "ve chica", "ve baja", "uve"], "vaca", "cow", "🐄", "ab-bv", "v sounds the same as b. To make clear you mean v, say ve corta (short v). In Spain it's called uve."],
+  ["w", "doble ve", ["doble u", "uve doble", "doble uve"], "wifi", "wifi", "📶", "ab-bv", "w is only in borrowed words (wifi, kiwi) and sounds like English w. In Mexico many people say doble u."],
+  ["x", "equis", [], "taxi", "taxi", "🚕", "ab-csz", "x usually sounds like ks (taxi). In México and a few names it sounds like the jota (México, Oaxaca)."],
+  ["y", "ye", ["i griega"], "yoyó", "yo-yo", "🪀", "ab-yi", "y sounds like the y in yes (yo, playa). The little word y (and) sounds like i. Older name: i griega."],
+  ["z", "zeta", [], "zapato", "shoe", "👞", "ab-csz", "In Latin America z sounds like s (zapato). Most of Spain says it like th."]];
+const AB_BY = Object.fromEntries(AB.map(a => [a[0], a]));
+const AB_TABS = [["names", "Letter names"], ["sounds", "Letter sounds"], ["spell", "Spelling"], ["mix", "Mix"]];
+// letters whose names sound alike, so the wrong answers are a real choice
+const AB_NEAR = [["b", "v", "d", "p", "t", "e", "c", "g"], ["f", "l", "m", "n", "ñ", "r", "s"], ["g", "j", "h"], ["i", "y", "e"], ["c", "s", "z", "x"], ["b", "v", "w"], ["k", "q", "c", "a"], ["a", "e", "i", "o", "u"], ["n", "ñ", "m"]];
+const abShow = l => `${l.toUpperCase()} ${l}`;
+const abSpell = w => [...w.toLowerCase().normalize("NFC")].filter(ch => ch !== " ").map(ch => (AB_BY[ch] || AB_BY[ch.normalize("NFD")[0]] || [ch, ch])[1]).join(", ");
+function abNear(l, lv, n = 3) {
+  const near = shuffle([...new Set(AB_NEAR.filter(g => g.includes(l)).flat())].filter(x => x !== l));
+  const far = shuffle(AB.map(a => a[0]).filter(x => x !== l && !near.includes(x)));
+  return [...near.slice(0, lv ? n : 2), ...far].slice(0, n);
+}
+const abPool = focus => { const p = focus ? AB.filter(a => a[6] === focus) : []; return p.length ? p : AB; };
+// words to spell: [word, english, level]. No accents, so every letter is a plain letter name.
+const AB_WORDS = [["sol", "sun", 0], ["gato", "cat", 0], ["casa", "house", 0], ["mano", "hand", 0], ["pato", "duck", 0], ["uva", "grape", 0], ["oso", "bear", 0], ["luna", "moon", 0],
+  ["vaca", "cow", 0], ["dado", "dice", 0], ["mesa", "table", 0], ["Ana", "a name", 0], ["Matt", "a name", 0], ["Rosie", "a name", 0], ["hola", "hello", 0],
+  ["queso", "cheese", 1], ["jirafa", "giraffe", 1], ["helado", "ice cream", 1], ["zapato", "shoe", 1], ["perro", "dog", 1], ["gente", "people", 1], ["cine", "cinema", 1],
+  ["playa", "beach", 1], ["taxi", "taxi", 1], ["kilo", "kilo", 1], ["Diego", "a name", 1], ["Pablo", "a name", 1], ["Hugo", "a name", 1], ["Juan", "a name", 1], ["Carlos", "a name", 1],
+  ["llave", "key", 2], ["calle", "street", 2], ["niño", "boy", 2], ["guitarra", "guitar", 2], ["cerveza", "beer", 2], ["chocolate", "chocolate", 2], ["wifi", "wifi", 2], ["huevo", "egg", 2],
+  ["Valentina", "a name", 2], ["Ximena", "a name", 2], ["Javier", "a name", 2], ["Guillermo", "a name", 2], ["Yolanda", "a name", 2], ["Camila", "a name", 2]];
+// easy-to-make spelling mix-ups (sound the same or nearly): [find, replace with, tag]
+const AB_SWAPS = [[/b/, "v", "ab-bv"], [/v/, "b", "ab-bv"], [/c(?=[ei])/, "s", "ab-csz"], [/s/, "z", "ab-csz"], [/z/, "s", "ab-csz"], [/s(?=[ei])/, "c", "ab-csz"], [/c(?=[aou])/, "k", "ab-kq"],
+  [/qu/, "k", "ab-kq"], [/k(?=[ei])/, "qu", "ab-kq"], [/k/, "c", "ab-kq"], [/g(?=[ei])/, "j", "ab-gjh"], [/j/, "g", "ab-gjh"], [/j/, "h", "ab-gjh"], [/^h/, "", "ab-gjh"], [/^([aeiou])/, "h$1", "ab-gjh"],
+  [/ll/, "y", "ab-yi"], [/y/, "ll", "ab-yi"], [/rr/, "r", "ab-nr"], [/([aeiou])r([aeiou])/, "$1rr$2", "ab-nr"], [/^r/, "rr", "ab-nr"], [/ñ/, "n", "ab-nr"], [/x/, "ks", "ab-csz"], [/tt/, "t", "ab-spell"], [/u(?=[ei])/, "", "ab-kq"]];
+function abVariants(word) {
+  const w = word.toLowerCase(), out = [], seen = new Set([w]);
+  for (const [re, rep, tag] of shuffle(AB_SWAPS)) { const v = w.replace(re, rep); if (v !== w && !seen.has(v)) { seen.add(v); out.push({ v: word[0] === word[0].toUpperCase() ? cap(v) : v, tag }); } }
+  // not enough? swap one letter for one whose name sounds alike (pato → bato, pado)
+  const SIM = { p: "bt", t: "dp", d: "tb", b: "dp", m: "n", n: "m", l: "r", e: "i", i: "e", o: "u", u: "o", a: "e", f: "s", s: "f", r: "l" };
+  for (const i of shuffle([...w].map((_, i) => i))) { if (out.length >= 3) break;
+    for (const x of SIM[w[i]] || "") { const v = w.slice(0, i) + x + w.slice(i + 1); if (!seen.has(v)) { seen.add(v); out.push({ v: word[0] === word[0].toUpperCase() ? cap(v) : v, tag: "ab-spell" }); break; } } }
+  return out;
+}
+const abWordPool = (lv, names) => AB_WORDS.filter(w => w[2] <= lv && (names == null || (w[1] === "a name") === names));
+// fill in the missing sound: [word, english, picture, missing part, wrong parts, tag, why]
+const AB_SND = [
+  ["zapato", "shoe", "👞", "z", ["s", "c"], "ab-csz", "In Latin America z and s sound the same, so you just have to learn it: zapato is with zeta."],
+  ["sol", "sun", "☀️", "s", ["z", "c"], "ab-csz", "Sol is with ese. z and s sound the same in Latin America."],
+  ["cine", "cinema", "🎬", "c", ["s", "z"], "ab-csz", "Cine is with ce. Before e or i, c sounds like s."],
+  ["cena", "dinner", "🍽️", "c", ["s", "z"], "ab-csz", "Cena is with ce. Before e or i, c sounds like s."],
+  ["casa", "house", "🏠", "c", ["k", "qu"], "ab-kq", "Casa is with ce. Before a, o, u, c sounds like k."],
+  ["queso", "cheese", "🧀", "qu", ["k", "c"], "ab-kq", "Queso is with qu. For the k sound before e or i, Spanish writes qu (que, qui), and the u is silent."],
+  ["vaca", "cow", "🐄", "v", ["b", "w"], "ab-bv", "Vaca is with ve (ve corta). b and v sound the same, so you just have to learn it."],
+  ["barco", "boat", "⛵", "b", ["v", "w"], "ab-bv", "Barco is with be (be larga). b and v sound the same."],
+  ["ventana", "window", "🪟", "v", ["b", "w"], "ab-bv", "Ventana is with ve (ve corta). b and v sound the same."],
+  ["jirafa", "giraffe", "🦒", "j", ["g", "h"], "ab-gjh", "Jirafa is with jota. g before i would sound the same, so you just have to learn it. h is always silent."],
+  ["gente", "people", "👥", "g", ["j", "h"], "ab-gjh", "Gente is with ge. Before e or i, g sounds like the jota."],
+  ["gato", "cat", "🐱", "g", ["j", "c"], "ab-gjh", "Gato is with ge. Before a, o, u, g is hard, like in go."],
+  ["helado", "ice cream", "🍦", "h", ["j", "g"], "ab-gjh", "Helado is with hache. You can't hear the h, but you write it."],
+  ["hola", "hello", "👋", "h", ["j", "g"], "ab-gjh", "Hola is with hache. You can't hear it, but you write it."],
+  ["huevo", "egg", "🥚", "h", ["g", "j"], "ab-gjh", "Huevo is with a silent hache."],
+  ["llave", "key", "🔑", "ll", ["y", "i"], "ab-yi", "Llave is with ll. ll and y sound the same, like the y in yes."],
+  ["playa", "beach", "🏖️", "y", ["ll", "i"], "ab-yi", "Playa is with ye. ll and y sound the same."],
+  ["pollo", "chicken", "🍗", "ll", ["y", "l"], "ab-yi", "Pollo is with ll. ll and y sound the same."],
+  ["perro", "dog", "🐶", "rr", ["r", "d"], "ab-nr", "Perro is with rr, a rolled r. Pero (but) with one r is a quick tap."],
+  ["ratón", "mouse", "🐭", "r", ["rr", "d"], "ab-nr", "A word never starts with rr. One r at the start is already rolled."],
+  ["niño", "boy", "🧒", "ñ", ["n", "ny"], "ab-nr", "Niño is with eñe. ñ makes the ny sound."],
+  ["piña", "pineapple", "🍍", "ñ", ["n", "ni"], "ab-nr", "Piña is with eñe. ñ makes the ny sound."],
+  ["taxi", "taxi", "🚕", "x", ["ks", "s"], "ab-csz", "Taxi is with equis. x sounds like ks."],
+  ["kiwi", "kiwi", "🥝", "k", ["qu", "c"], "ab-kq", "Kiwi is with ka. k is only in a few borrowed words."],
+  ["uva", "grape", "🍇", "u", ["o", "hu"], "ab-vowel", "Uva starts with u, which sounds like oo in food."],
+  ["isla", "island", "🏝️", "i", ["y", "e"], "ab-vowel", "Isla starts with i, which sounds like ee in see."],
+  ["elefante", "elephant", "🐘", "e", ["i", "he"], "ab-vowel", "Elefante starts with e, which sounds like the e in bed."]];
+// how it sounds: [question, right answer, [wrong, why]..., tag]
+const AB_RULES = [
+  ["Which letter is always silent?", "h (hache)", [["j (jota)", "The jota is a strong, breathy h sound. The silent one is h."], ["g (ge)", "g is never silent. The silent one is h: hola sounds like ola."], ["ll", "ll sounds like y in yes. The silent one is h."]], "ab-gjh"],
+  ["In Latin America, z sounds like…", "s, as in sun", [["th, as in think", "That's how most of Spain says it. In Latin America z sounds like s."], ["z, as in zoo", "Spanish has no buzzing z sound. In Latin America z sounds like s."], ["ts, as in cats", "In Latin America z sounds just like s."]], "ab-csz"],
+  ["How does ñ (eñe) sound?", "ny, as in canyon", [["n, as in no", "That's n (ene). ñ sounds like ny: niño."], ["it's silent", "ñ is never silent. It sounds like ny: niño."], ["nn, a long n", "ñ sounds like ny, as in canyon: niño."]], "ab-nr"],
+  ["In Spanish, b and v sound…", "the same", [["different: v like in van", "In Spanish b and v sound the same. That's why people say be larga and ve corta to tell them apart."], ["different: b is silent", "b is not silent. b and v sound the same."], ["different: v like w", "b and v sound the same in Spanish."]], "ab-bv"],
+  ["j (jota) sounds like…", "a strong, breathy h", [["j, as in jam", "Spanish j is never like English j. It's a breathy h: jirafa."], ["y, as in yes", "That's y or ll. j is a breathy h."], ["it's silent", "The silent letter is h. j is a breathy h sound."]], "ab-gjh"],
+  ["In cine and cena, c sounds like…", "s", [["k", "c sounds like k only before a, o, u (casa). Before e or i it sounds like s."], ["ch", "c on its own never sounds like ch. Before e or i it's s."], ["th", "In Latin America, c before e or i sounds like s."]], "ab-csz"],
+  ["In gente, g sounds like…", "the jota (a breathy h)", [["g, as in go", "g is hard only before a, o, u (gato). Before e or i it sounds like the jota."], ["j, as in jam", "Spanish never has the English j sound. g before e sounds like the jota."], ["it's silent", "g is never silent. Before e or i it sounds like the jota."]], "ab-gjh"],
+  ["In queso, qu sounds like…", "k (the u is silent)", [["kw, as in queen", "In Spanish the u after q is silent: queso sounds like keso."], ["s", "qu always sounds like k."], ["ch", "qu always sounds like k."]], "ab-kq"],
+  ["ll (llave) and y (yo) sound…", "the same, like the y in yes", [["different: ll like l", "ll is not l. It sounds just like y: llave."], ["different: y is silent", "y isn't silent. ll and y sound the same."], ["different: ll like j", "ll sounds like y in yes, not like the jota."]], "ab-yi"],
+  ["Which r is rolled?", "rr, and r at the start of a word", [["every r", "One r between vowels (pero) is just a quick tap. rr and r at the start are rolled."], ["no r is rolled", "rr (perro) and r at the start (ratón) are rolled."], ["only r at the end of a word", "Rolled ones are rr (perro) and r at the start (ratón)."]], "ab-nr"],
+  ["How many letters are in the Spanish alphabet?", "27", [["26", "26 is English. Spanish adds ñ, so 27."], ["30", "ch and ll used to count as letters, but not any more. It's 27."], ["25", "Spanish has all the English letters plus ñ: 27."]], "ab-name"],
+  ["Which letter comes after n?", "ñ (eñe)", [["o", "o comes after ñ. The order is n, ñ, o."], ["m", "m comes before n."], ["p", "p comes after o. The order is n, ñ, o, p."]], "ab-nr"],
+  ["Which five letters are the vowels?", "a, e, i, o, u", [["a, e, i, o, y", "y is a consonant here. The vowels are a, e, i, o, u."], ["a, e, h, o, u", "h is a silent consonant. The vowels are a, e, i, o, u."], ["a, i, o, u, ñ", "ñ is a consonant. The vowels are a, e, i, o, u."]], "ab-vowel"],
+  ["Spanish vowels are…", "always short and clear", [["sometimes silent", "Spanish vowels are never silent (except u in que, qui, gue, gui)."], ["long, like in English", "Spanish vowels are short and always sound the same."], ["different in every word", "Each vowel always has the same sound. That's what makes Spanish easy to read."]], "ab-vowel"]];
+const AB_PHRASES = [["¿Cómo se escribe?", "How do you spell it?"], ["¿Cómo se escribe tu nombre?", "How do you spell your name?"], ["Se escribe con hache.", "It's spelled with an h."],
+  ["¿Con be o con ve?", "With a b or a v?"], ["¿Me lo puedes deletrear?", "Can you spell it for me?"], ["el abecedario", "the alphabet"], ["la letra", "the letter"],
+  ["¿Cómo se dice en español?", "How do you say it in Spanish?"], ["¿Cómo se pronuncia?", "How do you pronounce it?"]];
+const AB_SET_OF = { "ab-spell": "spell", "ab-phrase": "spell" };
+for (const [k, v] of Object.entries({ abecedario: "alphabet", letra: "letter", escribe: "writes / is written (se escribe = it's spelled)", deletrear: "to spell (out loud)", pronuncia: "pronounces",
+  dice: "says", con: "with", nombre: "name", tu: "your", larga: "long", corta: "short", doble: "double", "griega": "Greek" })) GLOSS[k] = GLOSS[k] || v;
+for (const a of AB) GLOSS[a[3]] = GLOSS[a[3]] || a[4];
+// type answers only when the format allows it
+function abType(fmts) {
+  const f = state.settings.fmt || "mix";
+  const p = fmts ? (fmts.includes("type") ? (fmts.length === 1 ? 1 : 0.35) : 0) : f === "type" ? 1 : f === "mix" ? 0.3 : 0;
+  return Math.random() < p;
+}
+const abBig = (t, sub) => () => el("div", { class: "pic" }, el("div", { class: "bigemoji ableter" }, t), sub ? el("div", { class: "speech-note" }, sub) : null);
+const abListen = t => () => { setTimeout(() => say(t, true), 300); return el("div", { class: "listen" }, el("button", { class: "btn big", type: "button", onclick: () => say(t, true) }, "🔊 Hear the spelling")); };
+function abNames(focus, lv, fmts) {
+  const a = pickFresh(abPool(focus), "abn"), wr = abNear(a[0], lv);
+  const it = { kind: "tap", type: "choice", topic: "ab", stat: "alphabet: letter names", focus: focus || null, tested: [a[6]], noBuild: true, noGloss: true, full: a[1], mq: `the letter ${a[0].toUpperCase()}`,
+    explain: `${abShow(a[0])} is called ${a[1]}${a[2].length ? ` (also ${a[2].join(", ")})` : ""}. ${a[7]} ${cap(a[3])} = ${a[4]}.` };
+  if (abType(fmts)) return Object.assign(it, { type: "typed", typeMode: "line", ownLead: true, lead: "What's this letter called?", en: "Type its name", es: "", pic: abBig(abShow(a[0])),
+    answer: a[1], alts: a[2], wrongs: wr.map(x => ({ text: AB_BY[x][1], tag: a[6], msg: `${AB_BY[x][1]} is ${abShow(x)}. ${abShow(a[0])} is ${a[1]}.` })) });
+  const kind = pick(["see", "see", "hear", "hear", "name"]);
+  const nameOpts = () => tapOpts(a[1], wr.map(x => ({ text: AB_BY[x][1], tag: a[6], msg: `${cap(AB_BY[x][1])} is the letter ${abShow(x)}. ${abShow(a[0])} is ${a[1]}.` })), focus);
+  const letOpts = heard => tapOpts(abShow(a[0]), wr.map(x => ({ text: abShow(x), tag: a[6], msg: `${abShow(x)} is ${AB_BY[x][1]}. ${heard} is ${abShow(a[0])}.` })), focus);
+  if (kind === "see") return Object.assign(it, { lead: "What's this letter called?", es: "", en: "", pic: abBig(abShow(a[0])), options: nameOpts() });
+  if (kind === "hear") return Object.assign(it, { lead: "Listen. Which letter is it?", es: a[1], en: "", listen: true, options: letOpts(`You heard ${a[1]}. That`) });
+  return Object.assign(it, { lead: "Which letter is this?", es: a[1], en: "", sayFirst: true, options: letOpts(cap(a[1])) });
+}
+function abSounds(focus, lv) {
+  if (Math.random() < 0.35) {
+    const rl = AB_RULES.filter(r => !focus || r[3] === focus), r = pickFresh(rl.length ? rl : AB_RULES, "abr");
+    return { kind: "tap", type: "choice", topic: "ab", stat: "alphabet: how letters sound", focus: focus || null, tested: [r[3]], noBuild: true, noGloss: true, lead: r[0], es: "", en: "", full: "", mq: r[0],
+      explain: `${r[0]} ${r[1]}.`, options: tapOpts(r[1], r[2].map(([t, m]) => ({ text: t, tag: r[3], msg: m })), focus) };
+  }
+  const sl = AB_SND.filter(s => !focus || s[5] === focus), s = pickFresh(sl.length ? sl : AB_SND, "abs");
+  const show = s[0].replace(s[3], "?");
+  const it = { kind: "tap", type: "choice", topic: "ab", stat: "alphabet: which letter?", focus: focus || null, tested: [s[5]], noBuild: true, noGloss: true, full: s[0], mq: `${s[0]} (${s[1]})`,
+    lead: "Listen. Which letter is missing?", es: "", en: s[1], explain: s[6] };
+  it.pic = () => { setTimeout(() => say(s[0]), 300); return el("div", { class: "pic" }, el("div", { class: "bigemoji", style: "font-size:72px" }, s[2]),
+    el("div", { class: "es ableter", style: "font-size:34px;letter-spacing:2px" }, show), speakBtns(s[0])); };
+  it.options = tapOpts(s[3], s[4].map(w => ({ text: w, tag: s[5], msg: `${s[0].replace(s[3], w)} isn't how it's written. ${s[6]}` })), focus);
+  return it;
+}
+function abSpellQ(focus, lv, fmts) {
+  if (focus === "ab-phrase" || (!focus && Math.random() < 0.2)) {
+    const p = pickFresh(AB_PHRASES, "abp"), wr = shuffle(AB_PHRASES.filter(x => x !== p)).slice(0, 3);
+    return { kind: "tap", type: "choice", topic: "ab", stat: "alphabet: spelling phrases", focus: focus || null, tested: ["ab-phrase"], noBuild: true, lead: "What does this mean?", es: p[0], en: "", sayFirst: true,
+      full: p[0], mq: p[1], explain: `${p[0]} = ${p[1]}`, options: tapOpts(p[1], wr.map(o => ({ text: o[1], tag: "ab-phrase", msg: `"${o[1]}" is ${o[0]} ${p[0]} means ${p[1]}.` })), focus) };
+  }
+  const names = Math.random() < 0.3, pool = abWordPool(lv, names), wd = pickFresh(pool.length ? pool : abWordPool(lv), "abw"), word = wd[0], sp = abSpell(word);
+  const vars = abVariants(word).slice(0, 3);
+  const it = { kind: "tap", type: "choice", topic: "ab", stat: "alphabet: spelling", focus: focus || null, tested: ["ab-spell"], noBuild: true, noGloss: true, full: word, mq: `spell ${word}`,
+    explain: `${word} se escribe: ${sp}.` };
+  const isName = wd[1] === "a name";
+  if (abType(fmts)) return Object.assign(it, { type: "typed", typeMode: "line", ownLead: true, lead: "Listen to the spelling, then type the word", en: isName ? "It's a name" : "", es: "", pic: abListen(sp),
+    answer: word, alts: [], wrongs: vars.map(v => ({ text: v.v, tag: v.tag, msg: `Listen to each letter: ${sp}.` })) });
+  if (vars.length < 3) for (const o of shuffle(abWordPool(2))) { if (vars.length >= 3) break; if (o[0] !== word && !vars.some(v => v.v === o[0])) vars.push({ v: o[0], tag: "ab-spell" }); }
+  if (Math.random() < 0.5) return Object.assign(it, { lead: "Listen to the spelling. Which word is it?", es: "", en: "", pic: abListen(sp),
+    options: tapOpts(word, vars.map(v => ({ text: v.v, tag: v.tag, msg: `${v.v} would be spelled ${abSpell(v.v)}. You heard ${sp}.` })), focus) });
+  return Object.assign(it, { lead: isName ? `¿Cómo se escribe ${word}? How do you spell this name?` : `¿Cómo se escribe ${word}? (${wd[1]})`, es: "", en: "", pic: () => el("div", { class: "pic" }, el("div", { class: "es" }, word, speakBtns(word))),
+    options: tapOpts(sp, vars.map(v => ({ text: abSpell(v.v), tag: v.tag, msg: `${abSpell(v.v)} spells ${v.v}. ${word} is ${sp}.` })), focus) });
+}
+function makeAB(focus, anySet, fmts) {
+  const sel = anySet ? "mix" : state.settings.abset || "names", lv = levelOf("ab");
+  if (focus && !XT_AB[focus]) focus = null;
+  let set = sel === "mix" || !AB_TABS.some(t => t[0] === sel) ? pick(["names", "names", "sounds", "sounds", "spell", "spell"]) : sel;
+  // weak-spot review stays inside the chosen part (it only switches part on Mix)
+  if (focus && sel === "mix") set = AB_SET_OF[focus] || pick(["names", "sounds"]);
+  else if (focus && (set === "spell") !== !!AB_SET_OF[focus]) focus = null;
+  return set === "spell" ? abSpellQ(focus, lv, fmts) : set === "sounds" ? abSounds(focus, lv) : abNames(focus, lv, fmts);
+}
+// games: match letter names to letters, hear a letter, or point to a picture that starts with it
+function abFun(kind, base) {
+  if (kind === "match") {
+    const ps = shuffle(AB).filter((a, i, l) => l.findIndex(b => b[1] === a[1]) === i).slice(0, 5).map(a => [a[1], abShow(a[0]), ""]);
+    return { ...base, type: "match", stat: "games: letter names", lead: "Match each letter name to its letter", pairs: ps, full: ps.map(w => w[0]).join(", "), mq: "Match the letters",
+      explain: ps.map(w => `${w[0]} = ${w[1]}`).join(" · ") };
+  }
+  if (kind === "pic") {
+    const a = pick(AB.filter(x => x[3][0] === x[0])), others = shuffle(AB.filter(x => x[3][0] !== a[3][0] && x[5])).slice(0, 5);
+    return { ...base, type: "choice", stat: "games: starts with which letter", lead: `Point to it: which one starts with ${a[1]}?`, es: a[1], en: "", full: a[3], mq: `starts with ${a[1]}`,
+      emojiOpts: true, sayFirst: true, explain: `${a[3]} (${a[4]}) ${a[5]} starts with ${a[1]}.`,
+      options: tapOpts(a[5], others.map(o => ({ text: o[5], tag: "other", msg: `${o[5]} is ${o[3]} (${o[4]}). It starts with ${o[1]}.` })), null, 5) };
+  }
+  const a = pick(AB), wr = abNear(a[0], 1);
+  return { ...base, type: "choice", stat: "games: listen and tap the letter", lead: "Listen and tap the letter", es: a[1], en: "", full: a[1], mq: abShow(a[0]), listen: true,
+    explain: `${a[1]} = ${abShow(a[0])}`, options: tapOpts(abShow(a[0]), wr.map(x => ({ text: abShow(x), tag: "other", msg: `You heard ${a[1]}. ${abShow(x)} is ${AB_BY[x][1]}.` })), null) };
+}
+function renderABPanel() {
+  const sel = state.settings.abset || "names"; segButtons("#absets", AB_TABS, sel, "abset");
+  const box = $("#abcheat"); box.replaceChildren();
+  const b = t => el("b", { class: "es-i" }, t);
+  if (sel === "sounds") return box.append(el("h2", {}, "How the letters sound"),
+    el("p", {}, "Spanish is read the way it's written. Each vowel always has the same short sound: ", b("a, e, i, o, u"), ". Tap a letter to hear it in a word."),
+    el("div", { class: "ablist" }, AB.filter(a => a[6] !== "ab-name").map(a => el("div", { class: "abtip" },
+      el("button", { class: "chip", type: "button", onclick: () => say(`${a[1]}. ${a[3]}`) }, el("b", {}, abShow(a[0])), ` · ${a[3]} ${a[5]}`), el("span", {}, " " + a[7])))));
+  if (sel === "spell") return box.append(el("h2", {}, "Spelling out loud · deletrear"),
+    el("p", {}, b("¿Cómo se escribe?"), " = How do you spell it? Answer with the letter names, one by one."),
+    el("div", { class: "row", style: "gap:6px;flex-wrap:wrap" }, [["Matt", "eme, a, te, te"], ["Rosie", "erre, o, ese, i, e"], ["gato", abSpell("gato")], ["hola", abSpell("hola")]]
+      .map(([w, s]) => el("button", { class: "chip", type: "button", onclick: () => say(`${w}. ${s}`, true) }, el("b", {}, w), " · " + s))),
+    el("h3", {}, "Useful phrases"), el("div", { class: "row", style: "gap:6px;flex-wrap:wrap" }, AB_PHRASES.map(([es, en]) => sayChip(es, en))),
+    el("p", {}, "b or v? People ask ", b("¿Con be o con ve?"), " and answer ", b("con be larga"), " (b) or ", b("con ve corta"), " (v)."),
+    el("p", {}, "Two letters the same: just say both (", b("te, te"), "), or ", b("doble erre"), " for rr. ", b("ll"), " is ", b("doble ele"), "."));
+  box.append(el("h2", {}, sel === "mix" ? "El abecedario, mixed" : "El abecedario · 27 letters"),
+    el("p", {}, "Tap a letter to hear its name and a word."),
+    el("div", { class: "abgrid" }, AB.map(a => el("button", { class: "abkey", type: "button", onclick: () => say(`${a[1]}. ${a[3]}`) },
+      el("b", {}, abShow(a[0])), el("span", { class: "abname" }, a[1]), el("small", {}, `${a[5]} ${a[3]}`)))),
+    el("p", {}, "Latin American names: ", b("be"), " (be larga), ", b("ve"), " (ve corta), ", b("doble ve"), " (doble u in Mexico), ", b("ye"), " (also i griega), ", b("erre"), "."),
+    el("p", { class: "speech-note" }, "In Spain you'll hear uve for v and uve doble for w. ch and ll aren't letters any more, but ll is still called doble ele."));
+}
 /* ----- countries (los países): world map, shapes, names. Map shapes are in countries-map.js (Natural Earth, public domain) ----- */
 // [map id, spanish, english, flag, region, level (0 = the most common ones first), other accepted spellings]
 const CO = [
@@ -2777,11 +3010,11 @@ function renderCOPanel() {
 }
 function makeX(focus) {
   if (topic === "mixq") return makeMixQ(focus);
-  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "gg" ? makeGG(focus) : topic === "gr" ? makeGR(focus) : topic === "co" ? makeCO(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
+  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "gg" ? makeGG(focus) : topic === "gr" ? makeGR(focus) : topic === "co" ? makeCO(focus) : topic === "ab" ? makeAB(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
 }
 
 /* ----- rendering for these items ----- */
-const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Sports & hobbies", gg: "gustar questions", gr: "Greetings", co: "Countries" };
+const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Sports & hobbies", gg: "gustar questions", gr: "Greetings", co: "Countries", ab: "Alphabet" };
 function renderTap(box, it) {
   if (it.polText) box.append(el("div", {}, el("span", { class: "pol " + it.pol }, it.polText)));
   box.append(el("p", { class: "en" }, el("b", {}, it.lead), it.en ? " · " + it.en : ""));
@@ -3016,7 +3249,7 @@ function renderGRPanel() {
 }
 function applyXSettings() {
   document.querySelectorAll("#qwmodes button").forEach(b => b.setAttribute("aria-pressed", b.dataset.q === (state.settings.qw || "mix")));
-  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderGGPanel(); renderGRPanel(); renderCOPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
+  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderGGPanel(); renderGRPanel(); renderCOPanel(); renderABPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
 }
 
 /* ---------- gustar: build the question from tiles (worksheet style) ---------- */
@@ -3177,8 +3410,8 @@ const FMT_NAMES = [["mix", "Mix"], ["tap", "Tap the answer"], ["type", "Type it"
 const NO_LOWER = new Set([...NAMES.map(n => n.toLowerCase()), "lima", "bogotá"]);
 const LEVEL_NAME = ["⭐ Easy", "⭐⭐ Medium", "⭐⭐⭐ Hard"];
 const DIFF_NAMES = [["auto", "Auto (grows with you)"], ["0", "Easy"], ["1", "Medium"], ["2", "Hard"]];
-const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"], ["panel-gg", "gg"], ["panel-gr", "gr"], ["panel-co", "co"]];
-const DIFF_HELP = { time: "Hard: no digital time, any 5 minutes, and you type the time yourself.", co: "Easy: the most common countries. Medium adds the rest of Latin America and more of Europe. Hard adds the rest." };
+const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"], ["panel-gg", "gg"], ["panel-gr", "gr"], ["panel-co", "co"], ["panel-ab", "ab"]];
+const DIFF_HELP = { ab: "Easy: short words to spell. Medium and Hard add longer words, names and ll, ñ, rr.", time: "Hard: no digital time, any 5 minutes, and you type the time yourself.", co: "Easy: the most common countries. Medium adds the rest of Latin America and more of Europe. Hard adds the rest." };
 function diffOf(t) { const d = (state.settings.diff || {})[t]; return d == null ? "auto" : d; }
 function renderDiffSegs() {
   for (const [pid, t] of DIFF_PANELS) {
@@ -3223,7 +3456,7 @@ function applyFormat(it, fmts) {
   return it;
 }
 function renderTyped(box, it) {
-  box.append(el("p", { class: "en" }, el("b", {}, it.clockOnly ? it.lead : it.typeMode === "blank" ? "Type the missing part" : it.lead === "Read the clock" ? it.lead : "Type it in Spanish"), it.en ? " · " + it.en : ""));
+  box.append(el("p", { class: "en" }, el("b", {}, it.clockOnly || it.ownLead ? it.lead : it.typeMode === "blank" ? "Type the missing part" : it.lead === "Read the clock" ? it.lead : "Type it in Spanish"), it.en ? " · " + it.en : ""));
   if (it.pic) box.append(it.pic());
   let input;
   if (it.typeMode === "blank") {
@@ -3271,7 +3504,7 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gustar questions"], ["gr", "Greetings"], ["co", "Countries"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gustar questions"], ["gr", "Greetings"], ["co", "Countries"], ["ab", "Alphabet"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
@@ -3280,8 +3513,9 @@ function qbConf() {
   if (!q.gg) { q.gg = 1; if (QB_TOPICS.every(([k]) => k === "gg" || k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("gg")) q.topics.push("gg"); }
   if (!q.hb) { q.hb = 1; if (QB_TOPICS.every(([k]) => k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("sh")) q.topics.push("sh"); }
   if (!q.sp) { q.sp = 1; if (QB_TOPICS.every(([k]) => k === "sports" || q.topics.includes(k)) && !q.topics.includes("sports")) q.topics.push("sports"); }
-  if (!q.co) { q.co = 1; if (QB_TOPICS.every(([k]) => k === "co" || k === "gr" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("co")) q.topics.push("co"); }
-  if (!q.gr) { q.gr = 1; if (QB_TOPICS.every(([k]) => k === "gr" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("gr")) q.topics.push("gr"); }
+  if (!q.co) { q.co = 1; if (QB_TOPICS.every(([k]) => k === "co" || k === "gr" || k === "ab" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("co")) q.topics.push("co"); }
+  if (!q.ab) { q.ab = 1; if (QB_TOPICS.every(([k]) => k === "ab" || k === "co" || k === "gr" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("ab")) q.topics.push("ab"); }
+  if (!q.gr) { q.gr = 1; if (QB_TOPICS.every(([k]) => k === "gr" || k === "ab" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("gr")) q.topics.push("gr"); }
   if (q.topics.includes("gustar")) { q.topics = q.topics.filter(t => t !== "gustar"); if (!q.topics.includes("verbs")) { q.topics.push("verbs"); q.verbs = ["gustar"]; } else if (q.verbs.length && !q.verbs.includes("gustar")) q.verbs.push("gustar"); }
   if (!Array.isArray(q.fmts) || !q.fmts.length) q.fmts = QB_FMTS.map(f => f[0]);
   return q;
@@ -3302,6 +3536,7 @@ function makeMixQ(focus) {
   else if (t === "gg") it = makeGG(f);
   else if (t === "gr") it = makeGR(f);
   else if (t === "co") it = makeCO(f, true);
+  else if (t === "ab") it = makeAB(f, true, q.fmts);
   else if (t === "verbs") { const keep = state.settings.verb2; state.settings.verb2 = q.verbs; try { it = makeVerb(f); } finally { state.settings.verb2 = keep; } }
   else if (t === "time") it = makeTime(f);
   else if (t === "clock") return makeClockHard(focus && /^time-/.test(focus) ? focus : null);
@@ -3421,6 +3656,7 @@ function funPool(t, depth = 0) {
       ["nos gusta", "we like", ""], ["les gusta", "they like", ""], ["¿Te gusta…?", "Do you like…?", ""], ["¿Qué te gusta hacer?", "What do you like to do?", ""],
       ["¿A quién le gusta…?", "Who likes…?", ""], ["a mí también", "me too", ""], ["a mí tampoco", "me neither", ""], ["¿Qué te gusta más?", "What do you like more?", ""]];
     case "gr": return grGamePool();
+    case "ab": return AB.map(a => [a[1], "the letter " + a[0].toUpperCase(), ""]);
     case "co": return CO.filter(c => c[5] <= levelOf("co")).map(c => [c[1], c[2].replace(/^the /, ""), c[3]]);
     case "clock": return [];
     case "mixq": if (!depth) { const ts = qbConf().topics; return (ts.length ? ts : ["face"]).flatMap(x => funPool(x, 1)); }
@@ -3448,6 +3684,9 @@ function funItem() {
   // greetings: sometimes match / hear what someone says and pick the reply
   if (topic === "gr" && Math.random() < 0.4) { const ks = ["match", "listen"].filter(k => en.includes(k)); if (ks.length) { const k = pick(ks);
     return grFun(k, { kind: "tap", topic: "gr", fun: k, tested: [], noBuild: true, noGloss: true, focus: null }); } }
+  // alphabet: letter names, hear a letter, or which picture starts with it
+  if (topic === "ab") { const ks = ["match", "listen", "pic"].filter(k => en.includes(k)); if (!ks.length) return null; const k = pick(ks);
+    return abFun(k, { kind: "tap", topic: "ab", fun: k, tested: [], noBuild: true, noGloss: true, focus: null }); }
   // countries: hear a country and point to it on the map
   if (topic === "co" && en.includes("pic") && coMapReady() && Math.random() < 0.5)
     return coFind(null, levelOf("co"), { fun: "pic", tested: [], noGloss: true, stat: "games: point to it on the map", lead: "Point to it on the map" });
@@ -3808,7 +4047,7 @@ function applySettings() {
 $("#modes").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.mode = b.dataset.mode; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#levels").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.level = b.dataset.l; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#tenses").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.tenses = b.dataset.t; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
-const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "gg", "gr", "co", "custom"];
+const TABS = ["built", "mixq", "ab", "qw", "verbs", "se", "nouns", "time", "sh", "gg", "gr", "co", "custom"];
 function selectTab(which, reset = true) {
   if (!TABS.includes(which) || which === "built") which = "mixq";
   for (const t of TABS) { $("#tab-" + t).setAttribute("aria-selected", t === which); $("#panel-" + t).hidden = t !== which; }
@@ -4113,7 +4352,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-co1";
+const BUILD = "2026-11-27-ab1";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
