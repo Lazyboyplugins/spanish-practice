@@ -271,8 +271,8 @@ body::before{content:"";display:block;height:14px;margin:0 calc(-1 * max(16px,en
 .tab[aria-selected="true"]{background:var(--t);border-color:var(--t);color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--t) 40%,transparent)}
 #tab-qw{--t:var(--c2);--ts:var(--c2s)} #tab-verbs{--t:var(--c5);--ts:var(--c5s)} #tab-se{--t:var(--c6);--ts:var(--c6s)}
 #tab-built{--t:var(--c1);--ts:var(--c1s)} #tab-nouns{--t:var(--c4);--ts:var(--c4s)} #tab-time{--t:var(--c7);--ts:var(--c7s)}
-#tab-sh{--t:var(--c2);--ts:var(--c2s)} #tab-gg{--t:var(--c6);--ts:var(--c6s)} #tab-custom{--t:var(--c5);--ts:var(--c5s)}
-#tab-time[aria-selected="true"],#tab-nouns[aria-selected="true"]{color:#fff}
+#tab-sh{--t:var(--c2);--ts:var(--c2s)} #tab-gg{--t:var(--c6);--ts:var(--c6s)} #tab-gr{--t:var(--c4);--ts:var(--c4s)} #tab-custom{--t:var(--c5);--ts:var(--c5s)}
+#tab-time[aria-selected="true"],#tab-nouns[aria-selected="true"],#tab-gr[aria-selected="true"]{color:#fff}
 
 /* Cards and side panels */
 .card,.panel,.cheat{border:0;border-top:6px solid var(--c1);box-shadow:0 6px 22px color-mix(in srgb,var(--c2) 14%,transparent),0 1px 2px rgba(0,0,0,.05);border-radius:18px}
@@ -412,7 +412,7 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <div class="brand"><h1>Repaso <span class="me">de</span> español</h1></div>
       <div class="topacts"><span id="who" class="row" style="gap:6px"></span><button class="btn" type="button" id="pop10">🎲 <span class="lng">10 random nouns</span><span class="sht">10 nouns</span></button></div><button class="gear" type="button" id="gear" aria-expanded="false" aria-controls="setpanel" title="Settings">⚙️ <span class="lng">Settings</span></button>
     </div>
-    <p class="intro">Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or sports and hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
+    <p class="intro">Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time, sports and hobbies or greetings. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
     <div class="setpanel" id="setpanel" hidden>
       <div class="sprow"><span class="lbl">Sound</span><button class="chip" type="button" id="mute" aria-pressed="true" title="Mute or unmute all sound">🔊 Sound</button>
         <input type="range" id="vol" min="0" max="1" step="0.05" aria-label="Volume" style="width:120px"></div>
@@ -437,6 +437,7 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <button class="tab" role="tab" id="tab-time" aria-selected="false">Time</button>
     <button class="tab" role="tab" id="tab-sh" aria-selected="false">Sports & hobbies</button>
     <button class="tab" role="tab" id="tab-gg" aria-selected="false">gustar questions</button>
+    <button class="tab" role="tab" id="tab-gr" aria-selected="false">Greetings</button>
     <button class="tab" role="tab" id="tab-custom" aria-selected="false">Make your own</button>
   </nav>
 
@@ -553,6 +554,12 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
         <div class="row"><span class="lbl">Practise</span><div class="seg" id="ggsets"></div></div>
         <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
         <div class="cheat" id="ggcheat"></div>
+      </section>
+
+      <section id="panel-gr" class="controls" hidden>
+        <div class="row"><span class="lbl">Practise</span><div class="seg" id="grsets"></div></div>
+        <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
+        <div class="cheat" id="grcheat"></div>
       </section>
 
       <section id="panel-custom" class="card" hidden>
@@ -1281,9 +1288,11 @@ const XT_GG = {
   "gq-agree": "gusta or gustan in a question (¿Te gustan los perros?)", "gq-pron": "te / le / les in a question", "gq-yesno": "Answering sí / no: Sí, me gusta…",
   "gq-neg": "Two no's: No, no me gusta…", "gq-que": "¿Qué te gusta hacer? (asking what someone likes)", "gq-inf": "Answering ¿Qué te gusta…? (me gusta nadar)",
   "gq-quien": "¿A quién le gusta…? (who likes…?)", "gq-a": "Don't forget a: ¿A quién…? / A mi hermano le…" };
+const XT_GR = { "gr-hi": "Saying hi (hola)", "gr-how": "How are you? and answers (¿Qué tal? Bien, gracias)", "gr-meet": "Meeting someone (me llamo, mucho gusto, igualmente)",
+  "gr-reply": "Picking the right reply (gracias → de nada)", "gr-bye": "Saying bye (chao, hasta luego, nos vemos)", "gr-time": "Buenos días, buenas tardes or buenas noches?" };
 const XTOPIC = {};
-for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH], ["gg", XT_GG]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
-Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH, XT_GG);
+for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH], ["gg", XT_GG], ["gr", XT_GR]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
+Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH, XT_GG, XT_GR);
 
 function tapOpts(correct, cands, focus, n = 3) {
   const seen = new Set([correct]), out = [];
@@ -2393,13 +2402,143 @@ function makeGG(focus) {
   if (focus && GG_SET_OF[focus] && (sel === "mix" || GG_SET_OF[focus] === set)) set = GG_SET_OF[focus]; else focus = null;
   return set === "yn" ? gqYesNo(focus, lv) : set === "que" ? gqQue(focus, lv) : set === "who" ? gqWho(focus, lv) : set === "ask" ? ggAsk(focus, lv) : set === "answer" ? ggAnswer(focus, lv) : ggQword(focus, lv);
 }
+/* ----- greetings (casual, Latin American, tú) ----- */
+// [spanish, english, picture, tag, level (0 = first words, 1 = a bit more)]
+const GR_WORDS = [
+  ["hola", "hi / hello", "👋", "gr-hi", 0], ["buenos días", "good morning", "🌅", "gr-time", 0], ["buenas tardes", "good afternoon", "☀️", "gr-time", 0],
+  ["buenas noches", "good evening / good night", "🌙", "gr-time", 0],
+  ["¿Qué tal?", "How's it going?", "", "gr-how", 0], ["¿Cómo estás?", "How are you?", "", "gr-how", 0], ["¿Cómo te va?", "How are things?", "", "gr-how", 1],
+  ["¿Qué hay de nuevo?", "What's new?", "", "gr-how", 1],
+  ["bien, gracias", "fine, thanks", "", "gr-how", 0], ["muy bien", "very good", "😄", "gr-how", 0], ["más o menos", "so-so", "😐", "gr-how", 0],
+  ["mal", "bad / not good", "😞", "gr-how", 0], ["¿y tú?", "and you?", "", "gr-how", 0],
+  ["¿Cómo te llamas?", "What's your name?", "", "gr-meet", 0], ["me llamo Ana", "my name is Ana", "", "gr-meet", 0], ["mucho gusto", "nice to meet you", "🤝", "gr-meet", 0],
+  ["igualmente", "likewise / you too", "", "gr-meet", 0], ["gracias", "thanks", "🙏", "gr-reply", 0], ["de nada", "you're welcome", "", "gr-reply", 0],
+  ["chao", "bye", "", "gr-bye", 0], ["adiós", "goodbye", "", "gr-bye", 0], ["hasta luego", "see you later", "", "gr-bye", 0], ["nos vemos", "see you", "", "gr-bye", 0],
+  ["hasta mañana", "see you tomorrow", "", "gr-bye", 0], ["hasta pronto", "see you soon", "", "gr-bye", 1]];
+// words too close in meaning to be wrong answers for each other
+const GR_NEAR = [["chao", "adiós", "hasta luego", "nos vemos", "hasta pronto"], ["¿Qué tal?", "¿Cómo estás?", "¿Cómo te va?", "¿Qué hay de nuevo?"], ["bien, gracias", "muy bien"]];
+const grNear = (a, b) => a === b || GR_NEAR.some(g => g.includes(a) && g.includes(b));
+// someone says something: [what they say, english, the reply [es, en], group (replies in a group fit each other), wrong-reply groups, tag, level]
+const GR_REPLY = {
+  hi: [["¡Hola! ¿Qué tal?", "Hi! How's it going?"], ["Buenos días.", "Good morning."]],
+  how: [["Bien, gracias. ¿Y tú?", "Fine, thanks. And you?"], ["Muy bien, ¿y tú?", "Very good, and you?"], ["Más o menos.", "So-so."]],
+  same: [["Igualmente.", "Likewise."], ["Gracias, igualmente.", "Thanks, you too."]],
+  name: [["Me llamo {N}.", "My name is {N}."]], thanks: [["De nada.", "You're welcome."]], bye: [["¡Chao! Nos vemos.", "Bye! See you."], ["Hasta mañana.", "See you tomorrow."]] };
+const GR_TALK = [
+  ["¡Hola!", "Hi!", GR_REPLY.hi[0], "hi", ["thanks", "same", "bye", "name"], "gr-hi", 0],
+  ["Buenos días.", "Good morning.", GR_REPLY.hi[1], "hi", ["thanks", "same", "bye", "name"], "gr-time", 0],
+  ["¿Cómo estás?", "How are you?", GR_REPLY.how[0], "how", ["same", "thanks", "name", "bye"], "gr-how", 0],
+  ["¿Qué tal?", "How's it going?", GR_REPLY.how[1], "how", ["same", "thanks", "name", "bye"], "gr-how", 0],
+  ["¿Cómo te va?", "How are things?", GR_REPLY.how[2], "how", ["same", "thanks", "name", "bye"], "gr-how", 1],
+  ["Mucho gusto.", "Nice to meet you.", GR_REPLY.same[0], "same", ["how", "thanks", "name", "bye"], "gr-meet", 0],
+  ["¡Buen fin de semana!", "Have a good weekend!", GR_REPLY.same[1], "same", ["how", "name", "hi", "thanks"], "gr-meet", 1],
+  ["¿Cómo te llamas?", "What's your name?", GR_REPLY.name[0], "name", ["how", "same", "thanks", "bye"], "gr-meet", 0],
+  ["Gracias.", "Thanks.", GR_REPLY.thanks[0], "thanks", ["how", "same", "name", "hi"], "gr-reply", 0],
+  ["Chao, nos vemos.", "Bye, see you.", GR_REPLY.bye[0], "bye", ["how", "name", "thanks", "hi"], "gr-bye", 0],
+  ["Hasta mañana.", "See you tomorrow.", GR_REPLY.bye[1], "bye", ["how", "name", "thanks", "hi"], "gr-bye", 0]];
+// fill the gap in the reply: [what they say, the reply with ___, answer, [wrong, why], english of the reply, tag]
+const GR_FILL = [
+  ["Mucho gusto.", "___.", "Igualmente", [["Gracias", "Gracias means thanks. To say it back (likewise), say igualmente."], ["De nada", "De nada means you're welcome. It answers gracias."], ["Adiós", "Adiós means goodbye."]], "Likewise.", "gr-meet"],
+  ["¿Cómo estás?", "Bien, ___. ¿Y tú?", "gracias", [["de nada", "De nada means you're welcome. Thanks is gracias."], ["hola", "Hola means hi. Here you need thanks: gracias."], ["igualmente", "Igualmente means likewise. Here you need thanks: gracias."]], "Fine, thanks. And you?", "gr-how"],
+  ["¿Cómo estás?", "Bien, gracias. ¿Y ___?", "tú", [["yo", "Yo means I. To ask back (and you?) say ¿y tú?"], ["él", "Él means he. To ask back say ¿y tú?"], ["te", "Use tú here, on its own: ¿y tú?"]], "Fine, thanks. And you?", "gr-how"],
+  ["¿Qué tal?", "Más o ___.", "menos", [["más", "It is más o menos (more or less), so-so."], ["bien", "Más o menos means so-so. Very good is muy bien."], ["mal", "Más o menos means so-so. Bad is mal."]], "So-so.", "gr-how"],
+  ["¿Qué tal?", "Muy ___, ¿y tú?", "bien", [["bueno", "For how you are, say muy bien. Bueno describes a thing (un libro bueno)."], ["gusto", "Mucho gusto means nice to meet you. Here: muy bien."], ["tal", "¿Qué tal? asks how it's going. Answer muy bien."]], "Very good, and you?", "gr-how"],
+  ["¿Cómo te llamas?", "Me ___ {N}.", "llamo", [["llamas", "Llamas is for you: ¿Cómo te llamas? For yourself say me llamo."], ["llama", "Llama is for he / she: se llama. For yourself say me llamo."], ["gusta", "Me gusta means I like. My name is = me llamo."]], "My name is {N}.", "gr-meet"],
+  ["Gracias.", "De ___.", "nada", [["gracias", "Gracias means thanks. You're welcome is de nada."], ["nuevo", "De nuevo means again. You're welcome is de nada."], ["días", "Días means days. You're welcome is de nada."]], "You're welcome.", "gr-reply"],
+  ["Chao.", "Nos ___.", "vemos", [["vamos", "Nos vamos means we're leaving. See you is nos vemos."], ["veo", "Veo means I see. See you is nos vemos."], ["ver", "Ver means to see. See you is nos vemos."]], "See you.", "gr-bye"],
+  ["Buenas noches.", "Buenas noches. Hasta ___.", "mañana", [["noche", "Hasta mañana means see you tomorrow."], ["días", "Buenos días is good morning. See you tomorrow is hasta mañana."], ["nada", "De nada means you're welcome. See you tomorrow is hasta mañana."]], "Good night. See you tomorrow.", "gr-bye"],
+  ["¡Buen fin de semana!", "Gracias, ___.", "igualmente", [["de nada", "De nada means you're welcome. You too is igualmente."], ["mucho gusto", "Mucho gusto is for meeting someone new. You too is igualmente."], ["hola", "Hola means hi. You too is igualmente."]], "Thanks, you too.", "gr-meet"]];
+const GR_TIME = "días is a boy word (el día), so buenos días. tarde and noche are girl words (la tarde, la noche), so buenas tardes and buenas noches.";
+const GR_WHEN = "Buenos días until about 12 noon. Buenas tardes from 12 until it gets dark. Buenas noches in the evening, and also to say good night.";
+const GR_TABS = [["words", "Greeting words"], ["reply", "Reply to it"], ["time", "Días, tardes or noches?"], ["mix", "Mix"]];
+const GR_SET_OF = { "gr-hi": "words", "gr-bye": "words", "gr-how": "reply", "gr-meet": "reply", "gr-reply": "reply", "gr-time": "time" };
+for (const [k, v] of Object.entries({ hola: "hi / hello", buenos: "good", buenas: "good", "días": "days", tardes: "afternoon", noches: "evening / night", tal: "such (¿qué tal? = how's it going?)",
+  "cómo": "how", "estás": "you are (tú)", va: "goes (¿cómo te va? = how are things?)", hay: "there is", nuevo: "new", bien: "well / fine", gracias: "thanks", menos: "less",
+  mal: "bad / badly", llamas: "you are called", llamo: "I am called", mucho: "much / a lot", gusto: "pleasure", igualmente: "likewise / you too", nada: "nothing (de nada = you're welcome)",
+  chao: "bye", "adiós": "goodbye", hasta: "until", luego: "later", vemos: "we see (nos vemos = see you)", "mañana": "tomorrow / morning", pronto: "soon", buen: "good", fin: "end", semana: "week" })) GLOSS[k] = GLOSS[k] || v;
+const grFill = (s, N) => s.replace(/\{N\}/g, N);
+const grPool = lv => GR_WORDS.filter(w => w[4] <= lv);
+function grWords(focus, lv) {
+  const all = grPool(lv), pool = focus && all.some(w => w[3] === focus) ? all.filter(w => w[3] === focus) : all;
+  const w = pickFresh(pool, "grw"), others = shuffle(all.filter(x => !grNear(x[0], w[0]))).slice(0, 3);
+  const it = { kind: "tap", type: "choice", topic: "gr", stat: "greetings: words", focus: focus || null, tested: [w[3]], full: w[0], mq: w[1], explain: `${w[0]} = ${w[1]}`, noBuild: true };
+  const pics = all.filter(x => x[2] && x[2] !== w[2]);
+  let kind = pick(["en2es", "en2es", "es2en", "es2en", "pic"]);
+  if (kind === "pic" && !w[2]) kind = "en2es";
+  if (kind === "es2en") {
+    it.lead = "What does this mean?"; it.es = w[0]; it.en = ""; it.noGloss = true; it.sayFirst = true;
+    it.options = tapOpts(w[1], others.map(o => ({ text: o[1], tag: w[3], msg: `"${o[1]}" is ${o[0]}. ${cap(w[0])} means ${w[1]}.` })), focus);
+  } else if (kind === "pic") {
+    const po = shuffle(pics).slice(0, 3);
+    it.lead = "Which one fits the picture?"; it.es = ""; it.en = "";
+    it.pic = () => el("div", { class: "pic", style: "font-size:84px;text-align:center;line-height:1.2" }, w[2]);
+    it.options = tapOpts(w[0], po.map(o => ({ text: o[0], tag: w[3], msg: `${cap(o[0])} means ${o[1]} ${o[2]}. The picture is ${w[0]} (${w[1]}).` })), focus);
+  } else {
+    it.lead = "How do you say this in Spanish?"; it.es = ((w[2] || "") + " " + w[1]).trim(); it.esLang = "en"; it.en = "";
+    it.options = tapOpts(w[0], others.map(o => ({ text: o[0], tag: w[3], msg: `${cap(o[0])} means ${o[1]}. "${w[1]}" is ${w[0]}.` })), focus);
+  }
+  return it;
+}
+function grReply(focus, lv) {
+  const [N] = otherNames(1);
+  const it = { kind: "tap", type: "choice", topic: "gr", stat: "greetings: replies", focus: focus || null };
+  if (Math.random() < 0.5 || focus === "gr-reply" && Math.random() < 0.5) {
+    const fl = GR_FILL.filter(f => !focus || f[5] === focus), f = pickFresh(fl.length ? fl : GR_FILL, "grf"), rep = grFill(f[1], N);
+    it.lead = `Someone says "${f[0]}" Fill in the reply`; it.es = rep; it.en = grFill(f[4], N); it.full = rep.replace("___", f[2]); it.mq = it.en; it.tested = [f[5]];
+    it.explain = `They say ${f[0]} You answer ${it.full}`;
+    it.options = tapOpts(f[2], f[3].map(([t, m]) => ({ text: t, tag: f[5], msg: m })), focus);
+    return it;
+  }
+  const tl = GR_TALK.filter(t => t[6] <= lv && (!focus || t[5] === focus)), t = pickFresh(tl.length ? tl : GR_TALK.filter(x => x[6] <= lv), "grt");
+  const right = grFill(t[2][0], N), wr = shuffle(t[4].flatMap(g => GR_REPLY[g])).slice(0, 3);
+  it.lead = "Pick the best reply"; it.es = t[0]; it.en = t[1]; it.full = right; it.mq = t[1]; it.tested = [t[5]]; it.noBuild = true;
+  it.explain = `${t[0]} (${t[1]}) → ${right} (${grFill(t[2][1], N)})`;
+  it.options = tapOpts(right, wr.map(r => ({ text: grFill(r[0], N), tag: "gr-reply", msg: `${grFill(r[0], N)} means "${grFill(r[1], N)}". That doesn't answer ${t[0]} A good reply is ${right}` })), focus);
+  return it;
+}
+function grTime(focus) {
+  const C = [["buenos días", "🌅", [7, 8, 9, 10], "in the morning"], ["buenas tardes", "☀️", [1, 2, 3, 4, 5], "in the afternoon"], ["buenas noches", "🌙", [8, 9, 10, 11], "at night"]];
+  const it = { kind: "tap", type: "choice", topic: "gr", stat: "greetings: días, tardes or noches", focus: focus || null, tested: ["gr-time"], noBuild: true, explain: `${GR_WHEN} ${GR_TIME}` };
+  const c = pick(C), h = pick(c[2]), bed = c[0] === "buenas noches" && Math.random() < 0.3;
+  it.lead = "You meet a friend. What do you say?"; it.es = ""; it.en = bed ? "You are going to bed." : `It's ${h} o'clock ${c[3]}.`;
+  if (bed) it.lead = "What do you say?";
+  it.full = cap(c[0]) + "."; it.mq = it.en;
+  it.pic = () => el("div", { class: "pic", style: "text-align:center" }, el("div", { class: "bigemoji", style: "font-size:72px" }, bed ? "🛏️" : c[1]),
+    bed ? null : el("div", { class: "speech-note" }, `${h}:00 ${c[0] === "buenos días" ? "a.m." : "p.m."}`));
+  const bad = c[0] === "buenos días" ? ["buenas días", "días is a boy word (el día), so it is buenos días, not buenas."] : c[0] === "buenas tardes" ? ["buenos tardes", "tarde is a girl word (la tarde), so it is buenas tardes."] : ["buenos noches", "noche is a girl word (la noche), so it is buenas noches."];
+  it.options = tapOpts(c[0], [...C.filter(x => x !== c).map(x => ({ text: x[0], tag: "gr-time", msg: `${cap(x[0])} is for ${x[3]}. ${bed ? "Going to bed" : `${h} o'clock ${c[3]}`} is ${c[0]}. ${GR_WHEN}` })), { text: bad[0], tag: "gr-time", msg: bad[1] }], focus);
+  return it;
+}
+function makeGR(focus) {
+  const sel = state.settings.grset || "words", lv = levelOf("gr");
+  let set = sel === "mix" || !GR_TABS.some(t => t[0] === sel) ? pick(["words", "words", "reply", "reply", "reply", "time"]) : sel;
+  if (focus && !GR_SET_OF[focus]) focus = null;
+  if (focus && sel === "mix") set = GR_SET_OF[focus];
+  else if (focus && set === "time" && focus !== "gr-time") focus = null;
+  return set === "reply" ? grReply(focus, lv) : set === "time" ? grTime(focus) : grWords(focus, lv);
+}
+// games: one word from each group of look-alike meanings, so every pair is clear
+function grGamePool() {
+  const keep = new Set(GR_NEAR.map(g => pick(g)));
+  return GR_WORDS.filter(w => !GR_NEAR.some(g => g.includes(w[0])) || keep.has(w[0])).map(w => [w[0], w[1], w[2]]);
+}
+// games: match what someone says to the reply (one per reply group)
+function grFun(kind, base) {
+  const [N] = otherNames(1), seen = new Set(), ps = [];
+  for (const t of shuffle(GR_TALK)) { if (seen.has(t[3])) continue; seen.add(t[3]); ps.push([t[0], grFill(t[2][0], N), ""]); if (ps.length >= 4) break; }
+  if (kind === "match") return { ...base, type: "match", stat: "games: greeting and reply", lead: "Match each greeting to its reply", hint: "Tap one side, then its partner.", long: true, pairs: ps,
+    full: ps.map(w => w[0]).join(" "), mq: "Match the greetings and replies", explain: ps.map(w => `${w[0]} → ${w[1]}`).join(" · ") };
+  const w = ps[0];
+  return { ...base, type: "choice", stat: "games: listen and reply", lead: "Listen, then tap the best reply", es: w[0], en: "", full: w[0], mq: w[1], listen: true,
+    explain: `${w[0]} → ${w[1]}`, options: tapOpts(w[1], ps.slice(1).map(o => ({ text: o[1], tag: "other", msg: `You heard ${w[0]} That reply goes with ${o[0]}` })), null) };
+}
 function makeX(focus) {
   if (topic === "mixq") return makeMixQ(focus);
-  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "gg" ? makeGG(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
+  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "gg" ? makeGG(focus) : topic === "gr" ? makeGR(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
 }
 
 /* ----- rendering for these items ----- */
-const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Sports & hobbies", gg: "gustar questions" };
+const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Sports & hobbies", gg: "gustar questions", gr: "Greetings" };
 function renderTap(box, it) {
   if (it.polText) box.append(el("div", {}, el("span", { class: "pol " + it.pol }, it.polText)));
   box.append(el("p", { class: "en" }, el("b", {}, it.lead), it.en ? " · " + it.en : ""));
@@ -2606,9 +2745,27 @@ function renderGGPanel() {
     el("p", {}, "Switch when you answer: a ti te → ", b("a mí me"), ", tu hermano → ", b("mi hermano"), ", a ustedes les → ", b("a nosotros nos"), ". le and les stay the same."),
     el("p", {}, PAIRS));
 }
+function renderGRPanel() {
+  const sel = state.settings.grset || "words"; segButtons("#grsets", GR_TABS, sel, "grset");
+  const box = $("#grcheat"); box.replaceChildren();
+  const b = t => el("b", { class: "es-i" }, t), chips = list => el("div", { class: "row", style: "gap:6px;flex-wrap:wrap" }, list.map(([es, en]) => sayChip(es, en)));
+  const W = tag => GR_WORDS.filter(w => w[3] === tag);
+  if (sel === "time") return box.append(el("h2", {}, "Buenos días, buenas tardes, buenas noches"),
+    chips(W("gr-time")), el("p", {}, GR_WHEN), el("p", {}, GR_TIME));
+  if (sel === "reply") return box.append(el("h2", {}, "What do you say back?"),
+    el("div", { class: "cheat-grid" }, GR_TALK.filter(t => t[6] <= levelOf("gr")).map(t => el("div", {}, b(t[0]), " → ", b(grFill(t[2][0], "Ana"))))),
+    el("p", {}, b("Igualmente"), " means likewise or you too. Say it back to ", b("Mucho gusto"), " or to ", b("¡Buen fin de semana!"), "."),
+    el("p", {}, "Asked ", b("¿Cómo estás?"), ", you can ask back: ", b("Bien, gracias. ¿Y tú?")));
+  box.append(el("h2", {}, sel === "mix" ? "Greetings, mixed" : "Casual greetings (with friends, tú)"),
+    el("p", {}, "Tap a word to hear it."),
+    el("h3", {}, "Hi"), chips([...W("gr-hi"), ...W("gr-time")]),
+    el("h3", {}, "How are you? And how you are"), chips(W("gr-how")),
+    el("h3", {}, "Meeting someone"), chips([...W("gr-meet"), ...W("gr-reply")]),
+    el("h3", {}, "Bye"), chips(W("gr-bye")));
+}
 function applyXSettings() {
   document.querySelectorAll("#qwmodes button").forEach(b => b.setAttribute("aria-pressed", b.dataset.q === (state.settings.qw || "mix")));
-  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderGGPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
+  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderGGPanel(); renderGRPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
 }
 
 /* ---------- gustar: build the question from tiles (worksheet style) ---------- */
@@ -2766,7 +2923,7 @@ const FMT_NAMES = [["mix", "Mix"], ["tap", "Tap the answer"], ["type", "Type it"
 const NO_LOWER = new Set([...NAMES.map(n => n.toLowerCase()), "lima", "bogotá"]);
 const LEVEL_NAME = ["⭐ Easy", "⭐⭐ Medium", "⭐⭐⭐ Hard"];
 const DIFF_NAMES = [["auto", "Auto (grows with you)"], ["0", "Easy"], ["1", "Medium"], ["2", "Hard"]];
-const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"], ["panel-gg", "gg"]];
+const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"], ["panel-gg", "gg"], ["panel-gr", "gr"]];
 const DIFF_HELP = { time: "Hard: no digital time, any 5 minutes, and you type the time yourself." };
 function diffOf(t) { const d = (state.settings.diff || {})[t]; return d == null ? "auto" : d; }
 function renderDiffSegs() {
@@ -2860,7 +3017,7 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gustar questions"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gustar questions"], ["gr", "Greetings"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
@@ -2869,6 +3026,7 @@ function qbConf() {
   if (!q.gg) { q.gg = 1; if (QB_TOPICS.every(([k]) => k === "gg" || k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("gg")) q.topics.push("gg"); }
   if (!q.hb) { q.hb = 1; if (QB_TOPICS.every(([k]) => k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("sh")) q.topics.push("sh"); }
   if (!q.sp) { q.sp = 1; if (QB_TOPICS.every(([k]) => k === "sports" || q.topics.includes(k)) && !q.topics.includes("sports")) q.topics.push("sports"); }
+  if (!q.gr) { q.gr = 1; if (QB_TOPICS.every(([k]) => k === "gr" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("gr")) q.topics.push("gr"); }
   if (q.topics.includes("gustar")) { q.topics = q.topics.filter(t => t !== "gustar"); if (!q.topics.includes("verbs")) { q.topics.push("verbs"); q.verbs = ["gustar"]; } else if (q.verbs.length && !q.verbs.includes("gustar")) q.verbs.push("gustar"); }
   if (!Array.isArray(q.fmts) || !q.fmts.length) q.fmts = QB_FMTS.map(f => f[0]);
   return q;
@@ -2887,6 +3045,7 @@ function makeMixQ(focus) {
   else if (t === "se") it = makeSE(f);
   else if (t === "sh") it = makeSH(f);
   else if (t === "gg") it = makeGG(f);
+  else if (t === "gr") it = makeGR(f);
   else if (t === "verbs") { const keep = state.settings.verb2; state.settings.verb2 = q.verbs; try { it = makeVerb(f); } finally { state.settings.verb2 = keep; } }
   else if (t === "time") it = makeTime(f);
   else if (t === "clock") return makeClockHard(focus && /^time-/.test(focus) ? focus : null);
@@ -3005,6 +3164,7 @@ function funPool(t, depth = 0) {
     case "gg": return [["me gusta", "I like (one thing)", ""], ["me gustan", "I like (more than one)", ""], ["te gusta", "you like (tú)", ""], ["le gusta", "he / she likes", ""],
       ["nos gusta", "we like", ""], ["les gusta", "they like", ""], ["¿Te gusta…?", "Do you like…?", ""], ["¿Qué te gusta hacer?", "What do you like to do?", ""],
       ["¿A quién le gusta…?", "Who likes…?", ""], ["a mí también", "me too", ""], ["a mí tampoco", "me neither", ""], ["¿Qué te gusta más?", "What do you like more?", ""]];
+    case "gr": return grGamePool();
     case "clock": return [];
     case "mixq": if (!depth) { const ts = qbConf().topics; return (ts.length ? ts : ["face"]).flatMap(x => funPool(x, 1)); }
   }
@@ -3028,6 +3188,9 @@ function funItem() {
   // gustar questions: only question-and-answer games, never plain word (noun) matching
   if (topic === "gg") { const ks = ["match", "listen"].filter(k => en.includes(k)); if (!ks.length) return null; const k = pick(ks);
     return gqFun(k, { kind: "tap", topic: "gg", fun: k, tested: [], noBuild: true, noGloss: true, focus: null }); }
+  // greetings: sometimes match / hear what someone says and pick the reply
+  if (topic === "gr" && Math.random() < 0.4) { const ks = ["match", "listen"].filter(k => en.includes(k)); if (ks.length) { const k = pick(ks);
+    return grFun(k, { kind: "tap", topic: "gr", fun: k, tested: [], noBuild: true, noGloss: true, focus: null }); } }
   const pool = funUnique(funPool(topic)), pics = funUnique(pool.filter(w => w[2])).filter((w, i, a) => a.findIndex(x => x[2] === w[2]) === i);
   const can = { match: mOn && pool.length >= 5, pic: en.includes("pic") && pics.length >= 6, listen: en.includes("listen") && pool.length >= 4 };
   const kind = pick(["match", "match", "pic", "pic", "listen"].filter(k => can[k]));
@@ -3348,6 +3511,7 @@ function practise(tag) {
   if (tag === "lowercase" && state.settings.timeset === "time") state.settings.timeset = "days";
   if (t === "verbs" && /^(stem|refl)/.test(tag)) state.settings.verb2 = [];
   if (t === "qw") state.settings.qw = "mix";
+  if (t === "gr" && GR_SET_OF[tag] && state.settings.grset !== "mix") state.settings.grset = GR_SET_OF[tag];
   if (t === "gustar") { const vs = verbSel(); if (vs.length && !vs.includes("gustar")) state.settings.verb2 = [...vs, "gustar"]; }
   const tt = t === "gustar" ? "verbs" : t;
   topic = tt; source = { kind: "built" }; newRound(); focusQueue.tag = tag; focusQueue.left = ROUND; selectTab(tt, false); applySettings(); next();
@@ -3382,7 +3546,7 @@ function applySettings() {
 $("#modes").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.mode = b.dataset.mode; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#levels").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.level = b.dataset.l; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#tenses").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.tenses = b.dataset.t; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
-const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "gg", "custom"];
+const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "gg", "gr", "custom"];
 function selectTab(which, reset = true) {
   if (!TABS.includes(which) || which === "built") which = "mixq";
   for (const t of TABS) { $("#tab-" + t).setAttribute("aria-selected", t === which); $("#panel-" + t).hidden = t !== which; }
@@ -3687,7 +3851,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-f";
+const BUILD = "2026-11-27-g";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
