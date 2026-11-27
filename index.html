@@ -190,6 +190,13 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 #popq .popt.emo{font-size:46px;padding:8px}#popq .popt.ok{border-color:#2f9e5b;background:rgba(47,158,91,.15)}#popq .popt.bad{border-color:#c8453b;background:rgba(200,69,59,.15)}
 #popq .pdir{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}#popq .pfb{min-height:1.4em;text-align:center;margin:12px 0 4px;font-weight:600}
 #popq .pend li{margin:4px 0}
+.prog{background:var(--sunk)}
+.mt{background:var(--surface);border-color:var(--line)}
+.mt.sel{border-color:var(--c5);background:var(--c5s)}
+.mt.done{border-color:var(--good);background:var(--good-soft);color:var(--good)}
+.mt.bad,.shake{background:var(--bad-soft)}
+.w .gl{width:max-content;max-width:calc(100vw - 24px);white-space:normal;text-align:center}
+.wday{border-color:var(--line);color:var(--muted)}.wday.on{border-color:var(--good);background:var(--good-soft);color:var(--good)}
 #conjpop{position:fixed;inset:0;z-index:46;background:rgba(10,14,22,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
 #conjpop .pbox{background:var(--surface);color:var(--ink);border-radius:20px;max-width:480px;width:100%;padding:18px 18px 16px;box-shadow:0 12px 40px rgba(0,0,0,.3);max-height:calc(100vh - 32px);overflow:auto}
 #conjpop .ptop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
@@ -333,19 +340,88 @@ aside .panel:nth-child(5n+5){border-top-color:var(--c7)}
 #popq .popt{border-width:2px;background:var(--c3s)}
 #popq .popt:nth-child(2){background:var(--c4s)} #popq .popt:nth-child(3){background:var(--c1s)} #popq .popt:nth-child(4){background:var(--c5s)}
 #popq .popt.ok{background:var(--good-soft)} #popq .popt.bad{background:var(--bad-soft)}
+
+/* ===== Tidy layout (compact header, settings panel, phone-friendly rows) ===== */
+html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:44;pointer-events:none}
+.top{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px}
+.topacts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto}
+.brand h1{white-space:nowrap}
+.intro{margin:0;color:var(--muted);max-width:70ch}
+.sht{display:none}
+#pop10{padding:8px 14px;white-space:nowrap}
+.gear{border:2px solid color-mix(in srgb,var(--c6) 50%,var(--line));background:var(--c6s);color:var(--ink);border-radius:99px;padding:6px 14px;font-weight:600;white-space:nowrap}
+.gear[aria-expanded="true"]{background:var(--c6);border-color:var(--c6);color:#fff}
+.setpanel{background:var(--surface);border-radius:18px;border-top:6px solid var(--c6);box-shadow:0 6px 22px color-mix(in srgb,var(--c6) 18%,transparent);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.sprow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.sprow .lbl{min-width:64px}
+.setpanel .sptip{margin:0}
+.setpanel .actions{justify-content:flex-end}
+#gametype{max-width:100%;font:inherit;padding:5px 10px;border-radius:99px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
+.row:has(> .seg){flex-wrap:nowrap;min-width:0}
+.row > .seg{min-width:0}
+.cheat:not(#qbpanel) > h2:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+@media (max-width:700px){
+  body{padding-block:0 40px}
+  body::before{margin-bottom:10px}
+  .wrap{gap:12px}
+  .brand h1{font-size:26px}
+  .intro{display:none}
+  .lng{display:none}.sht{display:inline}
+  .topbar{flex-wrap:wrap;gap:8px}
+  .brand{flex:1 1 auto;min-width:0}
+  .gear{order:2}
+  .topacts{order:3;flex:1 1 100%;flex-wrap:nowrap;gap:8px;margin-left:0;justify-content:space-between}
+  #pop10{padding:7px 11px;font-size:14px}
+  .gear{padding:6px 10px}
+  #who .speech-note{display:none}
+  .whosel{padding:4px 8px;max-width:150px}
+  /* tabs: one row you can swipe */
+  .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:4px max(16px,env(safe-area-inset-left,0px)) 8px;gap:6px;scroll-padding-inline:16px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 28px),transparent)}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;padding:6px 13px;font-size:14px;white-space:nowrap}
+  .tab:hover{transform:none}
+  /* topic / format / difficulty: one compact line each, swipe sideways if long */
+  .controls{gap:8px}
+  .row:has(> .seg){gap:6px}
+  .row:has(> .seg) > .lbl{min-width:0;width:66px;flex:none;font-size:10px;letter-spacing:.05em}
+  .row > .seg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;flex:1 1 auto;max-width:100%}
+  .row > .seg::-webkit-scrollbar{display:none}
+  .seg button{white-space:nowrap;flex:none;padding:5px 11px}
+  .card{padding:16px 14px}
+  /* tips fold away on phones: tap the heading to show them */
+  body:not(.tips) .cheat:not(#qbpanel) > :not(h2:first-child){display:none}
+  body:not(.tips) .cheat:not(#qbpanel):has(> h2:first-child){padding-block:10px;gap:0}
+  .cheat:not(#qbpanel) > h2:first-child{cursor:pointer;font-size:16px}
+  .cheat:not(#qbpanel) > h2:first-child::after{content:"Show tips ▾";flex:none;font:600 13px var(--body);color:var(--accent)}
+  body.tips .cheat:not(#qbpanel) > h2:first-child::after{content:"Hide ▴"}
+}
+@media (max-width:380px){ .brand h1{font-size:22px} }
+/* pop-ups and the who's-practising screen stay clear of the phone's status bar and home bar */
+#popq,#conjpop{padding:max(16px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+#popq .pbox,#conjpop .pbox{max-height:calc(100dvh - max(16px,env(safe-area-inset-top,0px)) - max(16px,env(safe-area-inset-bottom,0px)));margin:auto}
+#whogate{padding:max(24px,env(safe-area-inset-top,0px)) 16px max(24px,env(safe-area-inset-bottom,0px))}
+#popq .ptop,#conjpop .ptop{flex-wrap:wrap}
 </style>
 
 <div class="wrap">
   <header class="top">
-    <div class="brand">
-      <h1>Repaso <span class="me">de</span> español</h1>
-      <p>Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or sports and hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
+    <div class="topbar">
+      <div class="brand"><h1>Repaso <span class="me">de</span> español</h1></div>
+      <div class="topacts"><span id="who" class="row" style="gap:6px"></span><button class="btn" type="button" id="pop10">🎲 <span class="lng">10 random nouns</span><span class="sht">10 nouns</span></button></div><button class="gear" type="button" id="gear" aria-expanded="false" aria-controls="setpanel" title="Settings">⚙️ <span class="lng">Settings</span></button>
     </div>
-    <div class="row" style="gap:8px"><span id="who" class="row" style="gap:6px"></span><span class="pill" id="sync">Saving in this browser</span><button class="chip" type="button" id="autoplay" aria-pressed="true" title="Play the Spanish answer out loud after you check">Sound after answers: on</button><button class="btn" type="button" id="pop10">🎲 10 random nouns</button></div>
-    <div class="row funbar" style="gap:8px;margin-top:8px"><button class="chip" type="button" id="funmode" aria-pressed="true" title="Mix word games into every topic, or turn them off for plain quizzes">Fun mode: on</button>
-      <label class="row" style="gap:6px" id="gamewrap"><span class="lbl" style="margin:0">Games</span><select id="gametype" aria-label="Which games"></select></label>
-      <button class="chip" type="button" id="mute" aria-pressed="true" title="Mute or unmute all sound">🔊 Sound</button>
-      <input type="range" id="vol" min="0" max="1" step="0.05" aria-label="Volume" style="width:110px"></div>
+    <p class="intro">Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time or sports and hobbies. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
+    <div class="setpanel" id="setpanel" hidden>
+      <div class="sprow"><span class="lbl">Games</span><button class="chip" type="button" id="funmode" aria-pressed="true" title="Mix word games into every topic, or turn them off for plain quizzes">Fun mode: on</button>
+        <label class="row" style="gap:6px" id="gamewrap"><select id="gametype" aria-label="Which games"></select></label></div>
+      <div class="sprow"><span class="lbl">Sound</span><button class="chip" type="button" id="mute" aria-pressed="true" title="Mute or unmute all sound">🔊 Sound</button>
+        <input type="range" id="vol" min="0" max="1" step="0.05" aria-label="Volume" style="width:120px"></div>
+      <div class="sprow"><span class="lbl">Voice</span><button class="chip" type="button" id="autoplay" aria-pressed="true" title="Play the Spanish answer out loud after you check">Sound after answers: on</button></div>
+      <div class="sprow"><span class="lbl">Saving</span><span class="pill" id="sync">Saving in this browser</span><span class="speech-note">Back up or move progress at the bottom of the page.</span></div>
+      <p class="speech-note sptip">Tip: press and hold any verb (right-click on a computer) to see all its forms. Tap any Spanish word to see it in English.</p>
+      <div class="actions"><button class="btn ghost" type="button" id="gearclose">Done</button></div>
+    </div>
   </header>
 
   <nav class="tabs" role="tablist">
@@ -2666,6 +2742,7 @@ function wordSpan(w) {
   if (!g) {
     // Not in the built-in word list: link to Google Translate (free) instead of asking Claude
     const a = el("a", { class: "w", href: "https://translate.google.com/?sl=es&tl=en&op=translate&text=" + encodeURIComponent(clean), target: "_blank", rel: "noopener" }, w, el("span", { class: "gl", role: "tooltip" }, "Open in Google Translate ↗"));
+    a.addEventListener("mouseenter", () => fitGloss(a.lastChild));
     a.addEventListener("click", e => { e.stopPropagation(); say(clean); });
     return a;
   }
@@ -2673,8 +2750,9 @@ function wordSpan(w) {
   const s = el("span", { class: "w" + (clean.toLowerCase() === "no" ? " negw" : ""), tabindex: "0" }, w, tip);
   const act = () => {
     if (openGloss && openGloss !== s) openGloss.classList.remove("show");
-    s.classList.add("show"); openGloss = s; say(clean);
+    s.classList.add("show"); openGloss = s; fitGloss(tip); say(clean);
   };
+  s.addEventListener("mouseenter", () => fitGloss(tip));
   s.addEventListener("click", e => { e.stopPropagation(); act(); });
   s.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); } });
   return s;
@@ -3072,6 +3150,7 @@ const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "gg",
 function selectTab(which, reset = true) {
   if (!TABS.includes(which) || which === "built") which = "mixq";
   for (const t of TABS) { $("#tab-" + t).setAttribute("aria-selected", t === which); $("#panel-" + t).hidden = t !== which; }
+  { const tb = $("#tab-" + which), bar = tb && tb.parentElement; if (bar && bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: Math.max(0, tb.offsetLeft - bar.offsetLeft - 24), behavior: reset ? "smooth" : "auto" }); }
   if (which !== "custom") {
     const nt = which === "built" ? "gustar" : which;
     if (reset && (nt !== topic || source.kind !== "built")) { topic = nt; source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); }
@@ -3144,6 +3223,26 @@ $("#imp").addEventListener("change", async e => {
 if (!HAS_CLAUDE) { const ct = $("#tab-custom"); if (ct) ct.hidden = true; $("#sync").textContent = "Saved in this browser"; }
 
 
+
+function fitGloss(tip) {
+  tip.style.marginLeft = "0px"; const r = tip.getBoundingClientRect(), W = document.documentElement.clientWidth;
+  const dx = r.left < 8 ? 8 - r.left : r.right > W - 8 ? W - 8 - r.right : 0; tip.style.marginLeft = dx + "px";
+}
+/* ---------- settings panel and fold-away tips ---------- */
+(() => {
+  const g = $("#gear"), sp = $("#setpanel");
+  const setOpen = o => { sp.hidden = !o; g.setAttribute("aria-expanded", String(o)); };
+  g.addEventListener("click", () => setOpen(sp.hidden));
+  $("#gearclose").addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !sp.hidden) setOpen(false); });
+  let tipsOn = false; try { tipsOn = localStorage.getItem("repaso-tips") === "1"; } catch {}
+  document.body.classList.toggle("tips", tipsOn);
+  document.addEventListener("click", e => {
+    const h = e.target.closest && e.target.closest(".cheat > h2:first-child");
+    if (!h || h.parentElement.id === "qbpanel" || !matchMedia("(max-width:700px)").matches) return;
+    const on = document.body.classList.toggle("tips"); try { localStorage.setItem("repaso-tips", on ? "1" : "0"); } catch {}
+  });
+})();
 /* ---------- 🎲 10 random nouns pop-up ---------- */
 const POP_DIRS = [["es2en", "Spanish → English"], ["en2es", "English → Spanish"], ["pic", "Pictures"], ["mix", "Mixed"]];
 function popPool() { const seen = new Set(), out = []; for (const [k, l] of Object.entries(NOUNSETS)) { if (k === "face") continue; for (const w of l) if (!seen.has(w[0])) { seen.add(w[0]); out.push({ es: w[0], en: w[1], em: w[2] || "", set: k }); } } return out; }
