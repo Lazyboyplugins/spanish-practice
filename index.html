@@ -1920,7 +1920,7 @@ function makeTimeTopic(focus) {
   const fs = focus && WORDSET_OF(focus);
   if (fs && sel === "mix") set = fs;
   if (fs && fs !== set) focus = null;
-  if (focus === "lowercase" && set === "time") set = "days";
+  if (focus === "lowercase" && set === "time") focus = null;
   if (set === "clock") return makeClockHard(fs === "time" ? focus : null);
   return set === "time" ? makeTime(focus) : makeSeq(set, focus);
 }
@@ -2778,7 +2778,7 @@ function funPool(t, depth = 0) {
     case "gustar": return Object.entries(VERBS).map(([k, V]) => [k, k === "gustar" ? "to like" : V.gloss, ""]);
     case "qw": return Object.entries(QW_MEAN).map(([k, v]) => [k, v, ""]);
     case "se": return [...SER.map((f, i) => [f, PERS[i] + " · ser", ""]), ...ESTAR.map((f, i) => [f, PERS[i] + " · estar", ""])];
-    case "time": return [...DAYS, ...MONTHS].map(d => [d[0], d[1], ""]);
+    case "time": { const ts = state.settings.timeset || "time"; return ts === "mix" ? [...timePool(), ...DAYS, ...MONTHS].map(d => [d[0], d[1], d[2] || ""]) : ts === "days" || ts === "months" || ts === "clock" ? funPool(ts, depth) : timePool(); }
     case "days": return DAYS.map(d => [d[0], d[1], ""]);
     case "months": return MONTHS.map(d => [d[0], d[1], ""]);
     case "gg": return GG_THINGS.flat().map(x => [x[0], x[1], ""]);
@@ -2786,6 +2786,15 @@ function funPool(t, depth = 0) {
     case "mixq": if (!depth) { const ts = qbConf().topics; return (ts.length ? ts : ["face"]).flatMap(x => funPool(x, 1)); }
   }
   return N(Object.values(NOUNSETS).flat());
+}
+// telling-the-time pairs for the games: "son las tres y media" = 3:30, with a clock picture for o'clock and half past
+function timePool() {
+  const lv = levelOf("time"), ms = [[0, 30], [0, 15, 30, 45], [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]][lv] || [0, 30], out = [];
+  for (let h = 1; h <= 12; h++) for (const m of ms) {
+    const pic = m === 0 ? String.fromCodePoint(0x1F550 + h - 1) : m === 30 ? String.fromCodePoint(0x1F55C + h - 1) : "";
+    out.push([timeText(h, m).replace(/\.$/, ""), dig(h, m), pic]);
+  }
+  return out;
 }
 // one item per Spanish word and per English meaning, so no pair is ambiguous
 function funUnique(list) { const a = new Set(), b = new Set(), out = []; for (const w of shuffle(list)) { const k1 = w[0].toLowerCase(), k2 = w[1].toLowerCase(); if (a.has(k1) || b.has(k2)) continue; a.add(k1); b.add(k2); out.push(w); } return out; }
