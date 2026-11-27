@@ -271,8 +271,22 @@ body::before{content:"";display:block;height:14px;margin:0 calc(-1 * max(16px,en
 .tab[aria-selected="true"]{background:var(--t);border-color:var(--t);color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--t) 40%,transparent)}
 #tab-qw{--t:var(--c2);--ts:var(--c2s)} #tab-verbs{--t:var(--c5);--ts:var(--c5s)} #tab-se{--t:var(--c6);--ts:var(--c6s)}
 #tab-built{--t:var(--c1);--ts:var(--c1s)} #tab-nouns{--t:var(--c4);--ts:var(--c4s)} #tab-time{--t:var(--c7);--ts:var(--c7s)}
-#tab-sh{--t:var(--c2);--ts:var(--c2s)} #tab-gg{--t:var(--c6);--ts:var(--c6s)} #tab-gr{--t:var(--c4);--ts:var(--c4s)} #tab-custom{--t:var(--c5);--ts:var(--c5s)}
+#tab-sh{--t:var(--c2);--ts:var(--c2s)} #tab-gg{--t:var(--c6);--ts:var(--c6s)} #tab-gr{--t:var(--c4);--ts:var(--c4s)} #tab-co{--t:var(--c5);--ts:var(--c5s)} #tab-custom{--t:var(--c5);--ts:var(--c5s)}
 #tab-time[aria-selected="true"],#tab-nouns[aria-selected="true"],#tab-gr[aria-selected="true"]{color:#fff}
+
+/* Countries: world map, shapes, pop-quiz timer */
+.pic.comap{width:100%}.pic.comap svg.worldmap{width:100%;max-width:620px;height:auto;overflow:hidden;border-radius:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:block;margin:4px auto 8px;max-height:min(60vh,560px);-webkit-user-select:none;user-select:none}
+.worldmap .sea{fill:#bfe3ff}.worldmap .land{fill:#e6ddd2;stroke:#fff;stroke-width:.6px;vector-effect:non-scaling-stroke}
+.worldmap .co{fill:#ffd27a;stroke:#fff;stroke-width:.9px;vector-effect:non-scaling-stroke;stroke-linejoin:round}.worldmap .co.tap{cursor:pointer}.worldmap .co.dot{fill:#ffb347;stroke:#9a5a00}
+.worldmap .co.hl{fill:var(--c1)}.worldmap .co.ok{fill:#2e9d5b}.worldmap .co.bad{fill:#d64545}
+.worldmap .ring{fill:none;stroke-width:3px;vector-effect:non-scaling-stroke}.worldmap .ring.hl{stroke:var(--c1);animation:copulse 1.1s ease-in-out infinite}.worldmap .ring.ok{stroke:#2e9d5b}.worldmap .ring.bad{stroke:#d64545}
+@keyframes copulse{50%{stroke-opacity:.25}}
+.worldmap .colabel{font-weight:800;font-family:var(--body);paint-order:stroke;stroke:#fff;stroke-width:3.5px;vector-effect:non-scaling-stroke;fill:#1d6b3c;pointer-events:none}.worldmap .colabel.bad{fill:#b0281f}
+.pic.coshape svg{width:min(240px,64vw);height:min(190px,50vw);display:block;margin:6px auto;overflow:visible}.coshape path{stroke:rgba(0,0,0,.3);stroke-width:1.2px;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.bigemoji.coflag{font-size:110px}
+.cotimer{height:12px;border-radius:99px;background:var(--sunk);border:1px solid var(--line);overflow:hidden;margin:4px 0 10px}.cotimer i{display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,#d64545,#ff9a3d 40%,#ffd24d 60%,#2e9d5b)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .worldmap .sea{fill:#143a57}:root:not([data-theme="light"]) .worldmap .land{fill:#4b3d55;stroke:#2a1f30}:root:not([data-theme="light"]) .worldmap .co{fill:#d9a13b;stroke:#2a1f30}}
+:root[data-theme="dark"] .worldmap .sea{fill:#143a57}:root[data-theme="dark"] .worldmap .land{fill:#4b3d55;stroke:#2a1f30}:root[data-theme="dark"] .worldmap .co{fill:#d9a13b;stroke:#2a1f30}
 
 /* Cards and side panels */
 .card,.panel,.cheat{border:0;border-top:6px solid var(--c1);box-shadow:0 6px 22px color-mix(in srgb,var(--c2) 14%,transparent),0 1px 2px rgba(0,0,0,.05);border-radius:18px}
@@ -412,7 +426,7 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <div class="brand"><h1>Repaso <span class="me">de</span> español</h1></div>
       <div class="topacts"><span id="who" class="row" style="gap:6px"></span><button class="btn" type="button" id="pop10">🎲 <span class="lng">10 random nouns</span><span class="sht">10 nouns</span></button></div><button class="gear" type="button" id="gear" aria-expanded="false" aria-controls="setpanel" title="Settings">⚙️ <span class="lng">Settings</span></button>
     </div>
-    <p class="intro">Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time, sports and hobbies or greetings. Right-click any verb (or press and hold on a phone) to see all its forms.</p>
+    <p class="intro">Spanish practice that explains every mistake and brings back what you find hard. Mix any topics with ⭐ Build a quiz, or pick one: question words, verbs (gustar is in there too), ser vs estar, nouns, the time, sports and hobbies, greetings or countries (with a world map). Right-click any verb (or press and hold on a phone) to see all its forms.</p>
     <div class="setpanel" id="setpanel" hidden>
       <div class="sprow"><span class="lbl">Sound</span><button class="chip" type="button" id="mute" aria-pressed="true" title="Mute or unmute all sound">🔊 Sound</button>
         <input type="range" id="vol" min="0" max="1" step="0.05" aria-label="Volume" style="width:120px"></div>
@@ -438,6 +452,7 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <button class="tab" role="tab" id="tab-sh" aria-selected="false">Sports & hobbies</button>
     <button class="tab" role="tab" id="tab-gg" aria-selected="false">gustar questions</button>
     <button class="tab" role="tab" id="tab-gr" aria-selected="false">Greetings</button>
+    <button class="tab" role="tab" id="tab-co" aria-selected="false">Countries</button>
     <button class="tab" role="tab" id="tab-custom" aria-selected="false">Make your own</button>
   </nav>
 
@@ -560,6 +575,12 @@ html::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
         <div class="row"><span class="lbl">Practise</span><div class="seg" id="grsets"></div></div>
         <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
         <div class="cheat" id="grcheat"></div>
+      </section>
+
+      <section id="panel-co" class="controls" hidden>
+        <div class="row"><span class="lbl">Practise</span><div class="seg" id="cosets"></div></div>
+        <div class="row"><span class="lbl">Format</span><div class="seg fmtseg"></div></div>
+        <div class="cheat" id="cocheat"></div>
       </section>
 
       <section id="panel-custom" class="card" hidden>
@@ -1290,9 +1311,11 @@ const XT_GG = {
   "gq-quien": "¿A quién le gusta…? (who likes…?)", "gq-a": "Don't forget a: ¿A quién…? / A mi hermano le…" };
 const XT_GR = { "gr-hi": "Saying hi (hola)", "gr-how": "How are you? and answers (¿Qué tal? Bien, gracias)", "gr-meet": "Meeting someone (me llamo, mucho gusto, igualmente)",
   "gr-reply": "Picking the right reply (gracias → de nada)", "gr-bye": "Saying bye (chao, hasta luego, nos vemos)", "gr-time": "Buenos días, buenas tardes or buenas noches?" };
+const XT_CO = { "co-eu": "Countries in Europe", "co-na": "USA, Canada and Mexico", "co-ca": "Central America and the Caribbean", "co-sa": "South America",
+  "co-af": "Africa and the Middle East", "co-as": "Countries in Asia", "co-oc": "Australia and the Pacific", "co-de": "Soy de… (saying where you're from)" };
 const XTOPIC = {};
-for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH], ["gg", XT_GG], ["gr", XT_GR]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
-Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH, XT_GG, XT_GR);
+for (const [t, o] of [["qw", XT_QW], ["verbs", XT_VERBS], ["se", XT_SE], ["nouns", XT_NOUNS], ["time", XT_WORDS], ["sh", XT_SH], ["gg", XT_GG], ["gr", XT_GR], ["co", XT_CO]]) for (const k of Object.keys(o)) XTOPIC[k] = t;
+Object.assign(TAGS, XT_QW, XT_VERBS, XT_SE, XT_NOUNS, XT_WORDS, XT_SH, XT_GG, XT_GR, XT_CO);
 
 function tapOpts(correct, cands, focus, n = 3) {
   const seen = new Set([correct]), out = [];
@@ -2545,17 +2568,231 @@ function grFun(kind, base) {
   return { ...base, type: "choice", stat: "games: listen and reply", lead: "Listen, then tap the best reply", es: w[0], en: "", full: w[0], mq: w[1], listen: true,
     explain: `${w[0]} → ${w[1]}`, options: tapOpts(w[1], ps.slice(1).map(o => ({ text: o[1], tag: "other", msg: `You heard ${w[0]} That reply goes with ${o[0]}` })), null) };
 }
+/* ----- countries (los países): world map, shapes, names. Map shapes are in countries-map.js (Natural Earth, public domain) ----- */
+// [map id, spanish, english, flag, region, level (0 = the most common ones first), other accepted spellings]
+const CO = [
+  ["724", "España", "Spain", "🇪🇸", "eu", 0], ["484", "México", "Mexico", "🇲🇽", "na", 0], ["840", "Estados Unidos", "the USA", "🇺🇸", "na", 0, ["EE. UU.", "EEUU", "los Estados Unidos"]],
+  ["124", "Canadá", "Canada", "🇨🇦", "na", 0], ["826", "Reino Unido", "the UK", "🇬🇧", "eu", 0, ["el Reino Unido"]], ["250", "Francia", "France", "🇫🇷", "eu", 0],
+  ["380", "Italia", "Italy", "🇮🇹", "eu", 0], ["276", "Alemania", "Germany", "🇩🇪", "eu", 0], ["620", "Portugal", "Portugal", "🇵🇹", "eu", 0],
+  ["032", "Argentina", "Argentina", "🇦🇷", "sa", 0], ["170", "Colombia", "Colombia", "🇨🇴", "sa", 0], ["604", "Perú", "Peru", "🇵🇪", "sa", 0],
+  ["152", "Chile", "Chile", "🇨🇱", "sa", 0], ["862", "Venezuela", "Venezuela", "🇻🇪", "sa", 0], ["076", "Brasil", "Brazil", "🇧🇷", "sa", 0],
+  ["192", "Cuba", "Cuba", "🇨🇺", "ca", 0], ["156", "China", "China", "🇨🇳", "as", 0], ["392", "Japón", "Japan", "🇯🇵", "as", 0], ["036", "Australia", "Australia", "🇦🇺", "oc", 0],
+  ["372", "Irlanda", "Ireland", "🇮🇪", "eu", 1], ["218", "Ecuador", "Ecuador", "🇪🇨", "sa", 1], ["068", "Bolivia", "Bolivia", "🇧🇴", "sa", 1],
+  ["858", "Uruguay", "Uruguay", "🇺🇾", "sa", 1], ["600", "Paraguay", "Paraguay", "🇵🇾", "sa", 1], ["320", "Guatemala", "Guatemala", "🇬🇹", "ca", 1],
+  ["340", "Honduras", "Honduras", "🇭🇳", "ca", 1], ["222", "El Salvador", "El Salvador", "🇸🇻", "ca", 1], ["558", "Nicaragua", "Nicaragua", "🇳🇮", "ca", 1],
+  ["188", "Costa Rica", "Costa Rica", "🇨🇷", "ca", 1], ["591", "Panamá", "Panama", "🇵🇦", "ca", 1], ["214", "República Dominicana", "the Dominican Republic", "🇩🇴", "ca", 1, ["la República Dominicana"]],
+  ["630", "Puerto Rico", "Puerto Rico", "🇵🇷", "ca", 1], ["300", "Grecia", "Greece", "🇬🇷", "eu", 1], ["756", "Suiza", "Switzerland", "🇨🇭", "eu", 1],
+  ["528", "Países Bajos", "the Netherlands (Holland)", "🇳🇱", "eu", 1, ["Holanda", "los Países Bajos"]], ["056", "Bélgica", "Belgium", "🇧🇪", "eu", 1], ["752", "Suecia", "Sweden", "🇸🇪", "eu", 1],
+  ["578", "Noruega", "Norway", "🇳🇴", "eu", 1], ["616", "Polonia", "Poland", "🇵🇱", "eu", 1], ["792", "Turquía", "Turkey", "🇹🇷", "eu", 1],
+  ["643", "Rusia", "Russia", "🇷🇺", "as", 1], ["356", "India", "India", "🇮🇳", "as", 1, ["la India"]], ["410", "Corea del Sur", "South Korea", "🇰🇷", "as", 1],
+  ["504", "Marruecos", "Morocco", "🇲🇦", "af", 1], ["818", "Egipto", "Egypt", "🇪🇬", "af", 1], ["710", "Sudáfrica", "South Africa", "🇿🇦", "af", 1],
+  ["554", "Nueva Zelanda", "New Zealand", "🇳🇿", "oc", 1],
+  ["208", "Dinamarca", "Denmark", "🇩🇰", "eu", 2], ["246", "Finlandia", "Finland", "🇫🇮", "eu", 2], ["040", "Austria", "Austria", "🇦🇹", "eu", 2],
+  ["352", "Islandia", "Iceland", "🇮🇸", "eu", 2], ["804", "Ucrania", "Ukraine", "🇺🇦", "eu", 2], ["348", "Hungría", "Hungary", "🇭🇺", "eu", 2],
+  ["203", "República Checa", "the Czech Republic", "🇨🇿", "eu", 2, ["Chequia"]], ["642", "Rumania", "Romania", "🇷🇴", "eu", 2, ["Rumanía"]], ["191", "Croacia", "Croatia", "🇭🇷", "eu", 2],
+  ["376", "Israel", "Israel", "🇮🇱", "af", 2], ["682", "Arabia Saudita", "Saudi Arabia", "🇸🇦", "af", 2, ["Arabia Saudí"]], ["364", "Irán", "Iran", "🇮🇷", "af", 2],
+  ["368", "Irak", "Iraq", "🇮🇶", "af", 2, ["Iraq"]], ["566", "Nigeria", "Nigeria", "🇳🇬", "af", 2], ["404", "Kenia", "Kenya", "🇰🇪", "af", 2],
+  ["012", "Argelia", "Algeria", "🇩🇿", "af", 2], ["226", "Guinea Ecuatorial", "Equatorial Guinea", "🇬🇶", "af", 2], ["586", "Pakistán", "Pakistan", "🇵🇰", "as", 2],
+  ["764", "Tailandia", "Thailand", "🇹🇭", "as", 2], ["704", "Vietnam", "Vietnam", "🇻🇳", "as", 2], ["608", "Filipinas", "the Philippines", "🇵🇭", "as", 2, ["las Filipinas"]],
+  ["408", "Corea del Norte", "North Korea", "🇰🇵", "as", 2], ["360", "Indonesia", "Indonesia", "🇮🇩", "oc", 2], ["388", "Jamaica", "Jamaica", "🇯🇲", "ca", 2],
+  ["332", "Haití", "Haiti", "🇭🇹", "ca", 2], ["084", "Belice", "Belize", "🇧🇿", "ca", 2]];
+const CO_BY = Object.fromEntries(CO.map(c => [c[0], c]));
+const CO_REGIONS = [["eu", "Europe", "Europa"], ["na", "North America", "Norteamérica"], ["ca", "Central America and the Caribbean", "Centroamérica y el Caribe"], ["sa", "South America", "Sudamérica"],
+  ["af", "Africa and the Middle East", "África y Oriente Medio"], ["as", "Asia", "Asia"], ["oc", "Australia and the Pacific", "Oceanía"]];
+const CO_REG = Object.fromEntries(CO_REGIONS.map(r => [r[0], r]));
+const CO_TABS = [["find", "Find it on the map"], ["which", "Which country?"], ["shape", "Name the shape"], ["words", "Country names"], ["pop", "Pop quiz"], ["mix", "Mix"]];
+const CO_SHAPE_COLS = ["--c1", "--c2", "--c4", "--c5", "--c6", "--c7"];
+const CO_DE = "¿De dónde eres? means Where are you from? Answer with Soy de… (I'm from…): Soy de México. Most countries don't need el or la.";
+const CO_UK = "England, Scotland and Wales are Inglaterra, Escocia and Gales. With Northern Ireland (Irlanda del Norte) they make the Reino Unido (UK).";
+for (const [k, v] of Object.entries({ soy: "I am", de: "from / of", eres: "you are (tú)", estados: "states", unidos: "united", reino: "kingdom", unido: "united", "países": "countries", bajos: "low",
+  "república": "republic", dominicana: "Dominican", checa: "Czech", corea: "Korea", sur: "south", norte: "north", nueva: "new", zelanda: "Zealand", arabia: "Arabia", saudita: "Saudi",
+  guinea: "Guinea", ecuatorial: "Equatorial", costa: "coast", rica: "rich", puerto: "port", rico: "rich", salvador: "saviour (El Salvador)" })) GLOSS[k] = GLOSS[k] || v;
+for (const c of CO) if (!/\s/.test(c[1])) { const k = c[1].toLowerCase(); GLOSS[k] = GLOSS[k] || c[2].replace(/^the /, ""); }
+const coMapReady = () => !!(window.CO_MAP && window.CO_MAP.c);
+const coTag = c => "co-" + c[4];
+function coPool(lv, focus) {
+  const all = CO.filter(c => c[5] <= lv), r = focus && /^co-(eu|na|ca|sa|af|as|oc)$/.test(focus) ? focus.slice(3) : null;
+  if (!r) return all;
+  const inR = all.filter(c => c[4] === r);
+  return inR.length ? inR : CO.filter(c => c[4] === r);
+}
+// wrong answers: other countries from the same part of the world first, so it's a real choice
+function coOthers(c, lv, n = 3) {
+  const near = shuffle(CO.filter(x => x !== c && x[4] === c[4] && x[5] <= Math.max(lv, 1)));
+  const far = shuffle(CO.filter(x => x !== c && x[4] !== c[4] && x[5] <= lv));
+  return [...near.slice(0, lv ? n : 2), ...far].slice(0, n);
+}
+const coOpt = (c, o) => ({ text: o[1], tag: coTag(c), msg: `${o[1]} is ${o[2]} ${o[3]}. ${c[1]} is ${c[2]} ${c[3]}.` });
+const coBase = (c, focus, stat) => ({ kind: "tap", type: "choice", topic: "co", stat, focus: focus || null, tested: [coTag(c)], noBuild: true, full: c[1], mq: c[2], alts: c[6] || [],
+  explain: `${c[1]} = ${c[2]} ${c[3]} · ${CO_REG[c[4]][2]} (${CO_REG[c[4]][1]})` });
+function coWords(focus, lv) {
+  const pool = coPool(lv, focus === "co-de" ? null : focus);
+  // mostly ask the names that are different in Spanish (Alemania, not Chile)
+  const diff = pool.filter(c => norm(c[1]) !== norm(c[2].replace(/^the /, "")));
+  const c = pickFresh(diff.length && Math.random() < 0.75 ? diff : pool, "cow"), others = coOthers(c, lv);
+  const it = coBase(c, focus, "countries: names");
+  const kind = focus === "co-de" ? "de" : pick(["en2es", "en2es", "es2en", "flag", "flag", "de"]);
+  if (kind === "de") {
+    Object.assign(it, { lead: "Fill the gap", es: "Soy de ___.", en: `I'm from ${c[2]}.`, full: `Soy de ${c[1]}.`, tested: ["co-de", coTag(c)], explain: CO_DE });
+    const enName = c[2].replace(/^the /, "").replace(/ \(.*\)$/, "");
+    const wrong = others.map(o => coOpt(c, o));
+    if (norm(enName) !== norm(c[1])) wrong.unshift({ text: enName, tag: "co-de", msg: `Use the Spanish name: Soy de ${c[1]}.` });
+    it.options = tapOpts(c[1], wrong.slice(0, 3), focus);
+    return it;
+  }
+  if (kind === "es2en") {
+    Object.assign(it, { lead: "Which country is this?", es: c[1], en: "", noGloss: true, sayFirst: true });
+    it.options = tapOpts(`${c[2].replace(/^the /, "")} ${c[3]}`, others.map(o => ({ text: `${o[2].replace(/^the /, "")} ${o[3]}`, tag: coTag(c), msg: `${cap(o[2])} is ${o[1]}. ${c[1]} is ${c[2]}.` })), focus);
+    return it;
+  }
+  if (kind === "flag") {
+    Object.assign(it, { lead: "Whose flag is this?", es: "", en: "" });
+    it.pic = () => el("div", { class: "pic bigemoji coflag", "aria-label": "Flag of " + c[2] }, c[3]);
+    it.options = tapOpts(c[1], others.map(o => ({ text: o[1], tag: coTag(c), msg: `${o[1]} (${o[2]}) has this flag: ${o[3]}. The flag ${c[3]} is ${c[1]}.` })), focus);
+    return it;
+  }
+  Object.assign(it, { lead: "How do you say this in Spanish?", es: `${c[3]} ${cap(c[2].replace(/^the /, ""))}`, esLang: "en", en: "" });
+  it.options = tapOpts(c[1], others.map(o => coOpt(c, o)), focus);
+  return it;
+}
+// the map: one part of the world, the countries we practise in colour, the rest in grey
+function coMapEl(region, opts = {}) {
+  const M = window.CO_MAP, vb = M.R[region], [x, y, w, h] = vb, px = 340 / w;
+  const list = CO.filter(c => { const b = M.c[c[0]].b; return b[2] > x && b[0] < x + w && b[3] > y && b[1] < y + h; });
+  const small = c => { const b = M.c[c[0]].b; return Math.max(b[2] - b[0], b[3] - b[1]) * px < 11; };
+  let s = `<svg class="worldmap" viewBox="${vb.join(" ")}" role="img" aria-label="Map of ${CO_REG[region][1]}"><rect class="sea" x="${x - w}" y="${y - h}" width="${w * 3}" height="${h * 3}"/><path class="land" d="${M.rest}"/>`;
+  for (const c of list) s += `<path class="co${opts.tap ? " tap" : ""}" data-c="${c[0]}" d="${M.c[c[0]].d}"/>`;
+  if (opts.tap) for (const c of list) if (small(c)) s += `<circle class="co tap dot" data-c="${c[0]}" cx="${M.c[c[0]].c[0]}" cy="${M.c[c[0]].c[1]}" r="${(5.5 / px).toFixed(2)}"/>`;
+  s += "</svg>";
+  const box = el("div", { class: "pic comap" }); box.innerHTML = s;
+  const svg = box.firstChild; svg._co = { list, px, small };
+  if (opts.hl) coMark(svg, opts.hl, "hl");
+  if (opts.tap) svg.addEventListener("click", e => {
+    if (answered) return;
+    const m = svg.getScreenCTM(); if (!m) return;
+    const dist = c => { const [cx, cy] = M.c[c[0]].c; return Math.hypot(m.a * cx + m.c * cy + m.e - e.clientX, m.b * cx + m.d * cy + m.f - e.clientY); };
+    const near = (cands, max) => { let best = null, bd = max; for (const c of cands) { const d = dist(c); if (d < bd) { bd = d; best = c; } } return best; };
+    // little countries win when the tap is close to them, then whatever was tapped, then the closest country
+    const hit = e.target.closest && e.target.closest("[data-c]");
+    const c = near(list.filter(small), 18) || (hit && CO_BY[hit.dataset.c]) || near(list, 30);
+    if (c) opts.tap(c[0]);
+  });
+  return box;
+}
+function coMark(svg, id, cls) {
+  const M = window.CO_MAP, sv = svg._co;
+  svg.querySelectorAll(`[data-c="${id}"]`).forEach(p => { p.classList.add(cls); svg.append(p); });
+  if (sv && sv.small(CO_BY[id]) && !svg.querySelector(`circle.ring[data-r="${id}"]`)) {
+    const r = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    r.setAttribute("class", "ring " + cls); r.setAttribute("data-r", id); r.setAttribute("cx", M.c[id].c[0]); r.setAttribute("cy", M.c[id].c[1]); r.setAttribute("r", (13 / sv.px).toFixed(2)); svg.append(r);
+  }
+}
+function coLabel(svg, id, cls) {
+  // the right answer's name sits just above its country, a wrong tap's name just below, kept inside the map
+  const M = window.CO_MAP, sv = svg._co, px = sv ? sv.px : 1, t = document.createElementNS("http://www.w3.org/2000/svg", "text"), [cx, cy] = M.c[id].c, vb = svg.viewBox.baseVal;
+  const name = CO_BY[id][1], fs = 15 / px, half = name.length * fs * 0.3, pad = 4 / px;
+  const x = Math.min(Math.max(cx, vb.x + half + pad), vb.x + vb.width - half - pad);
+  const y = Math.min(Math.max(cy + (cls === "bad" ? 20 / px : -8 / px), vb.y + fs + pad), vb.y + vb.height - pad);
+  t.setAttribute("class", "colabel " + cls); t.setAttribute("x", x.toFixed(1)); t.setAttribute("y", y.toFixed(1));
+  t.setAttribute("font-size", fs.toFixed(2)); t.setAttribute("text-anchor", "middle"); t.textContent = name; svg.append(t);
+}
+function coFind(focus, lv, base) {
+  const c = pickFresh(coPool(lv, focus), "cof");
+  const it = Object.assign(coBase(c, focus, "countries: find it on the map"), { type: "maptap", target: c[0], region: c[4], es: c[1], lead: "Find it on the map", en: "" }, base || {});
+  it.sayFirst = true;
+  return it;
+}
+function coWhich(focus, lv) {
+  const c = pickFresh(coPool(lv, focus), "coi"), it = coBase(c, focus, "countries: which country?");
+  Object.assign(it, { lead: "Which country is in pink?", es: "", en: "" });
+  it.pic = () => coMapEl(c[4], { hl: c[0] });
+  it.options = tapOpts(c[1], coOthers(c, lv).map(o => coOpt(c, o)), focus);
+  return it;
+}
+function coShape(focus, lv) {
+  const c = pickFresh(coPool(lv, focus), "cos"), it = coBase(c, focus, "countries: name the shape"), M = window.CO_MAP.c[c[0]];
+  Object.assign(it, { lead: "Name this shape", es: "", en: lv ? "" : `Clue: it's in ${CO_REG[c[4]][1]}` });
+  const b = M.b, pad = Math.max(b[2] - b[0], b[3] - b[1]) * 0.08, col = pick(CO_SHAPE_COLS);
+  it.pic = () => { const box = el("div", { class: "pic coshape" });
+    box.innerHTML = `<svg viewBox="${[b[0] - pad, b[1] - pad, b[2] - b[0] + 2 * pad, b[3] - b[1] + 2 * pad].map(v => v.toFixed(1)).join(" ")}" role="img" aria-label="A country's shape"><path d="${M.s}" style="fill:var(${col})"/></svg>`; return box; };
+  it.options = tapOpts(c[1], coOthers(c, lv).map(o => coOpt(c, o)), focus);
+  return it;
+}
+function coPop(focus, lv) {
+  const kinds = coMapReady() ? ["words", "which", "shape", "shape", "find"] : ["words"], k = pick(kinds);
+  let it = k === "find" ? coFind(focus, lv) : k === "which" ? coWhich(focus, lv) : k === "shape" ? coShape(focus, lv) : coWords(focus === "co-de" ? null : focus, lv);
+  if (it.lead === "How do you say this in Spanish?") it.lead = "Quick! In Spanish?";
+  if (!/^Quick/.test(it.lead)) it.lead = "Quick! " + it.lead;
+  return Object.assign(it, { timer: k === "find" ? 15 : 10, pop: true, stat: "countries: pop quiz" });
+}
+function makeCO(focus, anySet) {
+  const sel = anySet ? "mix" : state.settings.coset || "mix", lv = levelOf("co");
+  if (focus && !XT_CO[focus]) focus = null;
+  let set = sel === "mix" || !CO_TABS.some(t => t[0] === sel) ? pick(["find", "find", "which", "shape", "shape", "words", "words"]) : sel;
+  if (focus === "co-de") set = "words";
+  if (set === "pop") return coPop(focus, lv);
+  if (!coMapReady()) set = "words"; // the map file is still loading
+  return set === "find" ? coFind(focus, lv) : set === "which" ? coWhich(focus, lv) : set === "shape" ? coShape(focus, lv) : coWords(focus, lv);
+}
+function coAnswerMap(id) {
+  if (answered || !cur || cur.type !== "maptap") return; answered = true;
+  const it = cur, ok = id === it.target, svg = $("#quiz .worldmap"), t = CO_BY[it.target], g = CO_BY[id];
+  if (it.timer) it.t1 = performance.now();
+  if (!ok) { coMark(svg, id, "bad"); coLabel(svg, id, "bad"); }
+  coMark(svg, it.target, "ok"); coLabel(svg, it.target, "ok");
+  const errs = ok ? [] : [{ tag: it.fun ? "other" : it.tested[0], msg: `You tapped ${g[1]} (${g[2]}). ${t[1]} is the one in green.` }];
+  record(it, ok, errs, g[1], it.full); showFeedback(ok, errs, [], it.full, it);
+}
+// pop quiz: a countdown bar. Too slow counts as a miss and shows the answer.
+function coTimer(box, it) {
+  const bar = el("i"), wrap = el("div", { class: "cotimer", "aria-hidden": "true" }, bar);
+  box.append(wrap); it.t0 = performance.now();
+  requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${it.timer}s linear`; bar.style.width = "0%"; }));
+  setTimeout(() => {
+    if (cur !== it || answered) return; answered = true;
+    const q = $("#quiz");
+    q.querySelectorAll(".opt").forEach((b, k) => { b.disabled = true; if (it.options && it.options[k].correct) b.classList.add("right"); });
+    const svg = q.querySelector(".worldmap"); if (svg && it.type === "maptap") { coMark(svg, it.target, "ok"); coLabel(svg, it.target, "ok"); }
+    const errs = [{ tag: it.tested[0], title: "Time's up", msg: `The answer was ${it.full}` }];
+    record(it, false, errs, "(time's up)", it.full); showFeedback(false, errs, [], it.full, it);
+  }, it.timer * 1000);
+}
+function coSpeed(it, ok) {
+  const bar = $("#quiz .cotimer i"); if (bar) { bar.style.width = getComputedStyle(bar).width; bar.style.transition = "none"; }
+  if (!it.t1 || !it.t0) return null;
+  const s = (it.t1 - it.t0) / 1000;
+  return el("div", { class: "speech-note" }, `Answered in ${s.toFixed(1)} seconds` + (!ok ? "." : s < 3 ? ". ⚡ Lightning fast!" : s < 6 ? ". Nice and quick." : "."));
+}
+function renderCOPanel() {
+  const sel = state.settings.coset || "mix"; segButtons("#cosets", CO_TABS, sel, "coset");
+  const box = $("#cocheat"); box.replaceChildren();
+  const lv = levelOf("co"), b = t => el("b", { class: "es-i" }, t);
+  box.append(el("h2", {}, "Countries · los países"),
+    el("p", {}, b("¿De dónde eres?"), " = Where are you from? ", b("Soy de México."), " = I'm from Mexico. Tap a country to hear it."));
+  for (const [r, name, es] of CO_REGIONS) {
+    const l = CO.filter(c => c[4] === r && c[5] <= lv); if (!l.length) continue;
+    box.append(el("h3", {}, `${name} · ${es}`), el("div", { class: "row", style: "gap:6px;flex-wrap:wrap" }, l.map(c => sayChip(c[1], `${c[3]} ${c[2].replace(/^the /, "")}`))));
+  }
+  box.append(el("p", {}, CO_UK), el("p", { class: "speech-note" }, lv < 2 ? "More countries join in as you get more right, or pick Medium or Hard." : "You're on the full list."));
+}
 function makeX(focus) {
   if (topic === "mixq") return makeMixQ(focus);
-  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "gg" ? makeGG(focus) : topic === "gr" ? makeGR(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
+  return applyFormat(topic === "qw" ? makeQW(focus) : topic === "verbs" ? makeVerb(focus) : topic === "se" ? makeSE(focus) : topic === "sh" ? makeSH(focus) : topic === "gg" ? makeGG(focus) : topic === "gr" ? makeGR(focus) : topic === "co" ? makeCO(focus) : topic === "time" ? makeTimeTopic(focus) : makeNouns(focus));
 }
 
 /* ----- rendering for these items ----- */
-const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Sports & hobbies", gg: "gustar questions", gr: "Greetings" };
+const TOPIC_TITLE = { mixq: "Your quiz", qw: "Question words", verbs: "Verbs", se: "ser vs estar", nouns: "Nouns", time: "Time", sh: "Sports & hobbies", gg: "gustar questions", gr: "Greetings", co: "Countries" };
 function renderTap(box, it) {
   if (it.polText) box.append(el("div", {}, el("span", { class: "pol " + it.pol }, it.polText)));
   box.append(el("p", { class: "en" }, el("b", {}, it.lead), it.en ? " · " + it.en : ""));
   if (it.pic) box.append(it.pic());
+  if (it.type === "maptap") {
+    box.append(el("div", { class: "es" }, it.es, speakBtns(it.es)));
+    if (it.sayFirst && state.settings.autoplay !== false) setTimeout(() => say(it.es), 250);
+    box.append(coMapEl(it.region, { tap: id => coAnswerMap(id) }));
+    if (it.timer) coTimer(box, it);
+    return;
+  }
   if (it.type === "pictap") {
     box.append(el("div", { class: "es" }, it.es, speakBtns(it.es)));
     const svg = box.querySelector(".pic svg") || null;
@@ -2571,6 +2808,7 @@ function renderTap(box, it) {
   }
   if (it.sayFirst && it.es && state.settings.autoplay !== false) setTimeout(() => say(it.es), 250);
   box.append(el("div", { class: it.emojiOpts ? "opts emo" : "opts" }, it.options.map((o, i) => el("button", { class: it.emojiOpts ? "opt emo" : "opt", "data-i": i, onclick: () => answerChoice(i) }, el("span", { class: "k" }, i + 1), el("span", {}, o.text)))));
+  if (it.timer) coTimer(box, it);
 }
 function answerPic(key) {
   if (answered || !cur || cur.type !== "pictap") return; answered = true;
@@ -2778,7 +3016,7 @@ function renderGRPanel() {
 }
 function applyXSettings() {
   document.querySelectorAll("#qwmodes button").forEach(b => b.setAttribute("aria-pressed", b.dataset.q === (state.settings.qw || "mix")));
-  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderGGPanel(); renderGRPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
+  renderVerbPanel(); renderNounsPanel(); renderTimePanel(); renderSHPanel(); renderGGPanel(); renderGRPanel(); renderCOPanel(); renderFmtSegs(); renderDiffSegs(); renderQBPanel();
 }
 
 /* ---------- gustar: build the question from tiles (worksheet style) ---------- */
@@ -2939,8 +3177,8 @@ const FMT_NAMES = [["mix", "Mix"], ["tap", "Tap the answer"], ["type", "Type it"
 const NO_LOWER = new Set([...NAMES.map(n => n.toLowerCase()), "lima", "bogotá"]);
 const LEVEL_NAME = ["⭐ Easy", "⭐⭐ Medium", "⭐⭐⭐ Hard"];
 const DIFF_NAMES = [["auto", "Auto (grows with you)"], ["0", "Easy"], ["1", "Medium"], ["2", "Hard"]];
-const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"], ["panel-gg", "gg"], ["panel-gr", "gr"]];
-const DIFF_HELP = { time: "Hard: no digital time, any 5 minutes, and you type the time yourself." };
+const DIFF_PANELS = [["panel-built", "gustar"], ["panel-qw", "qw"], ["panel-verbs", "verbs"], ["panel-se", "se"], ["panel-nouns", "nouns"], ["panel-time", "time"], ["panel-sh", "sh"], ["panel-gg", "gg"], ["panel-gr", "gr"], ["panel-co", "co"]];
+const DIFF_HELP = { time: "Hard: no digital time, any 5 minutes, and you type the time yourself.", co: "Easy: the most common countries. Medium adds the rest of Latin America and more of Europe. Hard adds the rest." };
 function diffOf(t) { const d = (state.settings.diff || {})[t]; return d == null ? "auto" : d; }
 function renderDiffSegs() {
   for (const [pid, t] of DIFF_PANELS) {
@@ -3033,7 +3271,7 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gustar questions"], ["gr", "Greetings"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Sports & hobbies"], ["gg", "gustar questions"], ["gr", "Greetings"], ["co", "Countries"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
@@ -3042,6 +3280,7 @@ function qbConf() {
   if (!q.gg) { q.gg = 1; if (QB_TOPICS.every(([k]) => k === "gg" || k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("gg")) q.topics.push("gg"); }
   if (!q.hb) { q.hb = 1; if (QB_TOPICS.every(([k]) => k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("sh")) q.topics.push("sh"); }
   if (!q.sp) { q.sp = 1; if (QB_TOPICS.every(([k]) => k === "sports" || q.topics.includes(k)) && !q.topics.includes("sports")) q.topics.push("sports"); }
+  if (!q.co) { q.co = 1; if (QB_TOPICS.every(([k]) => k === "co" || k === "gr" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("co")) q.topics.push("co"); }
   if (!q.gr) { q.gr = 1; if (QB_TOPICS.every(([k]) => k === "gr" || k === "clock" || q.topics.includes(k)) && !q.topics.includes("gr")) q.topics.push("gr"); }
   if (q.topics.includes("gustar")) { q.topics = q.topics.filter(t => t !== "gustar"); if (!q.topics.includes("verbs")) { q.topics.push("verbs"); q.verbs = ["gustar"]; } else if (q.verbs.length && !q.verbs.includes("gustar")) q.verbs.push("gustar"); }
   if (!Array.isArray(q.fmts) || !q.fmts.length) q.fmts = QB_FMTS.map(f => f[0]);
@@ -3062,6 +3301,7 @@ function makeMixQ(focus) {
   else if (t === "sh") it = makeSH(f);
   else if (t === "gg") it = makeGG(f);
   else if (t === "gr") it = makeGR(f);
+  else if (t === "co") it = makeCO(f, true);
   else if (t === "verbs") { const keep = state.settings.verb2; state.settings.verb2 = q.verbs; try { it = makeVerb(f); } finally { state.settings.verb2 = keep; } }
   else if (t === "time") it = makeTime(f);
   else if (t === "clock") return makeClockHard(focus && /^time-/.test(focus) ? focus : null);
@@ -3181,6 +3421,7 @@ function funPool(t, depth = 0) {
       ["nos gusta", "we like", ""], ["les gusta", "they like", ""], ["¿Te gusta…?", "Do you like…?", ""], ["¿Qué te gusta hacer?", "What do you like to do?", ""],
       ["¿A quién le gusta…?", "Who likes…?", ""], ["a mí también", "me too", ""], ["a mí tampoco", "me neither", ""], ["¿Qué te gusta más?", "What do you like more?", ""]];
     case "gr": return grGamePool();
+    case "co": return CO.filter(c => c[5] <= levelOf("co")).map(c => [c[1], c[2].replace(/^the /, ""), c[3]]);
     case "clock": return [];
     case "mixq": if (!depth) { const ts = qbConf().topics; return (ts.length ? ts : ["face"]).flatMap(x => funPool(x, 1)); }
   }
@@ -3207,6 +3448,9 @@ function funItem() {
   // greetings: sometimes match / hear what someone says and pick the reply
   if (topic === "gr" && Math.random() < 0.4) { const ks = ["match", "listen"].filter(k => en.includes(k)); if (ks.length) { const k = pick(ks);
     return grFun(k, { kind: "tap", topic: "gr", fun: k, tested: [], noBuild: true, noGloss: true, focus: null }); } }
+  // countries: hear a country and point to it on the map
+  if (topic === "co" && en.includes("pic") && coMapReady() && Math.random() < 0.5)
+    return coFind(null, levelOf("co"), { fun: "pic", tested: [], noGloss: true, stat: "games: point to it on the map", lead: "Point to it on the map" });
   const pool = funUnique(funPool(topic)), pics = funUnique(pool.filter(w => w[2])).filter((w, i, a) => a.findIndex(x => x[2] === w[2]) === i);
   const can = { match: mOn && pool.length >= 5, pic: en.includes("pic") && pics.length >= 6, listen: en.includes("listen") && pool.length >= 4 };
   const kind = pick(["match", "match", "pic", "pic", "listen"].filter(k => can[k]));
@@ -3431,6 +3675,7 @@ function setAnswerResult(ok) { if (source.kind === "set") { if (ok) source.right
 function answerChoice(i) {
   if (answered) return; answered = true;
   const it = cur, o = it.options[i];
+  if (it.timer) it.t1 = performance.now();
   const btns = $("#quiz").querySelectorAll(".opt");
   btns.forEach((b, k) => { b.disabled = true; if (it.options[k].correct) b.classList.add("right"); });
   if (!o.correct) btns[i].classList.add("wrong");
@@ -3464,6 +3709,7 @@ function showFeedback(ok, errs, notes, correct, it) {
   const box = el("div", { class: "fb " + (ok ? "ok" : "no") });
   box.append(el("div", { class: "verdict" }, ok ? pick(["¡Correcto!", "¡Eso es!", "¡Muy bien!", "¡Perfecto!", "¡Excelente!", "¡Genial!", "¡Qué bien!"]) : "Not quite",
     ok && session.streak >= 2 ? el("span", { class: "streak" }, `  🔥 ${session.streak} in a row`) : null));
+  if (it.timer) { const sp = coSpeed(it, ok); if (sp) box.append(sp); }
   if (ok) setTimeout(() => celebrate(box), 0);
   if (errs.every(e => e.tag !== "pending") && it.type !== "match") sfx(ok ? "right" : "wrong"); else if (it.type === "match" && ok) sfx("right");
   if (it.kind === "starter" || it.kind === "tap") correct = it.full;
@@ -3562,7 +3808,7 @@ function applySettings() {
 $("#modes").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.mode = b.dataset.mode; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#levels").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.level = b.dataset.l; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
 $("#tenses").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.settings.tenses = b.dataset.t; scheduleSave(); applySettings(); source = { kind: "built" }; newRound(); next(); });
-const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "gg", "gr", "custom"];
+const TABS = ["built", "mixq", "qw", "verbs", "se", "nouns", "time", "sh", "gg", "gr", "co", "custom"];
 function selectTab(which, reset = true) {
   if (!TABS.includes(which) || which === "built") which = "mixq";
   for (const t of TABS) { $("#tab-" + t).setAttribute("aria-selected", t === which); $("#panel-" + t).hidden = t !== which; }
@@ -3867,7 +4113,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-h";
+const BUILD = "2026-11-27-co1";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
@@ -3878,5 +4124,6 @@ const BUILD = "2026-11-27-h";
 } catch {} })();
 })();
 </script>
+<script src="countries-map.js?v=1" async></script>
 
 </body></html>
