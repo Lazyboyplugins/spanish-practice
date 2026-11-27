@@ -2901,7 +2901,8 @@ function renderQBPanel() {
   box.append(el("h2", {}, "⭐ Build your own quiz"), el("p", {}, "1. Tick what you want to practise. 2. Press Start. You can pick one thing, a few, or everything. When everything is ticked, tapping one topic picks just that one."));
   box.append(group("Topics", allT ? "(all ticked)" : q.topics.length ? `(${q.topics.length} ticked)` : "(tick at least one)", [
     ...QB_TOPICS.map(([k, n]) => chip(q.topics.includes(k), n, () => { if (q.topics.length >= QB_TOPICS.length - 1 && QB_TOPICS.every(([x]) => x === "clock" || q.topics.includes(x))) q.topics = [k]; else toggle(q.topics, k, false); changed(); })),
-    el("button", { class: "link", onclick: () => { q.topics = allT ? [] : QB_TOPICS.map(t => t[0]); changed(); } }, allT ? "Untick all" : "Tick all")]));
+    q.topics.length ? el("button", { class: "link", onclick: () => { q.topics = []; changed(); } }, "Untick all") : null,
+    !allT ? el("button", { class: "link", onclick: () => { q.topics = QB_TOPICS.map(t => t[0]); changed(); } }, "Tick all") : null]));
   if (q.topics.includes("verbs")) box.append(group("Which verbs", q.verbs.length ? `(${q.verbs.length} ticked)` : "(none ticked = all verbs)", [
     ...VERB_ALL.map(v => chip(q.verbs.includes(v), v, () => { toggle(q.verbs, v, false); changed(); })),
     q.verbs.length ? el("button", { class: "link", onclick: () => { q.verbs = []; changed(); } }, "Use all verbs") : null]));
@@ -3666,7 +3667,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-c";
+const BUILD = "2026-11-27-d";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
