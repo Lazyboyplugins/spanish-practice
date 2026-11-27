@@ -2103,7 +2103,7 @@ function shLike(focus, lv) {
 function makeSH(focus) {
   const sel = state.settings.shset || "point", lv = levelOf("sh");
   let set = sel === "mix" || !SH_TABS.some(t => t[0] === sel) ? pick(["point", "point", "words", "sports", "often", "often", "like", "like", "tocar"]) : sel;
-  if (focus && SH_SET_OF[focus]) set = SH_SET_OF[focus]; else focus = null;
+  if (focus && SH_SET_OF[focus] && (sel === "mix" || SH_SET_OF[focus] === set)) set = SH_SET_OF[focus]; else focus = null;
   return set === "point" ? shPoint(focus) : set === "words" ? shWords(focus) : set === "sports" ? shWords(focus, true) : set === "often" ? shOften(focus) : set === "tocar" ? shTocar(focus) : shLike(focus, lv);
 }
 /* ----- gusta or gustan? ¿Qué le gusta más a…? questions and answers ----- */
@@ -2378,7 +2378,7 @@ function gqPairs(n) {
 }
 function gqFun(kind, base) {
   const ps = gqPairs(4);
-  if (kind === "match") return { ...base, type: "match", stat: "games: question and answer", lead: "Match each question to its answer", hint: "Tap a question, then its answer.", long: true, pairs: ps,
+  if (kind === "match") return { ...base, type: "match", stat: "games: question and answer", lead: "Match each question to its answer", hint: "Tap a question or an answer, then its partner.", long: true, pairs: ps,
     full: ps.map(w => w[0]).join(" "), mq: "Match the questions and answers", explain: ps.map(w => `${w[0]} → ${w[1]}`).join(" · ") };
   const w = ps[0];
   return { ...base, type: "choice", stat: "games: listen and answer", lead: "Listen to the question, then tap the best answer", es: w[0], en: "", full: w[0], mq: w[1], listen: true,
@@ -2387,7 +2387,7 @@ function gqFun(kind, base) {
 function makeGG(focus) {
   const sel = state.settings.ggset || "yn", lv = levelOf("gg");
   let set = sel === "mix" || !GG_TABS.some(t => t[0] === sel) ? pick(["yn", "yn", "que", "que", "who", "who", "ask", "answer", "qword"]) : sel;
-  if (focus && GG_SET_OF[focus]) set = GG_SET_OF[focus]; else focus = null;
+  if (focus && GG_SET_OF[focus] && (sel === "mix" || GG_SET_OF[focus] === set)) set = GG_SET_OF[focus]; else focus = null;
   return set === "yn" ? gqYesNo(focus, lv) : set === "que" ? gqQue(focus, lv) : set === "who" ? gqWho(focus, lv) : set === "ask" ? ggAsk(focus, lv) : set === "answer" ? ggAnswer(focus, lv) : ggQword(focus, lv);
 }
 function makeX(focus) {
@@ -2987,7 +2987,9 @@ function funPool(t, depth = 0) {
     case "time": { const ts = state.settings.timeset || "time"; return ts === "mix" ? [...timePool(), ...DAYS, ...MONTHS].map(d => [d[0], d[1], d[2] || ""]) : ts === "days" || ts === "months" || ts === "clock" ? funPool(ts, depth) : timePool(); }
     case "days": return DAYS.map(d => [d[0], d[1], ""]);
     case "months": return MONTHS.map(d => [d[0], d[1], ""]);
-    case "gg": return GG_THINGS.flat().map(x => [x[0], x[1], ""]);
+    case "gg": return [["me gusta", "I like (one thing)", ""], ["me gustan", "I like (more than one)", ""], ["te gusta", "you like (tú)", ""], ["le gusta", "he / she likes", ""],
+      ["nos gusta", "we like", ""], ["les gusta", "they like", ""], ["¿Te gusta…?", "Do you like…?", ""], ["¿Qué te gusta hacer?", "What do you like to do?", ""],
+      ["¿A quién le gusta…?", "Who likes…?", ""], ["a mí también", "me too", ""], ["a mí tampoco", "me neither", ""], ["¿Qué te gusta más?", "What do you like more?", ""]];
     case "clock": return [];
     case "mixq": if (!depth) { const ts = qbConf().topics; return (ts.length ? ts : ["face"]).flatMap(x => funPool(x, 1)); }
   }
@@ -3030,20 +3032,23 @@ function funItem() {
     explain: `${w[0]} = ${w[1]}`, options: tapOpts(w[1], others.map(o => ({ text: o[1], tag: "other", msg: `You heard ${w[0]} (${w[1]}). "${o[1]}" is ${o[0]}.` })), null) };
 }
 function renderMatch(box, it) {
-  box.append(el("p", { class: "en" }, el("b", {}, it.lead), " · " + (it.hint || "Tap a Spanish word, then its partner.")));
+  box.append(el("p", { class: "en" }, el("b", {}, it.lead), " · " + (it.hint || "Tap a word on either side, then its partner.")));
   let sel = null, left = it.pairs.length, misses = [];
   const L = shuffle(it.pairs.map((w, i) => ({ w, i }))), R = shuffle(it.pairs.map((w, i) => ({ w, i })));
   const lb = L.map(x => el("button", { class: "mt", type: "button" }, x.w[0])), rb = R.map(x => el("button", { class: "mt" + (it.usePic ? " pic" : ""), type: "button" }, it.usePic ? x.w[2] : x.w[1]));
-  lb.forEach((b, k) => b.addEventListener("click", () => { if (answered || b.classList.contains("done")) return; lb.forEach(x => x.classList.remove("sel")); b.classList.add("sel"); sel = k; say(L[k].w[0]); sfx("tap"); }));
-  rb.forEach((b, k) => b.addEventListener("click", () => {
-    if (answered || b.classList.contains("done")) return;
-    if (sel == null) { b.classList.add("shake"); setTimeout(() => b.classList.remove("shake"), 400); return; }
-    const a = L[sel], c = R[k];
-    if (a.i === c.i) { lb[sel].classList.add("done"); b.classList.add("done"); lb[sel].classList.remove("sel"); sel = null; left--; sfx("pair"); }
+  // tap either column first, then its partner in the other column
+  const clr = () => [...lb, ...rb].forEach(x => x.classList.remove("sel"));
+  function tryPair(li, ri) {
+    const a = L[li], c = R[ri]; clr(); sel = null;
+    if (a.i === c.i) { lb[li].classList.add("done"); rb[ri].classList.add("done"); left--; sfx("pair"); }
     else { misses.push({ tag: "other", title: "Not a pair", msg: `${a.w[0]} means ${a.w[1]}${a.w[2] ? " " + a.w[2] : ""}. ${it.usePic ? c.w[2] : `"${c.w[1]}"`} is ${c.w[0]}.` });
-      [lb[sel], b].forEach(x => { x.classList.add("bad"); setTimeout(() => x.classList.remove("bad"), 450); }); sfx("wrong"); }
+      [lb[li], rb[ri]].forEach(x => { x.classList.add("bad"); setTimeout(() => x.classList.remove("bad"), 450); }); sfx("wrong"); }
     if (!left) { answered = true; const ok = misses.length === 0; record(it, ok, misses.slice(0, 3), ok ? "all pairs" : `${misses.length} wrong match${misses.length > 1 ? "es" : ""}`, it.full); showFeedback(ok, misses.slice(0, 3), [], it.full, it); }
-  }));
+  }
+  lb.forEach((b, k) => b.addEventListener("click", () => { if (answered || b.classList.contains("done")) return;
+    if (sel && sel.side === "R") return tryPair(k, sel.k); clr(); b.classList.add("sel"); sel = { side: "L", k }; say(L[k].w[0]); sfx("tap"); }));
+  rb.forEach((b, k) => b.addEventListener("click", () => { if (answered || b.classList.contains("done")) return;
+    if (sel && sel.side === "L") return tryPair(sel.k, k); clr(); b.classList.add("sel"); sel = { side: "R", k }; sfx("tap"); }));
   box.append(el("div", { class: it.long ? "match long" : "match" }, el("div", { class: "mcol" }, lb), el("div", { class: "mcol" }, rb)));
 }
 // sound effects, made in the browser (no sound files). Volume and mute are kept per browser.
@@ -3669,7 +3674,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-e";
+const BUILD = "2026-11-27-f";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
