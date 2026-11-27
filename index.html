@@ -1444,6 +1444,10 @@ const V2 = {
   andar: { m: "to walk / to ride (a skateboard, a bike)", f: ["ando", "andas", "anda", "andamos", "andan"], c: [["en patineta", "skateboard"], ["en patineta en el parque", "skateboard in the park"], ["en bicicleta", "ride a bike"], ["en patineta todos los días", "skateboard every day"]] },
   entrenar: { m: "to train", f: ["entreno", "entrenas", "entrena", "entrenamos", "entrenan"], c: [["en el gimnasio", "train at the gym"], ["con el equipo", "train with the team"], ["los martes", "train on Tuesdays"], ["tres veces por semana", "train three times a week"]] },
   nadar: { m: "to swim", f: ["nado", "nadas", "nada", "nadamos", "nadan"], c: [["en el mar", "swim in the sea"], ["en la piscina", "swim in the pool"], ["los sábados", "swim on Saturdays"], ["a menudo", "swim often"]] },
+  bucear: { m: "to scuba dive", f: ["buceo", "buceas", "bucea", "buceamos", "bucean"], c: [["en el mar", "scuba dive in the sea"], ["en México", "scuba dive in Mexico"], ["con mi hermano", "scuba dive with my brother"], ["en las vacaciones", "scuba dive on holiday"]] },
+  surfear: { m: "to surf", note: "You can also say hacer surf: hago surf = surfeo.", f: ["surfeo", "surfeas", "surfea", "surfeamos", "surfean"], c: [["en la playa", "surf at the beach"], ["los domingos", "surf on Sundays"], ["muy bien", "surf very well"], ["en verano", "surf in summer"]] },
+  escalar: { m: "to climb", f: ["escalo", "escalas", "escala", "escalamos", "escalan"], c: [["en las montañas", "climb in the mountains"], ["en el gimnasio", "climb at the gym"], ["los sábados", "climb on Saturdays"], ["con mis amigos", "climb with my friends"]] },
+  patinar: { m: "to skate", f: ["patino", "patinas", "patina", "patinamos", "patinan"], c: [["en el parque", "skate in the park"], ["en invierno", "skate in winter"], ["muy mal", "skate very badly"], ["con mi hermana", "skate with my sister"]] },
   terminar: { m: "to finish", f: ["termino", "terminas", "termina", "terminamos", "terminan"], c: [["el trabajo a las cinco", "finish work at five"], ["la tarea", "finish the homework"], ["de comer", "finish eating"]] },
 };
 const PERS = ["yo", "tú", "él / ella / usted", "nosotros", "ellos / ellas / ustedes"], RP = ["me", "te", "se", "nos", "se"];
@@ -1633,14 +1637,18 @@ const SP_SPORTS = [["el fútbol", "football / soccer", "⚽"], ["el básquetbol"
   ["el voleibol", "volleyball", "🏐"], ["la natación", "swimming", "🏊"], ["el ciclismo", "cycling", "🚴"], ["el boxeo", "boxing", "🥊"], ["el golf", "golf", "⛳"],
   ["el atletismo", "athletics", "🏃"], ["el esquí", "skiing", "⛷️"], ["el surf", "surfing", "🏄"], ["el rugby", "rugby", "🏉"], ["el ping-pong", "table tennis", "🏓"],
   ["el hockey", "hockey", "🏒"], ["el yoga", "yoga", "🧘"], ["el kárate", "karate", "🥋"],
-  ["el levantamiento de pesas", "weightlifting", "🏋️"], ["el patinaje", "skating", ""], ["el senderismo", "hiking", "🥾"], ["la escalada", "climbing", "🧗"], ["la equitación", "horse riding", "🏇"]];
+  ["el levantamiento de pesas", "weightlifting", "🏋️"], ["el patinaje", "skating", ""], ["el senderismo", "hiking", "🥾"], ["la escalada", "climbing", "🧗"], ["la equitación", "horse riding", "🏇"],
+  ["el buceo", "scuba diving", "🤿"], ["el snorkel", "snorkelling", "🐠"], ["el kayak", "kayaking", "🛶"], ["la vela", "sailing", "⛵"], ["el ajedrez", "chess", "♟️"]];
 const SP_GEAR = [["la pelota", "ball", ""], ["la raqueta", "racket", ""], ["el bate", "bat", ""], ["el casco", "helmet", ""], ["los patines", "skates", "⛸️"],
   ["la red", "net", ""], ["el silbato", "whistle", ""], ["la medalla", "medal", "🏅"], ["el trofeo", "trophy", "🏆"], ["el uniforme", "kit / uniform", ""], ["el gol", "goal (a score)", "🥅"],
-  ["las pesas", "weights", ""], ["la patineta", "skateboard", "🛹"], ["los esquís", "skis", "🎿"], ["la tabla de surf", "surfboard", ""], ["los guantes de boxeo", "boxing gloves", ""]];
+  ["las pesas", "weights", ""], ["la patineta", "skateboard", "🛹"], ["los esquís", "skis", "🎿"], ["la tabla de surf", "surfboard", ""], ["los guantes de boxeo", "boxing gloves", ""],
+  ["el traje de neopreno", "wetsuit", ""], ["las aletas", "flippers / fins", ""], ["la máscara de buceo", "diving mask", ""], ["el tanque de aire", "air tank", ""],
+  ["la caña de pescar", "fishing rod", "🎣"], ["la carpa", "tent", "⛺"], ["el remo", "paddle / oar", ""]];
 const SP_PLACES = [["el estadio", "stadium", "🏟️"], ["la cancha", "court / pitch", ""], ["la piscina", "swimming pool", ""], ["el gimnasio", "gym", ""],
   ["el equipo", "team", ""], ["el partido", "match / game", ""], ["el jugador", "player (man)", ""], ["la jugadora", "player (woman)", ""],
   ["el entrenador", "coach (man)", ""], ["el árbitro", "referee", ""], ["el aficionado", "fan (man)", ""], ["el deporte", "sport", ""],
-  ["el entrenamiento", "training (a session)", ""], ["la práctica", "practice", ""], ["la carrera", "race", ""], ["el campeón", "champion (man)", ""]];
+  ["el entrenamiento", "training (a session)", ""], ["la práctica", "practice", ""], ["la carrera", "race", ""], ["el campeón", "champion (man)", ""],
+  ["la playa", "beach", "🏖️"], ["la ola", "wave", "🌊"], ["el buzo", "diver (man)", ""], ["el surfista", "surfer (man)", ""]];
 const SPORTS = dedupe(SP_SPORTS, SP_GEAR, SP_PLACES), SP_ALLW = SPORTS;
 const NOUNSETS = { face: FACE, body: BODY, people: PEOPLE, animals: ANIMALS, food: FOOD, clothes: CLOTHES, house: HOUSE, kitchen: KITCHEN, bedroom: BEDROOM, bathroom: BATHROOM, town: TOWN, transport: TRANSPORT, nature: NATURE, sports: SPORTS, things: THINGS2 };
 const DAYS = [["lunes", "Monday"], ["martes", "Tuesday"], ["miércoles", "Wednesday"], ["jueves", "Thursday"], ["viernes", "Friday"], ["sábado", "Saturday"], ["domingo", "Sunday"]];
@@ -1949,13 +1957,16 @@ const SH_ACTS = [["nadar", "to swim", "🏊"], ["correr", "to run", "🏃"], ["b
   ["escribir", "to write", "✍️"], ["pescar", "to fish", "🎣"], ["acampar", "to go camping", "⛺"], ["tejer", "to knit", "🧶"],
   ["levantar pesas", "to lift weights", "🏋️"], ["esquiar", "to ski", "⛷️"], ["andar en patineta", "to skateboard", "🛹"], ["ver la tele", "to watch TV", "📺"],
   ["mirar las estrellas", "to look at the stars", "🔭"], ["entrenar", "to train", "💪"], ["practicar deporte", "to do sport", "🤸"], ["jugar al básquetbol", "to play basketball", "🏀"],
-  ["jugar al tenis", "to play tennis", "🎾"], ["jugar al fútbol", "to play football", "⚽"]];
+  ["jugar al tenis", "to play tennis", "🎾"], ["jugar al fútbol", "to play football", "⚽"],
+  ["bucear", "to scuba dive", "🤿"], ["surfear", "to surf", "🏄"], ["hacer snorkel", "to snorkel", "🐠"], ["escalar", "to climb", "🧗"], ["patinar", "to skate", "⛸️"],
+  ["hacer senderismo", "to go hiking", "🥾"], ["remar en kayak", "to go kayaking", "🛶"], ["navegar", "to sail", "⛵"], ["montar a caballo", "to ride a horse", "🐎"],
+  ["jugar al ajedrez", "to play chess", "♟️"], ["hacer yoga", "to do yoga", "🧘"]];
 const SH_INSTR = [["la guitarra", "the guitar"], ["el piano", "the piano"], ["la batería", "the drums"], ["el violín", "the violin"]];
 const SH_PL = [["los deportes", "sports"], ["los videojuegos", "video games"], ["las películas de terror", "horror movies"], ["los partidos de fútbol", "soccer games"], ["las fiestas", "parties"], ["los conciertos", "concerts"]];
 const JUEGO = ["juego", "juegas", "juega", "jugamos", "juegan"], TOCO = ["toco", "tocas", "toca", "tocamos", "tocan"];
 const SH_GUSTA = "With an activity (a verb like nadar) always use gusta, never gustan, even for two: me gusta nadar y leer.";
 const SH_INF = "After gusta the verb stays in its dictionary form (the infinitive): me gusta nadar, not me gusta nado.";
-const shYo = a => { const [v, ...r] = a.split(" "), f = v === "ver" ? "veo" : v === "jugar" ? "juego" : v === "esquiar" ? "esquío" : v.slice(0, -2) + "o"; return [f, ...r].join(" "); };
+const shYo = a => { const [v, ...r] = a.split(" "), f = v === "ver" ? "veo" : v === "jugar" ? "juego" : v === "esquiar" ? "esquío" : v === "hacer" ? "hago" : v.slice(0, -2) + "o"; return [f, ...r].join(" "); };
 const shEl = a => { const [v, ...r] = a.split(" "), f = v === "jugar" ? "juega" : v === "esquiar" ? "esquía" : v.slice(0, -2) + (v.endsWith("ar") ? "a" : "e"); return [f, ...r].join(" "); };
 const SH_TABS = [["point", "Point to it"], ["words", "Hobby words"], ["sports", "Sports words"], ["often", "How often?"], ["like", "Me gusta + hobby"], ["tocar", "tocar or jugar?"], ["mix", "Mix"]];
 const SH_SET_OF = { "sh-point": "point", "sh-words": "words", "sh-sportw": "sports", "sh-often": "often", "sh-nunca": "often", "sh-tocar": "tocar", "sh-gusta": "like", "sh-inf": "like", "sh-pron": "like", "sh-answer": "like", "sh-neg": "like", "sh-gusta-noun": "like" };
@@ -1973,7 +1984,9 @@ const FQ_ACTS = [["juego al fútbol", "juega al fútbol", "play football", "play
   ["veo la tele", "ve la tele", "watch TV", "watches TV", "📺"], ["miro las estrellas", "mira las estrellas", "look at the stars", "looks at the stars", "🔭"],
   ["entreno en el gimnasio", "entrena en el gimnasio", "train at the gym", "trains at the gym", "💪"], ["practico yoga", "practica yoga", "do yoga", "does yoga", "🧘"],
   ["nado", "nada", "swim", "swims", "🏊"], ["corro en el parque", "corre en el parque", "run in the park", "runs in the park", "🏃"], ["monto en bicicleta", "monta en bicicleta", "ride a bike", "rides a bike", "🚴"],
-  ["bailo", "baila", "dance", "dances", "💃"], ["toco la guitarra", "toca la guitarra", "play the guitar", "plays the guitar", "🎸"]];
+  ["bailo", "baila", "dance", "dances", "💃"], ["toco la guitarra", "toca la guitarra", "play the guitar", "plays the guitar", "🎸"],
+  ["buceo en el mar", "bucea en el mar", "scuba dive in the sea", "scuba dives in the sea", "🤿"], ["surfeo en la playa", "surfea en la playa", "surf at the beach", "surfs at the beach", "🏄"],
+  ["escalo", "escala", "go climbing", "goes climbing", "🧗"], ["hago senderismo", "hace senderismo", "go hiking", "goes hiking", "🥾"], ["patino", "patina", "skate", "skates", "⛸️"]];
 // a frequency sentence: who (yo or a name), activity, frequency word
 function fqSent(f, a, N) {
   const v = N ? a[1] : a[0], en = N ? a[3] : a[2], S = N ? N + " " : "", enS = N || "I";
@@ -2080,7 +2093,7 @@ function shLike(focus, lv) {
       { text: "gusto", tag: "sh-gusta", msg: "gusto is a different form (I please). To say you like something it is me / te / le gusta." }]);
   } else if (kind === "inf") {
     it.lead = "Pick the right verb"; it.es = `${pre}${P} gusta ___.`; it.en = en; it.full = `${pre}${P} gusta ${act}.`; it.mq = en; it.tested = ["sh-inf"]; it.explain = SH_INF;
-    it.options = tapOpts(act, [{ text: shYo(act), tag: "sh-inf", msg: `${shYo(act).split(" ")[0]} means I ${a[1].replace(/^to /, "").split(" ")[0]}. ${SH_INF}` },
+    it.options = tapOpts(act, [{ text: shYo(act), tag: "sh-inf", msg: `${shYo(a[0])} means I ${a[1].replace(/^to /, "")}. ${SH_INF}` },
       { text: shEl(act), tag: "sh-inf", msg: `${shEl(act).split(" ")[0]} is the he / she form. ${SH_INF}` }], focus);
   } else if (kind === "say") {
     const right = `${pre}${P} gusta ${act}.`, wp = pick(PRONS.filter(p => p !== pr && p !== "os"));
@@ -2910,7 +2923,10 @@ for (const [es, en] of [...GG_FAM, ...GG_FAMP]) GLOSS[es] = GLOSS[es] || en;
 for (const [k, v] of Object.entries({ "siempre": "always", "casi": "almost", "nunca": "never", "menudo": "a menudo = often", "veces": "times (a veces = sometimes)", "vez": "time (de vez en cuando = now and then)",
   "cuando": "when", "pocas": "few (pocas veces = not often)", "todos": "all / every", "días": "days", "pesas": "weights", "patineta": "skateboard", "tele": "TV", "estrellas": "stars", "gimnasio": "gym",
   "yoga": "yoga", "esquiar": "to ski", "levantar": "to lift", "mirar": "to look at / to watch", "andar": "to walk / to ride", "entrenar": "to train", "practicar": "to do / practise", "deporte": "sport",
-  "equipo": "team", "piscina": "swimming pool", "montañas": "mountains", "vacaciones": "holidays", "ventana": "window", "partido": "match / game", "básquetbol": "basketball", "fútbol": "football / soccer" })) GLOSS[k] = GLOSS[k] || v;
+  "equipo": "team", "piscina": "swimming pool", "montañas": "mountains", "vacaciones": "holidays", "ventana": "window", "partido": "match / game", "básquetbol": "basketball", "fútbol": "football / soccer",
+  "bucear": "to scuba dive", "buceo": "I scuba dive / scuba diving", "bucea": "scuba dives", "surfear": "to surf", "surfeo": "I surf", "surfea": "surfs", "escalar": "to climb", "escalo": "I climb", "escala": "climbs",
+  "patinar": "to skate", "patino": "I skate", "patina": "skates", "hacer": "to do / to make", "hago": "I do", "hace": "does", "senderismo": "hiking", "snorkel": "snorkelling", "kayak": "kayak",
+  "remar": "to paddle / to row", "navegar": "to sail", "caballo": "horse", "ajedrez": "chess", "playa": "beach", "mar": "sea" })) GLOSS[k] = GLOSS[k] || v;
 for (const t of GG_THINGS.flat()) { const w = t[0].split(" "); const k = w.length > 1 && /^(el|la|los|las)$/.test(w[0]) ? w.slice(1).join(" ") : t[0]; if (!k.includes(" ")) GLOSS[k] = GLOSS[k] || t[1]; }
 for (const [k, v] of Object.entries({ "más": "more", "o": "or", "qué": "what", "cuáles": "which ones", "cuál": "which one", "tu": "your", "tus": "your (more than one)", "mi": "my", "mis": "my (more than one)",
   "mí": "me (after a)", "ti": "you (after a)", "a": "to (a mí = to me)", "papas": "potatoes", "fritas": "fried" })) GLOSS[k] = GLOSS[k] || v;
@@ -3851,7 +3867,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-g";
+const BUILD = "2026-11-27-h";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
