@@ -3467,6 +3467,16 @@ applySettings(); renderSide(); renderSets(); renderWho(); selectTab(state.settin
 showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
+/* phones can keep an old copy of the page for a while: check for a newer one and reload once */
+const BUILD = "2026-11-27-c";
+(async () => { try {
+  if (!/^https?:/.test(location.protocol)) return;
+  const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
+  const m = (await r.text()).match(/const BUILD = "([^"]+)"/);
+  if (!m || m[1] === BUILD) return;
+  const k = "repaso-reloaded-" + m[1]; if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1");
+  location.replace(location.pathname + "?v=" + encodeURIComponent(m[1]) + location.hash);
+} catch {} })();
 })();
 </script>
 
