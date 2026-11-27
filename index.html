@@ -203,7 +203,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 .pic .hl>*:not(.hit){stroke:#1d55a8;stroke-width:4px}.pic .hl .zone{fill:rgba(29,85,168,.4)}
 .pic .hl-ok>*:not(.hit){stroke:#1d7548;stroke-width:5px}.pic .hl-ok .zone{fill:rgba(29,117,72,.45)}
 .pic .hl-bad>*:not(.hit){stroke:#b0281f;stroke-width:5px}.pic .hl-bad .zone{fill:rgba(176,40,31,.4)}
-.cface{fill:var(--surface);stroke:var(--ink);stroke-width:4}.cnum{font:600 16px var(--body);fill:var(--ink)}
+.cface{fill:var(--surface);stroke:var(--ink);stroke-width:4}.cnum{font:600 16px var(--body);fill:var(--ink)}.ctick{stroke:var(--ink);stroke-width:1.2;opacity:.55}.ctick5{stroke:var(--ink);stroke-width:2.6}
 .hh{stroke:var(--ink);stroke-width:7;stroke-linecap:round}.mh{stroke:var(--accent);stroke-width:4;stroke-linecap:round}.cdot{fill:var(--ink)}
 .wchips{display:flex;flex-wrap:wrap;gap:6px}
 .qbgroup{display:flex;flex-direction:column;gap:6px}.qbgroup h3{font-size:15px}
@@ -1178,7 +1178,7 @@ const XT_NOUNS = { "vocab-face": "Face words", "vocab-body": "Body parts", "voca
 const XT_WORDS = {
   "days": "Days of the week", "months": "Months of the year",
   "days-order": "Before and after (days)", "months-order": "Before and after (months)", "lowercase": "No capitals for days and months",
-  "time-hour": "Reading the hour", "time-es-son": "Es la una vs Son las…", "time-menos": "menos (counting back from the next hour)", "time-quarter": "cuarto and media" };
+  "time-hour": "Reading the hour", "time-es-son": "Es la una vs Son las…", "time-menos": "menos (counting back from the next hour)", "time-quarter": "cuarto and media", "time-minutes": "Reading the minutes (long hand)" };
 const XT_SH = {
   "sh-words": "Hobby words", "sh-tocar": "tocar for instruments, jugar for sports", "sh-gusta": "me gusta (not gustan) + an activity",
   "sh-gusta-noun": "gusta (one thing) or gustan (more than one)", "sh-inf": "Verb after gusta stays as is (me gusta nadar)", "sh-pron": "me / te / le / nos / les with gusta",
@@ -1567,7 +1567,7 @@ function bodySVG(hl, onPick) {
   return d;
 }
 const NOUN_TABS = [["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["mix", "Mix"]];
-const TIME_TABS = [["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["mix", "Mix"]];
+const TIME_TABS = [["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["mix", "Mix"]];
 
 function faceSVG(hl, onPick) {
   const d = el("div", { class: "pic" });
@@ -1592,13 +1592,14 @@ function faceSVG(hl, onPick) {
   if (onPick) svg.querySelectorAll("[data-p]").forEach(g => { g.classList.add("pickable"); g.addEventListener("click", e => { e.stopPropagation(); onPick(g.dataset.p, svg); }); });
   return d;
 }
-function clockSVG(h, m, noDig) {
+function clockSVG(h, m, noDig, hard) {
   const r = Math.PI / 180, a = (h % 12 + m / 60) * 30 * r, b = m * 6 * r;
-  const nums = HOURS.slice(1).map((_, k) => { const t = (k + 1) * 30 * r; return `<text x="${(100 + 72 * Math.sin(t)).toFixed(1)}" y="${(106 - 72 * Math.cos(t)).toFixed(1)}" text-anchor="middle" class="cnum">${k + 1}</text>`; }).join("");
+  const nr = hard ? 66 : 72, nums = HOURS.slice(1).map((_, k) => { const t = (k + 1) * 30 * r; return `<text x="${(100 + nr * Math.sin(t)).toFixed(1)}" y="${(106 - nr * Math.cos(t)).toFixed(1)}" text-anchor="middle" class="cnum">${k + 1}</text>`; }).join("");
   const d = el("div", { class: "pic" });
-  d.innerHTML = `<svg viewBox="0 0 200 200" class="clock" role="img" aria-label="Clock showing ${h}:${String(m).padStart(2, "0")}"><circle cx="100" cy="100" r="92" class="cface"/>${nums}
+  const ticks = hard ? Array.from({ length: 60 }, (_, k) => { const t = k * 6 * r, i = k % 5 ? 85 : 81; return `<line x1="${(100 + i * Math.sin(t)).toFixed(1)}" y1="${(100 - i * Math.cos(t)).toFixed(1)}" x2="${(100 + 89 * Math.sin(t)).toFixed(1)}" y2="${(100 - 89 * Math.cos(t)).toFixed(1)}" class="${k % 5 ? "ctick" : "ctick5"}"/>`; }).join("") : "";
+  d.innerHTML = `<svg viewBox="0 0 200 200" class="clock" role="img" aria-label="${hard ? "Clock" : `Clock showing ${h}:${String(m).padStart(2, "0")}`}"><circle cx="100" cy="100" r="92" class="cface"/>${ticks}${nums}
 <line x1="100" y1="100" x2="${(100 + 45 * Math.sin(a)).toFixed(1)}" y2="${(100 - 45 * Math.cos(a)).toFixed(1)}" class="hh"/>
-<line x1="100" y1="100" x2="${(100 + 70 * Math.sin(b)).toFixed(1)}" y2="${(100 - 70 * Math.cos(b)).toFixed(1)}" class="mh"/><circle cx="100" cy="100" r="5" class="cdot"/></svg>
+<line x1="100" y1="100" x2="${(100 + (hard ? 82 : 70) * Math.sin(b)).toFixed(1)}" y2="${(100 - (hard ? 82 : 70) * Math.cos(b)).toFixed(1)}" class="mh"/><circle cx="100" cy="100" r="5" class="cdot"/></svg>
 ${noDig ? "" : `<div class="digital">${h}:${String(m).padStart(2, "0")}</div>`}`;
   return d;
 }
@@ -1649,6 +1650,87 @@ function makeTime(focus) {
     it.lead = "What time is this?"; it.es = correct; it.en = "";
     it.options = tapOpts(dig(h, m), c, focus);
   }
+  return it;
+}
+/* ----- Clock only (hard): just the clock face, any minute, type the time ----- */
+const UNI = ["", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve", "veinte", "veintiuno", "veintidós", "veintitrés", "veinticuatro", "veinticinco", "veintiséis", "veintisiete", "veintiocho", "veintinueve"];
+{ const EN = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
+  const en = n => n <= 20 ? EN[n] : ["twenty", "thirty", "forty", "fifty"][Math.floor(n / 10) - 2] + (n % 10 ? "-" + EN[n % 10] : "");
+  for (let n = 1; n < 30; n++) if (!GLOSS[UNI[n]]) GLOSS[UNI[n]] = en(n);
+  Object.assign(GLOSS, { treinta: GLOSS.treinta || "thirty", cuarenta: "forty", cincuenta: "fifty", minuto: "minute", minutos: "minutes", para: GLOSS.para || "for / to (time: veinte para las tres = twenty to three)" }); }
+const minW = n => n < 30 ? UNI[n] : (["treinta", "cuarenta", "cincuenta"][Math.floor(n / 10) - 3] + (n % 10 ? " y " + UNI[n % 10] : ""));
+const MINV = (() => { const o = { un: 1, cuarto: 15, media: 30 }; for (let n = 1; n < 60; n++) o[norm(minW(n))] = n; return o; })();
+const hourLead = hh => hh === 1 ? "Es la una" : `Son las ${HOURS[hh]}`;
+const minSay = (n, menos) => n === 15 ? "cuarto" : n === 30 && !menos ? "media" : minW(n);
+function clockForms(h, m) {
+  const f = [];
+  if (m === 0) f.push(`${hourLead(h)} en punto.`, `${hourLead(h)}.`);
+  else {
+    f.push(`${hourLead(h)} y ${minSay(m)}.`);
+    if (m === 15 || m === 30) f.push(`${hourLead(h)} y ${minW(m)}.`);
+    if (m === 1) f.push(`${hourLead(h)} y un minuto.`); else f.push(`${hourLead(h)} y ${minW(m)} minutos.`);
+  }
+  if (m > 30) {
+    const n = 60 - m, H = nextH(h), las = H === 1 ? "la una" : `las ${HOURS[H]}`;
+    f.unshift(`${hourLead(H)} menos ${minSay(n, true)}.`);
+    if (n === 15) f.push(`${hourLead(H)} menos quince.`);
+    for (const lead of ["Son ", "Es ", ""]) {
+      f.push(`${lead}${n === 1 ? "un minuto" : n === 15 ? "cuarto" : minW(n)} para ${las}.`);
+      if (n === 15) f.push(`${lead}un cuarto para ${las}.`, `${lead}quince para ${las}.`);
+    }
+  }
+  return f;
+}
+// Read what someone typed as a time: { lead: "es"/"son"/"", art, H, M (minutes past H, may be negative), menos, para }
+function parseClock(text) {
+  let t = toks(text).map(norm);
+  if (t.some(w => /\d/.test(w))) return { digits: true };
+  let lead = ""; if (t[0] === "es" || t[0] === "son") lead = t.shift();
+  const HV = w => HOURS.map(norm).indexOf(w);
+  const num = ws => { ws = ws.filter(w => w !== "minuto" && w !== "minutos"); if (ws[0] === "un" && ws[1] === "cuarto") ws = ws.slice(1); const k = ws.join(" "); return k in MINV ? MINV[k] : null; };
+  const pi = t.indexOf("para");
+  if (pi > 0) {
+    const n = num(t.slice(0, pi)), rest = t.slice(pi + 1); if (rest[0] === "la" || rest[0] === "las") rest.shift();
+    const H = HV(rest[0]); if (n == null || H < 1 || rest.length > 1) return null;
+    return { lead, H, M: -n, para: true };
+  }
+  const art = t[0] === "la" || t[0] === "las" ? t.shift() : "";
+  const H = HV(t[0]); if (H < 1) return null; t = t.slice(1);
+  if (!t.length || (t[0] === "en" && t[1] === "punto" && t.length === 2)) return { lead, art, H, M: 0 };
+  if (t[0] === "y" || t[0] === "menos") { const n = num(t.slice(1)); if (n == null) return null; return { lead, art, H, M: t[0] === "y" ? n : -n, menos: t[0] === "menos" }; }
+  return null;
+}
+function makeClockHard(focus) {
+  const h = 1 + Math.floor(Math.random() * 12);
+  let m = Math.floor(Math.random() * 60);
+  if (focus === "time-menos") m = 31 + Math.floor(Math.random() * 29); else if (focus === "time-quarter") m = pick([15, 30, 45]);
+  const forms = clockForms(h, m), correct = forms[0];
+  const it = { kind: "tap", type: "typed", typeMode: "line", clockOnly: true, topic: "time", stat: "clock only (hard)", focus: focus || null,
+    tested: ["time-hour", "time-minutes", "time-es-son"], full: correct, answer: correct, alts: forms.slice(1), wrongs: [], mq: "Clock showing " + dig(h, m),
+    lead: "¿Qué hora es?", en: "", es: "", pic: () => clockSVG(h, m, true, true) };
+  if (m > 30) it.tested.push("time-menos"); if ([15, 30, 45].includes(m)) it.tested.push("time-quarter");
+  const yForm = m > 30 ? `${hourLead(h)} y ${minW(m)}.` : "";
+  it.explain = `The short hand is the hour and the long hand is the minutes. ${dig(h, m)} = ${correct}` + (yForm ? ` You can also say ${yForm.replace(/\.$/, "")}, or count back with para: ${forms.find(x => / para /.test(x) && /^Son |^Es /.test(x)).replace(/\.$/, "")}.` : "");
+  const target = (h % 12) * 60 + m;
+  it.diagnose = given => {
+    const p = parseClock(given), ans = correct.replace(/\.$/, "");
+    if (!p) return null;
+    if (p.digits) return { tag: "time-minutes", msg: `Write the time in Spanish words. The clock shows ${ans}.` };
+    const T = (((p.H % 12) * 60 + p.M) % 720 + 720) % 720;
+    if (T === target) {
+      const want = p.H === 1 ? ["es", "la"] : ["son", "las"];
+      if (p.para) return null;
+      return { tag: "time-es-son", msg: `${p.lead ? "" : "Start with Es or Son. "}Use Es la una only for one o'clock. Every other hour uses Son las…: ${ans}.` };
+    }
+    if (p.menos || p.para) {
+      if (((T + 60) % 720) === target) return { tag: "time-menos", msg: `With menos (or para) you count back from the next hour. The next hour is ${HOURS[nextH(h)]}, so: ${ans}.` };
+    }
+    if (((T % 60) + 60) % 60 === m) return { tag: "time-hour", msg: `The minutes are right. Look at the short hand for the hour: ${ans}.` };
+    const hh = p.M < 0 ? prevH(p.H) : p.H;
+    if (hh === h) return { tag: "time-minutes", msg: `The hour is right. Count the small marks to the long hand: it shows ${m} minutes. ${ans}.` };
+    return null;
+  };
+  // A right time with the wrong Es/Son or la/las: parseClock catches it above; these exact strings make it count as wrong.
   return it;
 }
 const GENDER_WHY = { el: "masculine, one", la: "feminine, one", los: "masculine, more than one", las: "feminine, more than one" };
@@ -1741,6 +1823,7 @@ function makeTimeTopic(focus) {
   if (fs && sel === "mix") set = fs;
   if (fs && fs !== set) focus = null;
   if (focus === "lowercase" && set === "time") set = "days";
+  if (set === "clock") return makeClockHard(fs === "time" ? focus : null);
   return set === "time" ? makeTime(focus) : makeSeq(set, focus);
 }
 /* ----- hobbies (sports words and jugar live in Nouns > Sports and Verbs) ----- */
@@ -2076,6 +2159,7 @@ function renderNounsPanel() {
 }
 function renderTimePanel() {
   const sel = state.settings.timeset || "time"; segButtons("#timesets", TIME_TABS, sel, "timeset");
+  for (const s of document.querySelectorAll("#panel-time .fmtseg, #panel-time .diffseg")) s.parentNode.hidden = sel === "clock";
   const box = $("#tcheat"); box.replaceChildren();
   if (sel === "days" || sel === "months") {
     const L = sel === "days" ? DAYS : MONTHS;
@@ -2087,6 +2171,8 @@ function renderTimePanel() {
       el("div", {}, el("b", { class: "es-i" }, "y cuarto"), " = :15"), el("div", {}, el("b", { class: "es-i" }, "y media"), " = :30"),
       el("div", {}, el("b", { class: "es-i" }, "menos cuarto"), " = :45"), el("div", {}, el("b", { class: "es-i" }, "en punto"), " = o'clock")),
       el("p", {}, "With menos, count back from the next hour: 3:45 = ", el("b", { class: "es-i" }, "son las cuatro menos cuarto"), "."));
+  } else if (sel === "clock") {
+    box.append(el("h2", {}, "Clock only"), el("p", {}, "Just the clock face, any time of day, and you type the time in Spanish. No hints until you answer."));
   } else box.append(el("h2", {}, "Time, days and months, mixed"));
 }
 function renderSHPanel() {
@@ -2299,6 +2385,7 @@ function renderDiffSegs() {
     seg.replaceChildren(...DIFF_NAMES.map(([k, n]) => el("button", { "aria-pressed": String(cur === k), title: k === "auto" ? "Starts easy and gets harder as you get more right" : DIFF_HELP[t] || "",
       onclick: () => { (state.settings.diff || (state.settings.diff = {}))[t] = k; scheduleSave(); renderDiffSegs(); source = { kind: "built" }; newRound(); focusQueue.left = 0; next(); } }, n)));
   }
+  for (const x of document.querySelectorAll("#panel-time .fmtseg, #panel-time .diffseg")) x.parentNode.hidden = state.settings.timeset === "clock";
 }
 function levelOf(t) { const d = diffOf(t); if (d !== "auto") return +d; const k = state.skill && state.skill[t]; if (!k || k.n < 8) return 0; return k.v >= 0.85 ? 2 : k.v >= 0.65 ? 1 : 0; }
 function applyFormat(it, fmts) {
@@ -2327,7 +2414,7 @@ function applyFormat(it, fmts) {
   return it;
 }
 function renderTyped(box, it) {
-  box.append(el("p", { class: "en" }, el("b", {}, it.typeMode === "blank" ? "Type the missing part" : it.lead === "Read the clock" ? it.lead : "Type it in Spanish"), it.en ? " · " + it.en : ""));
+  box.append(el("p", { class: "en" }, el("b", {}, it.clockOnly ? it.lead : it.typeMode === "blank" ? "Type the missing part" : it.lead === "Read the clock" ? it.lead : "Type it in Spanish"), it.en ? " · " + it.en : ""));
   if (it.pic) box.append(it.pic());
   let input;
   if (it.typeMode === "blank") {
@@ -2362,7 +2449,7 @@ function submitTyped(raw) {
   let errs = [], notes = [];
   if (loose && !exact) notes.push({ tag: "accent", msg: `Watch the accents: ${it.answer}` });
   if (!loose) {
-    const w = it.wrongs.find(o => norm(o.text) === norm(given));
+    const w = it.wrongs.find(o => norm(o.text) === norm(given)) || (it.diagnose && it.diagnose(given));
     errs = [w ? { tag: w.tag, msg: w.msg } : { tag: it.tested[0], msg: `The answer is ${it.answer.replace(/\.$/, "")}.` }];
     errs[0].msg = `You typed "${String(raw).trim()}". ` + errs[0].msg;
   }
@@ -2375,11 +2462,11 @@ function renderFmtSegs() {
 }
 
 /* ----- general quiz builder ----- */
-const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["days", "Days"], ["months", "Months"], ["sh", "Hobbies"], ["gg", "gusta or gustan?"]];
+const QB_TOPICS = [["qw", "Question words"], ["verbs", "Verbs (incl. gustar)"], ["se", "ser vs estar"], ["face", "The face"], ["body", "The body"], ["people", "People"], ["animals", "Animals"], ["food", "Food & drink"], ["clothes", "Clothes"], ["house", "The house"], ["kitchen", "Kitchen"], ["bedroom", "Bedroom"], ["bathroom", "Bathroom"], ["town", "Around town"], ["transport", "Transport"], ["nature", "Nature & weather"], ["sports", "Sports"], ["things", "Everyday things"], ["time", "Telling the time"], ["clock", "Clock only (hard)"], ["days", "Days"], ["months", "Months"], ["sh", "Hobbies"], ["gg", "gusta or gustan?"]];
 const QB_FMTS = [["tap", "Tap the answer"], ["type", "Type it"], ["build", "Build the sentence"]];
 function qbConf() {
   const q = state.settings.qbuild || (state.settings.qbuild = {});
-  if (!Array.isArray(q.topics)) q.topics = QB_TOPICS.map(t => t[0]);
+  if (!Array.isArray(q.topics)) q.topics = QB_TOPICS.map(t => t[0]).filter(k => k !== "clock");
   if (!Array.isArray(q.verbs)) q.verbs = [];
   if (!q.gg) { q.gg = 1; if (QB_TOPICS.every(([k]) => k === "gg" || k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("gg")) q.topics.push("gg"); }
   if (!q.hb) { q.hb = 1; if (QB_TOPICS.every(([k]) => k === "sh" || k === "sports" || q.topics.includes(k)) && !q.topics.includes("sh")) q.topics.push("sh"); }
@@ -2404,6 +2491,7 @@ function makeMixQ(focus) {
   else if (t === "gg") it = makeGG(f);
   else if (t === "verbs") { const keep = state.settings.verb2; state.settings.verb2 = q.verbs; try { it = makeVerb(f); } finally { state.settings.verb2 = keep; } }
   else if (t === "time") it = makeTime(f);
+  else if (t === "clock") return makeClockHard(focus && /^time-/.test(focus) ? focus : null);
   else if (t === "days" || t === "months") it = makeSeq(t, f);
   else it = makeVocab(t, f);
   return applyFormat(it, q.fmts);
@@ -2513,8 +2601,9 @@ function insert(c) {
   i.value = i.value.slice(0, s) + c + i.value.slice(e); i.focus(); i.setSelectionRange(s + 1, s + 1);
 }
 function scoreLine() {
-  const lt = topic === "mixq" ? null : levelOf(topic === "gustar" ? "gustar" : topic);
-  if (source.kind === "built") return el("span", { class: "score" }, (lt != null && (topic !== "gustar" || state.settings.level === "starter") ? LEVEL_NAME[lt] + (diffOf(topic) === "auto" ? " (auto)" : "") + " · " : "") + `Question ${Math.min(round.n + 1, ROUND)} of ${ROUND}` + (round.n ? ` · ${round.right} right` : ""));
+  const clockHard = topic === "time" && state.settings.timeset === "clock";
+  const lt = topic === "mixq" ? null : clockHard ? 2 : levelOf(topic === "gustar" ? "gustar" : topic);
+  if (source.kind === "built") return el("span", { class: "score" }, (lt != null && (topic !== "gustar" || state.settings.level === "starter") ? LEVEL_NAME[lt] + (diffOf(topic) === "auto" && !clockHard ? " (auto)" : "") + " · " : "") + `Question ${Math.min(round.n + 1, ROUND)} of ${ROUND}` + (round.n ? ` · ${round.right} right` : ""));
   return el("span", { class: "score" }, session.total ? `This session ${session.right}/${session.total}` + (session.streak > 1 ? ` · streak ${session.streak}` : "") : "");
 }
 function renderQuiz() {
