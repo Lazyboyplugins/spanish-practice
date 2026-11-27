@@ -180,7 +180,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 #whogate .box{max-width:420px;width:100%;text-align:center}#whogate h1{font-size:30px;margin:0 0 6px}#whogate p{color:var(--muted);margin:0 0 20px}
 #whogate .people{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}#whogate .person{font:inherit;font-size:20px;font-weight:600;padding:16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
 #whogate .person.last{border-color:var(--accent);background:var(--accent-soft)}#whogate .person small{display:block;font-size:12px;font-weight:400;color:var(--muted)}
-.whosel{font:inherit;font-weight:600;padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}#whogate .add{display:flex;gap:8px}#whogate input{flex:1;min-width:0;font:inherit;font-size:17px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.qball{width:100%;gap:8px;margin-bottom:4px}.qball .btn{padding:8px 14px;font-size:15px}.whosel{font:inherit;font-weight:600;padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}#whogate .add{display:flex;gap:8px}#whogate input{flex:1;min-width:0;font:inherit;font-size:17px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 #popq{position:fixed;inset:0;z-index:45;background:rgba(10,14,22,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
 #popq .pbox{background:var(--surface);color:var(--ink);border-radius:20px;max-width:460px;width:100%;padding:20px 18px 18px;box-shadow:0 12px 40px rgba(0,0,0,.3);max-height:calc(100vh - 32px);overflow:auto}
 #popq .ptop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}#popq .pdots{display:flex;gap:4px}#popq .pdots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
@@ -2898,14 +2898,16 @@ function renderQBPanel() {
   const chip = (on, text, fn) => el("button", { class: "chip", "aria-pressed": String(on), onclick: fn }, (on ? "✓ " : "") + text);
   const group = (title, hint, kids) => el("div", { class: "qbgroup" }, el("h3", {}, title, el("span", { class: "speech-note" }, "  " + hint)), el("div", { class: "row" }, kids));
   const allT = q.topics.length === QB_TOPICS.length, allF = q.fmts.length === QB_FMTS.length;
-  box.append(el("h2", {}, "⭐ Build your own quiz"), el("p", {}, "1. Tick what you want to practise. 2. Press Start. You can pick one thing, a few, or everything. When everything is ticked, tapping one topic picks just that one."));
+  const allBtns = (onAll, onNone, allOn, noneOn) => el("div", { class: "row qball" },
+    el("button", { class: "btn ghost", disabled: allOn, onclick: onAll }, "Select all"),
+    el("button", { class: "btn ghost", disabled: noneOn, onclick: onNone }, "Deselect all"));
+  box.append(el("h2", {}, "⭐ Build your own quiz"), el("p", {}, "1. Tap Deselect all. 2. Tick what you want to practise. 3. Press Start."));
   box.append(group("Topics", allT ? "(all ticked)" : q.topics.length ? `(${q.topics.length} ticked)` : "(tick at least one)", [
-    ...QB_TOPICS.map(([k, n]) => chip(q.topics.includes(k), n, () => { if (q.topics.length >= QB_TOPICS.length - 1 && QB_TOPICS.every(([x]) => x === "clock" || q.topics.includes(x))) q.topics = [k]; else toggle(q.topics, k, false); changed(); })),
-    q.topics.length ? el("button", { class: "link", onclick: () => { q.topics = []; changed(); } }, "Untick all") : null,
-    !allT ? el("button", { class: "link", onclick: () => { q.topics = QB_TOPICS.map(t => t[0]); changed(); } }, "Tick all") : null]));
+    allBtns(() => { q.topics = QB_TOPICS.map(t => t[0]); changed(); }, () => { q.topics = []; changed(); }, allT, !q.topics.length),
+    ...QB_TOPICS.map(([k, n]) => chip(q.topics.includes(k), n, () => { toggle(q.topics, k, false); changed(); }))]));
   if (q.topics.includes("verbs")) box.append(group("Which verbs", q.verbs.length ? `(${q.verbs.length} ticked)` : "(none ticked = all verbs)", [
-    ...VERB_ALL.map(v => chip(q.verbs.includes(v), v, () => { toggle(q.verbs, v, false); changed(); })),
-    q.verbs.length ? el("button", { class: "link", onclick: () => { q.verbs = []; changed(); } }, "Use all verbs") : null]));
+    allBtns(() => { q.verbs = [...VERB_ALL]; changed(); }, () => { q.verbs = []; changed(); }, q.verbs.length === VERB_ALL.length, !q.verbs.length),
+    ...VERB_ALL.map(v => chip(q.verbs.includes(v), v, () => { toggle(q.verbs, v, false); changed(); }))]));
   box.append(group("Formats", allF ? "(all ticked)" : "", QB_FMTS.map(([k, n]) => chip(q.fmts.includes(k), n, () => { toggle(q.fmts, k, true); changed(); }))));
   const tn = allT ? "everything" : q.topics.map(k => QB_TOPICS.find(t => t[0] === k)[1]).join(", ");
   box.append(el("div", { class: "actions" },
@@ -3667,7 +3669,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-d";
+const BUILD = "2026-11-27-e";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
