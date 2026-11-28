@@ -1467,6 +1467,7 @@ const V2 = {
   jugar: { m: "to play (a sport or game)", ch: "u→ue", f: ["juego", "juegas", "juega", "jugamos", "juegan"], c: [["al fútbol los sábados", "play football on Saturdays"], ["al tenis con mi hermana", "play tennis with my sister"], ["básquetbol en el parque", "play basketball in the park"], ["al béisbol", "play baseball"], ["al tenis a menudo", "play tennis often"], ["al básquetbol todos los días", "play basketball every day"]] },
   practicar: { m: "to do / practise (a sport)", f: ["practico", "practicas", "practica", "practicamos", "practican"], c: [["natación", "do swimming"], ["yoga los lunes", "do yoga on Mondays"], ["kárate", "do karate"], ["mucho deporte", "do a lot of sport"], ["deporte todos los días", "do sport every day"], ["el fútbol en el equipo", "practise football with the team"]] },
   traer: { m: "to bring", yo: true, f: ["traigo", "traes", "trae", "traemos", "traen"], c: [["el almuerzo", "bring lunch"], ["la comida a la fiesta", "bring the food to the party"], ["un libro a clase", "bring a book to class"], ["agua a la playa", "bring water to the beach"]] },
+  llevar: { m: "to wear / to carry / to take", note: "llevar has three main meanings. To wear: llevo una gorra. To carry: llevo la mochila. To take (something or someone) somewhere: llevo a mi hermana a la escuela. traer = to bring (here), llevar = to take (there). Also: llevo dos años aquí = I've been here for two years.", f: ["llevo", "llevas", "lleva", "llevamos", "llevan"], c: [["una gorra", "wear a cap"], ["lentes de sol", "wear sunglasses"], ["la mochila", "carry the backpack"], ["el paraguas", "carry the umbrella"], ["comida a la fiesta", "take food to the party"], ["a mi hermana a la escuela", "take my sister to school"], ["el perro al parque", "take the dog to the park"], ["una chaqueta en invierno", "wear a jacket in winter"]] },
   bailar: { m: "to dance", f: ["bailo", "bailas", "baila", "bailamos", "bailan"], c: [["salsa", "dance salsa"], ["en la fiesta", "dance at the party"], ["mucho los sábados", "dance a lot on Saturdays"], ["con mi hermana", "dance with my sister"]] },
   caminar: { m: "to walk", f: ["camino", "caminas", "camina", "caminamos", "caminan"], c: [["al trabajo", "walk to work"], ["en el parque", "walk in the park"], ["a la escuela", "walk to school"], ["con el perro", "walk with the dog"]] },
   correr: { m: "to run", f: ["corro", "corres", "corre", "corremos", "corren"], c: [["en el parque", "run in the park"], ["los domingos", "run on Sundays"], ["muy rápido", "run very fast"], ["cinco kilómetros", "run five kilometres"]] },
@@ -3401,7 +3402,7 @@ for (const [k, v] of Object.entries({ "siempre": "always", "casi": "almost", "nu
 for (const t of GG_THINGS.flat()) { const w = t[0].split(" "); const k = w.length > 1 && /^(el|la|los|las)$/.test(w[0]) ? w.slice(1).join(" ") : t[0]; if (!k.includes(" ")) GLOSS[k] = GLOSS[k] || t[1]; }
 for (const [k, v] of Object.entries({ "más": "more", "o": "or", "qué": "what", "cuáles": "which ones", "cuál": "which one", "tu": "your", "tus": "your (more than one)", "mi": "my", "mis": "my (more than one)",
   "mí": "me (after a)", "ti": "you (after a)", "a": "to (a mí = to me)", "papas": "potatoes", "fritas": "fried" })) GLOSS[k] = GLOSS[k] || v;
-for (const [k, v] of [["todos", "all / every"], ["días", "days"], ["viernes", "Friday(s)"], ["fruta", "fruit"], ["por", "in / for / through"], ["escuela", "school"], ["rápido", "fast"], ["kilómetros", "kilometres"], ["perro", "dog"], ["hermana", "sister"], ["almuerzo", "lunch / I have lunch"], ["agua", "water"], ["libro", "book"], ["clase", "class"], ["traer", "to bring"]]) GLOSS[k] = GLOSS[k] || v;
+for (const [k, v] of [["todos", "all / every"], ["días", "days"], ["viernes", "Friday(s)"], ["fruta", "fruit"], ["por", "in / for / through"], ["escuela", "school"], ["rápido", "fast"], ["kilómetros", "kilometres"], ["perro", "dog"], ["hermana", "sister"], ["almuerzo", "lunch / I have lunch"], ["agua", "water"], ["libro", "book"], ["clase", "class"], ["traer", "to bring"], ["gorra", "cap"], ["mochila", "backpack"], ["paraguas", "umbrella"], ["lentes", "glasses"], ["sol", "sun"], ["chaqueta", "jacket"], ["invierno", "winter"], ["fiesta", "party"], ["parque", "park"], ["comida", "food"]]) GLOSS[k] = GLOSS[k] || v;
 for (const [inf, V] of Object.entries(V2)) { GLOSS[inf] = V.m; V.f.forEach((f, j) => { GLOSS[f] = `${V.m.replace(/^to /, "")} · ${PERS[j]} form of ${inf}`; }); }
 SER.forEach((f, j) => { GLOSS[f] = GLOSS[f] || `to be · ${PERS[j]} form of ser`; }); ESTAR.forEach((f, j) => { GLOSS[f] = `to be (place / feeling) · ${PERS[j]} form of estar`; });
 
@@ -4352,7 +4353,7 @@ showWhoGate();
 initCloud();
 getSample().then(s => { if (!s) { $("#c-img-wrap").hidden = true; } });
 /* phones can keep an old copy of the page for a while: check for a newer one and reload once */
-const BUILD = "2026-11-27-ab1";
+const BUILD = "2026-11-28-llevar1";
 (async () => { try {
   if (!/^https?:/.test(location.protocol)) return;
   const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
